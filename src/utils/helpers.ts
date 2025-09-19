@@ -191,5 +191,24 @@ export function truncateText(text: string, maxLength: number): string {
  * Generates a random ID (for mock data)
  */
 export function generateId(): string {
-  return Math.random().toString(36).substr(2, 9)
+  return Math.random().toString(36).substring(2, 11)
+}
+
+/**
+ * Highlights search terms in text
+ */
+export function highlightSearchText(text: string, searchQuery: string): string {
+  if (!searchQuery.trim()) {
+    return text
+  }
+
+  const regex = new RegExp(`(${escapeRegExp(searchQuery)})`, 'gi')
+  return text.replace(regex, '<mark class="bg-yellow-200 px-1 rounded">$1</mark>')
+}
+
+/**
+ * Escapes special regex characters in a string
+ */
+function escapeRegExp(string: string): string {
+  return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }

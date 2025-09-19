@@ -9,7 +9,8 @@ import {
   formatClickCount,
   timeAgo,
   truncateText,
-  generateId
+  generateId,
+  highlightSearchText
 } from '../helpers'
 import { createMockAffiliateLink, createMockCategory, createMockAffiliateLinks } from '../../test/factories'
 import type { FilterState } from '../../types'
@@ -317,5 +318,47 @@ describe('generateId', () => {
     expect(id1).not.toBe(id2)
     expect(typeof id1).toBe('string')
     expect(id1.length).toBeGreaterThan(0)
+  })
+})
+
+describe('highlightSearchText', () => {
+  it('should highlight matching text with mark tags', () => {
+    const result = highlightSearchText('Hello world', 'world')
+    expect(result).toBe('Hello <mark class="bg-yellow-200 px-1 rounded">world</mark>')
+  })
+
+  it('should be case insensitive', () => {
+    const result = highlightSearchText('Hello World', 'world')
+    expect(result).toBe('Hello <mark class="bg-yellow-200 px-1 rounded">World</mark>')
+  })
+
+  it('should highlight multiple matches', () => {
+    const result = highlightSearchText('Hello world, wonderful world', 'world')
+    expect(result).toBe('Hello <mark class="bg-yellow-200 px-1 rounded">world</mark>, wonderful <mark class="bg-yellow-200 px-1 rounded">world</mark>')
+  })
+
+  it('should escape special regex characters', () => {
+    const result = highlightSearchText('Price: $10.99', '$10.99')
+    expect(result).toBe('Price: <mark class="bg-yellow-200 px-1 rounded">$10.99</mark>')
+  })
+
+  it('should handle parentheses', () => {
+    const result = highlightSearchText('Test (special) case', '(special)')
+    expect(result).toBe('Test <mark class="bg-yellow-200 px-1 rounded">(special)</mark> case')
+  })
+
+  it('should return original text when no search query', () => {
+    const result = highlightSearchText('Hello world', '')
+    expect(result).toBe('Hello world')
+  })
+
+  it('should return original text when no match found', () => {
+    const result = highlightSearchText('Hello world', 'xyz')
+    expect(result).toBe('Hello world')
+  })
+
+  it('should handle whitespace-only search query', () => {
+    const result = highlightSearchText('Hello world', '   ')
+    expect(result).toBe('Hello world')
   })
 })

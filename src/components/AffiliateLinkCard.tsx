@@ -1,13 +1,15 @@
 import React from 'react';
 import type { AffiliateLink } from '../types';
+import { HighlightedText } from './HighlightedText';
 
 interface AffiliateLinkCardProps {
   link: AffiliateLink;
   onLinkClick: (linkId: string) => void;
   featured?: boolean;
+  searchQuery?: string;
 }
 
-export function AffiliateLinkCard({ link, onLinkClick, featured = false }: AffiliateLinkCardProps) {
+export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQuery = '' }: AffiliateLinkCardProps) {
   const handleClick = (e: React.MouseEvent) => {
     e.preventDefault();
     onLinkClick(link.id);
@@ -94,12 +96,20 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false }: Affil
 
         {/* Title */}
         <h3 className="text-lg font-semibold text-gray-900 mb-2 line-clamp-2 group-hover:text-blue-600 transition-colors">
-          {link.title}
+          {searchQuery ? (
+            <HighlightedText text={link.title} searchQuery={searchQuery} />
+          ) : (
+            link.title
+          )}
         </h3>
 
         {/* Description */}
         <p className="text-gray-600 text-sm mb-3 line-clamp-3">
-          {link.description}
+          {searchQuery ? (
+            <HighlightedText text={link.description} searchQuery={searchQuery} />
+          ) : (
+            link.description
+          )}
         </p>
 
         {/* Tags */}
@@ -111,7 +121,11 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false }: Affil
                   key={tag}
                   className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded"
                 >
-                  {tag}
+                  {searchQuery ? (
+                    <HighlightedText text={tag} searchQuery={searchQuery} />
+                  ) : (
+                    tag
+                  )}
                 </span>
               ))}
               {link.tags.length > 3 && (
