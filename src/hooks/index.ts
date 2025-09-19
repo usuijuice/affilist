@@ -2,3 +2,19 @@
 
 export { useDebounce } from './useDebounce';
 export { useFilters } from './useFilters';
+export { useAppState } from './useAppState';
+export { useFilteredLinks } from './useFilteredLinks';
+export { useAffiliateLinks, useAffiliateLinksSearch } from './useAffiliateLinks';
+export { useCategories, usePopularCategories } from './useCategories';
+export { 
+  useAnalytics, 
+  useClickAnalytics, 
+  useRevenueAnalytics, 
+  useLinkPerformance, 
+  useRealTimeAnalytics 
+} from './useAnalytics';
+
+// Export types
+export type { UseAffiliateLinksOptions, UseAffiliateLinksReturn } from './useAffiliateLinks';
+export type { UseCategoriesOptions, UseCategoriesReturn } from './useCategories';
+export type { UseAnalyticsOptions, UseAnalyticsReturn } from './useAnalytics';
