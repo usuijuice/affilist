@@ -1,5 +1,15 @@
 // Core data types for the affiliate link aggregator
 
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string;
+  color: string;
+  icon?: string;
+  linkCount: number;
+}
+
 export interface AffiliateLink {
   id: string;
   title: string;
@@ -15,16 +25,6 @@ export interface AffiliateLink {
   createdAt: Date;
   updatedAt: Date;
   status: 'active' | 'inactive' | 'pending';
-}
-
-export interface Category {
-  id: string;
-  name: string;
-  slug: string;
-  description: string;
-  color: string;
-  icon?: string;
-  linkCount: number;
 }
 
 export interface ClickEvent {

@@ -22,8 +22,8 @@
   - Write component tests for layout elements
   - _Requirements: 6.1, 6.3, 1.1_
 
-- [ ] 4. Create affiliate link display components
-- [ ] 4.1 Implement AffiliateLinkCard component
+- [x] 4. Create affiliate link display components
+- [x] 4.1 Implement AffiliateLinkCard component
   - Build card component to display individual affiliate links
   - Include title, description, category, and commission rate display
   - Add click tracking functionality and external link handling
@@ -31,7 +31,7 @@
   - Write unit tests for card component interactions
   - _Requirements: 3.1, 3.2, 3.3, 6.1_
 
-- [ ] 4.2 Build AffiliateLinkGrid container component
+- [x] 4.2 Build AffiliateLinkGrid container component
   - Create grid layout for displaying multiple affiliate link cards
   - Implement loading states and skeleton components
   - Add pagination or infinite scroll functionality

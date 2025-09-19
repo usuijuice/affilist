@@ -1,5 +1,5 @@
 import { Link } from 'react-router-dom';
-import { Category } from '../types';
+import type { Category } from '../types';
 
 interface FooterProps {
   categories: Category[];
