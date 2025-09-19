@@ -1,7 +1,7 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 import { SortControls } from '../SortControls';
-import type { SortOption } from '../../types';
+
 
 describe('SortControls', () => {
   const mockOnSortChange = vi.fn();

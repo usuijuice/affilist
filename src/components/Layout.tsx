@@ -1,7 +1,7 @@
-import { useState } from 'react';
+
 import { Header } from './Header';
 import { Footer } from './Footer';
-import { Category } from '../types';
+import type { Category } from '../types';
 
 interface LayoutProps {
   children: React.ReactNode;

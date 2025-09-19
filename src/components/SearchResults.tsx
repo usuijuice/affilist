@@ -1,4 +1,4 @@
-import { AffiliateLink } from '../types';
+import type { AffiliateLink } from '../types';
 import { AffiliateLinkCard } from './AffiliateLinkCard';
 
 interface SearchResultsProps {

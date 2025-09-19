@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { AffiliateLinkCard } from './AffiliateLinkCard';
 import type { AffiliateLink } from '../types';
 

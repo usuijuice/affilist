@@ -26,27 +26,27 @@ describe('SearchResults', () => {
 
   it('renders loading state', () => {
     render(
-      <SearchResults 
-        links={[]} 
-        searchQuery="" 
-        onLinkClick={mockOnLinkClick} 
+      <SearchResults
+        links={[]}
+        searchQuery=""
+        onLinkClick={mockOnLinkClick}
         loading={true}
       />
     );
-    
+
     expect(screen.getByText('Searching...')).toBeInTheDocument();
     expect(document.querySelector('.animate-spin')).toBeInTheDocument(); // spinner
   });
 
   it('renders links when not loading', () => {
     render(
-      <SearchResults 
-        links={mockLinks} 
-        searchQuery="test" 
+      <SearchResults
+        links={mockLinks}
+        searchQuery="test"
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     expect(screen.getByTestId('link-card-1')).toBeInTheDocument();
     expect(screen.getByTestId('link-card-2')).toBeInTheDocument();
     expect(screen.getByTestId('link-card-3')).toBeInTheDocument();
@@ -54,13 +54,13 @@ describe('SearchResults', () => {
 
   it('passes search query to link cards', () => {
     render(
-      <SearchResults 
-        links={mockLinks} 
-        searchQuery="test query" 
+      <SearchResults
+        links={mockLinks}
+        searchQuery="test query"
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     expect(screen.getByText('Link 1 - test query')).toBeInTheDocument();
     expect(screen.getByText('Link 2 - test query')).toBeInTheDocument();
     expect(screen.getByText('Link 3 - test query')).toBeInTheDocument();
@@ -68,26 +68,26 @@ describe('SearchResults', () => {
 
   it('shows empty state when no results and has search query', () => {
     render(
-      <SearchResults 
-        links={[]} 
-        searchQuery="nonexistent" 
+      <SearchResults
+        links={[]}
+        searchQuery="nonexistent"
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     expect(screen.getByText('No results found')).toBeInTheDocument();
     expect(screen.getByText(/We couldn't find any affiliate links matching "nonexistent"/)).toBeInTheDocument();
   });
 
   it('shows helpful suggestions in empty state', () => {
     render(
-      <SearchResults 
-        links={[]} 
-        searchQuery="test" 
+      <SearchResults
+        links={[]}
+        searchQuery="test"
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     expect(screen.getByText('Try:')).toBeInTheDocument();
     expect(screen.getByText('• Checking your spelling')).toBeInTheDocument();
     expect(screen.getByText('• Using different keywords')).toBeInTheDocument();
@@ -97,52 +97,52 @@ describe('SearchResults', () => {
 
   it('does not show empty state when no search query', () => {
     render(
-      <SearchResults 
-        links={[]} 
-        searchQuery="" 
+      <SearchResults
+        links={[]}
+        searchQuery=""
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     expect(screen.queryByText('No results found')).not.toBeInTheDocument();
   });
 
   it('does not show empty state when search query is only whitespace', () => {
     render(
-      <SearchResults 
-        links={[]} 
-        searchQuery="   " 
+      <SearchResults
+        links={[]}
+        searchQuery="   "
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     expect(screen.queryByText('No results found')).not.toBeInTheDocument();
   });
 
   it('renders grid layout for results', () => {
     render(
-      <SearchResults 
-        links={mockLinks} 
-        searchQuery="test" 
+      <SearchResults
+        links={mockLinks}
+        searchQuery="test"
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     const grid = screen.getByTestId('link-card-1').parentElement;
     expect(grid).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-6');
   });
 
   it('handles single result correctly', () => {
     const singleLink = [createMockAffiliateLink({ id: '1', title: 'Single Link' })];
-    
+
     render(
-      <SearchResults 
-        links={singleLink} 
-        searchQuery="test" 
+      <SearchResults
+        links={singleLink}
+        searchQuery="test"
         onLinkClick={mockOnLinkClick}
       />
     );
-    
+
     expect(screen.getByTestId('link-card-1')).toBeInTheDocument();
     expect(screen.queryByTestId('link-card-2')).not.toBeInTheDocument();
   });

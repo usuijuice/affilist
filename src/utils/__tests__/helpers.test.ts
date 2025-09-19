@@ -12,7 +12,7 @@ import {
   generateId,
   highlightSearchText
 } from '../helpers'
-import { createMockAffiliateLink, createMockCategory, createMockAffiliateLinks } from '../../test/factories'
+import { createMockAffiliateLink, createMockCategory } from '../../test/factories'
 import type { FilterState } from '../../types'
 
 describe('filterAffiliateLinks', () => {
