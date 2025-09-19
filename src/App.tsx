@@ -1,31 +1,36 @@
-function App() {
-  return (
-    <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center py-6">
-            <h1 className="text-3xl font-bold text-gray-900">
-              Affiliate Link Aggregator
-            </h1>
-          </div>
-        </div>
-      </header>
+import { useState } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { Layout } from './components';
+import { HomePage, CategoriesPage, FeaturedPage } from './pages';
+import { createMockCategories } from './test/factories';
 
-      <main className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        <div className="px-4 py-6 sm:px-0">
-          <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
-            <div className="text-center">
-              <h2 className="text-2xl font-semibold text-gray-600 mb-4">
-                Welcome to Affiliate Link Aggregator
-              </h2>
-              <p className="text-gray-500">
-                Project foundation setup complete. Ready for development!
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
-    </div>
+function App() {
+  const [searchQuery, setSearchQuery] = useState('');
+  
+  // Mock categories for the footer - this will be replaced with real data later
+  const mockCategories = createMockCategories(8);
+
+  const handleSearch = (query: string) => {
+    setSearchQuery(query);
+    // TODO: Implement actual search functionality in future tasks
+    console.log('Search query:', query);
+  };
+
+  return (
+    <Router>
+      <Layout 
+        categories={mockCategories}
+        onSearch={handleSearch}
+        searchQuery={searchQuery}
+      >
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/categories" element={<CategoriesPage />} />
+          <Route path="/category/:slug" element={<CategoriesPage />} />
+          <Route path="/featured" element={<FeaturedPage />} />
+        </Routes>
+      </Layout>
+    </Router>
   );
 }
 

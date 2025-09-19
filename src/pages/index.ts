@@ -1,4 +1,4 @@
 // Page component exports
-// This file will be populated with page components in later tasks
-
-export {};
+export { HomePage } from './HomePage';
+export { CategoriesPage } from './CategoriesPage';
+export { FeaturedPage } from './FeaturedPage';

@@ -14,7 +14,7 @@
   - Write unit tests for data model validation
   - _Requirements: 3.1, 3.2, 4.2_
 
-- [ ] 3. Build basic layout and navigation components
+- [x] 3. Build basic layout and navigation components
   - Implement Header component with responsive navigation
   - Create Footer component with category links
   - Build Layout wrapper component for consistent page structure
