@@ -1,6 +1,7 @@
 import React from 'react';
 import type { AffiliateLink } from '../types';
 import { HighlightedText } from './HighlightedText';
+import { useClickTracking } from '../hooks/useClickTracking';
 
 interface AffiliateLinkCardProps {
   link: AffiliateLink;
@@ -10,9 +11,26 @@ interface AffiliateLinkCardProps {
 }
 
 export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQuery = '' }: AffiliateLinkCardProps) {
-  const handleClick = (e: React.MouseEvent) => {
+  const { trackClick } = useClickTracking();
+
+  const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
+    
+    // Track the click with metadata
+    await trackClick(link.id, {
+      title: link.title,
+      category: link.category.name,
+      categoryId: link.category.id,
+      featured: link.featured || featured,
+      commissionRate: link.commissionRate,
+      searchQuery: searchQuery || undefined,
+      clickSource: 'card',
+      timestamp: new Date().toISOString(),
+    });
+    
+    // Call the parent's click handler
     onLinkClick(link.id);
+    
     // Open the affiliate URL in a new tab
     window.open(link.affiliateUrl, '_blank', 'noopener,noreferrer');
   };

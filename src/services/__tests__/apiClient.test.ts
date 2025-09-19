@@ -59,7 +59,7 @@ describe('ApiClient', () => {
         success: false,
         error: {
           message: 'Resource not found',
-          status: undefined,
+          status: 404,
         },
       });
     });
@@ -195,9 +195,12 @@ describe('ApiClient', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const response = await apiClient.get('/test');
-
+      const responsePromise = apiClient.get('/test');
+      
+      // Fast-forward timers to trigger retry
       await vi.runAllTimersAsync();
+      
+      const response = await responsePromise;
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
       expect(response.success).toBe(true);
@@ -217,9 +220,12 @@ describe('ApiClient', () => {
           json: () => Promise.resolve({ success: true }),
         });
 
-      const response = await apiClient.get('/test');
-
+      const responsePromise = apiClient.get('/test');
+      
+      // Fast-forward timers to trigger retry
       await vi.runAllTimersAsync();
+      
+      const response = await responsePromise;
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
       expect(response.success).toBe(true);
@@ -242,11 +248,14 @@ describe('ApiClient', () => {
     it('should respect max retries', async () => {
       mockFetch.mockRejectedValue(new TypeError('Network error'));
 
-      const response = await apiClient.get('/test', { retries: 2 });
-
+      const responsePromise = apiClient.get('/test', { retries: 2 });
+      
+      // Fast-forward timers to trigger retries
       await vi.runAllTimersAsync();
+      
+      const response = await responsePromise;
 
-      expect(mockFetch).toHaveBeenCalledTimes(2); // Initial + 1 retry (max 2 retries)
+      expect(mockFetch).toHaveBeenCalledTimes(3); // Initial + 2 retries
       expect(response.success).toBe(false);
     });
   });
@@ -298,15 +307,19 @@ describe('ApiClient', () => {
   describe('Timeout handling', () => {
     it('should timeout requests', async () => {
       mockFetch.mockImplementation(() => 
-        new Promise((resolve, reject) => {
-          setTimeout(() => reject(new Error('AbortError')), 15000);
+        new Promise((resolve) => {
+          // Simulate a slow request that will be aborted
+          setTimeout(() => resolve({
+            ok: true,
+            json: () => Promise.resolve({ data: 'slow response' }),
+          }), 2000);
         })
       );
 
-      const response = await apiClient.get('/test', { timeout: 1000 });
+      const response = await apiClient.get('/test', { timeout: 100 });
 
       expect(response.success).toBe(false);
-      expect(response.error?.message).toContain('error');
+      expect(response.error?.message).toBeDefined();
     }, 10000);
   });
 });

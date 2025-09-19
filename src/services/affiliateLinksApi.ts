@@ -1,5 +1,6 @@
-import { apiClient, ApiResponse } from './apiClient';
-import { 
+import { apiClient } from './apiClient';
+import type { ApiResponse } from './apiClient';
+import type { 
   AffiliateLink, 
   GetLinksResponse, 
   CreateLinkRequest,

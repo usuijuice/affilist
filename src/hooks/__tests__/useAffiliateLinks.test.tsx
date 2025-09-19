@@ -7,15 +7,23 @@ import { affiliateLinksApi } from '../../services';
 import { createMockAffiliateLink } from '../../test/factories';
 
 // Mock the API
+const mockGetLinks = vi.fn();
+const mockGetAllLinks = vi.fn();
+const mockSearchLinks = vi.fn();
+
 vi.mock('../../services', () => ({
   affiliateLinksApi: {
-    getLinks: vi.fn(),
-    getAllLinks: vi.fn(),
-    searchLinks: vi.fn(),
+    getLinks: mockGetLinks,
+    getAllLinks: mockGetAllLinks,
+    searchLinks: mockSearchLinks,
   },
 }));
 
-const mockAffiliateLinksApi = affiliateLinksApi as any;
+const mockAffiliateLinksApi = {
+  getLinks: mockGetLinks,
+  getAllLinks: mockGetAllLinks,
+  searchLinks: mockSearchLinks,
+};
 
 // Test wrapper component
 const createWrapper = () => {

@@ -37,6 +37,36 @@ export interface ClickEvent {
   sessionId: string;
 }
 
+// Click tracking types
+export interface ClickTrackingData {
+  linkId: string;
+  timestamp: Date;
+  userAgent: string;
+  referrer?: string;
+  sessionId: string;
+  userId?: string;
+  metadata?: Record<string, any>;
+}
+
+export interface SessionData {
+  sessionId: string;
+  userId?: string;
+  startTime: Date;
+  lastActivity: Date;
+  userAgent: string;
+  referrer?: string;
+  clickCount: number;
+}
+
+export interface ClickTrackingConfig {
+  enableTracking: boolean;
+  sessionTimeout: number; // in milliseconds
+  batchSize: number;
+  flushInterval: number; // in milliseconds
+  enableLocalStorage: boolean;
+  enableAnalytics: boolean;
+}
+
 export interface AdminUser {
   id: string;
   email: string;

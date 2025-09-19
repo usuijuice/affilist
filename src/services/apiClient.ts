@@ -142,7 +142,7 @@ class ApiClient {
       };
     } catch (error) {
       // Retry on network errors or 5xx status codes
-      if (attempt < maxRetries && this.shouldRetry(error)) {
+      if (attempt <= maxRetries && this.shouldRetry(error)) {
         const delay = Math.min(1000 * Math.pow(2, attempt - 1), 5000); // Exponential backoff, max 5s
         await this.sleep(delay);
         return this.makeRequest<T>(url, config, attempt + 1);

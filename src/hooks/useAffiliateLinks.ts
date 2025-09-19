@@ -63,7 +63,7 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
     try {
       const response = await affiliateLinksApi.getLinks(paramsRef.current);
       
-      if (response.success) {
+      if (response && response.success) {
         const newLinks = params.page && params.page > 1 
           ? [...localState.links, ...response.data.links]
           : response.data.links;
@@ -81,7 +81,7 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
         setAffiliateLinks(newLinks);
         setLoading(false);
       } else {
-        const errorMessage = response.error?.message || 'Failed to fetch affiliate links';
+        const errorMessage = response?.error?.message || 'Failed to fetch affiliate links';
         setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
         setError(errorMessage);
         onError?.(errorMessage);
@@ -107,7 +107,7 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
     try {
       const response = await affiliateLinksApi.getAllLinks();
       
-      if (response.success) {
+      if (response && response.success) {
         setLocalState(prev => ({
           ...prev,
           links: response.data,
@@ -121,7 +121,7 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
         setAffiliateLinks(response.data);
         setLoading(false);
       } else {
-        const errorMessage = response.error?.message || 'Failed to fetch all affiliate links';
+        const errorMessage = response?.error?.message || 'Failed to fetch all affiliate links';
         setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
         setError(errorMessage);
         onError?.(errorMessage);
@@ -208,10 +208,10 @@ export function useAffiliateLinksSearch(filters: FilterState, debounceMs: number
     try {
       const response = await affiliateLinksApi.searchLinks(searchFilters.searchQuery, searchFilters);
       
-      if (response.success) {
+      if (response && response.success) {
         setSearchResults(response.data);
       } else {
-        setSearchError(response.error?.message || 'Search failed');
+        setSearchError(response?.error?.message || 'Search failed');
         setSearchResults([]);
       }
     } catch (error) {

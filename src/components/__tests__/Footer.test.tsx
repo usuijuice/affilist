@@ -35,7 +35,14 @@ describe('Footer', () => {
     // Should show first 6 categories
     mockCategories.slice(0, 6).forEach(category => {
       expect(screen.getByText(category.name)).toBeInTheDocument();
-      expect(screen.getByText(`(${category.linkCount})`)).toBeInTheDocument();
+    });
+    
+    // Check that link counts are displayed (using getAllByText for duplicates)
+    const linkCounts = mockCategories.slice(0, 6).map(cat => cat.linkCount);
+    const uniqueCounts = [...new Set(linkCounts)];
+    uniqueCounts.forEach(count => {
+      const elements = screen.getAllByText(`(${count})`);
+      expect(elements.length).toBeGreaterThan(0);
     });
   });
 

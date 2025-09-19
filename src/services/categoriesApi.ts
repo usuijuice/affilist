@@ -1,5 +1,6 @@
-import { apiClient, ApiResponse } from './apiClient';
-import { Category, GetCategoriesResponse } from '../types';
+import { apiClient } from './apiClient';
+import type { ApiResponse } from './apiClient';
+import type { Category, GetCategoriesResponse } from '../types';
 
 export interface CreateCategoryRequest {
   name: string;

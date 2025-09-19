@@ -16,3 +16,6 @@ export type {
   RevenueAnalytics, 
   LinkPerformance 
 } from './analyticsApi';
+
+export { clickTrackingService, ClickTrackingService, ClickAnalytics } from './clickTrackingService';
+export type { ClickTrackingData, SessionData, ClickTrackingConfig } from '../types';

@@ -4,6 +4,14 @@ import { vi } from 'vitest';
 import { AffiliateLinkCard } from '../AffiliateLinkCard';
 import { createMockAffiliateLink, createMockCategory } from '../../test/factories';
 
+// Mock useClickTracking hook
+const mockTrackClick = vi.fn();
+vi.mock('../../hooks/useClickTracking', () => ({
+  useClickTracking: () => ({
+    trackClick: mockTrackClick,
+  }),
+}));
+
 // Mock window.open
 const mockWindowOpen = vi.fn();
 Object.defineProperty(window, 'open', {
@@ -16,6 +24,7 @@ describe('AffiliateLinkCard', () => {
   
   beforeEach(() => {
     vi.clearAllMocks();
+    mockTrackClick.mockResolvedValue(undefined);
   });
 
   const defaultLink = createMockAffiliateLink({
@@ -64,12 +73,17 @@ describe('AffiliateLinkCard', () => {
     expect(screen.queryByText('tag4')).not.toBeInTheDocument();
   });
 
-  it('handles click events correctly', () => {
+  it('handles click events correctly', async () => {
     render(<AffiliateLinkCard link={defaultLink} onLinkClick={mockOnLinkClick} />);
 
     const card = screen.getByRole('button');
     fireEvent.click(card);
 
+    // Wait for async trackClick to complete
+    await waitFor(() => {
+      expect(mockTrackClick).toHaveBeenCalledWith(defaultLink.id, expect.any(Object));
+    });
+
     expect(mockOnLinkClick).toHaveBeenCalledWith(defaultLink.id);
     expect(mockWindowOpen).toHaveBeenCalledWith(
       defaultLink.affiliateUrl,
@@ -78,12 +92,17 @@ describe('AffiliateLinkCard', () => {
     );
   });
 
-  it('handles keyboard navigation (Enter key)', () => {
+  it('handles keyboard navigation (Enter key)', async () => {
     render(<AffiliateLinkCard link={defaultLink} onLinkClick={mockOnLinkClick} />);
 
     const card = screen.getByRole('button');
     fireEvent.keyDown(card, { key: 'Enter' });
 
+    // Wait for async trackClick to complete
+    await waitFor(() => {
+      expect(mockTrackClick).toHaveBeenCalledWith(defaultLink.id, expect.any(Object));
+    });
+
     expect(mockOnLinkClick).toHaveBeenCalledWith(defaultLink.id);
     expect(mockWindowOpen).toHaveBeenCalledWith(
       defaultLink.affiliateUrl,
@@ -92,11 +111,16 @@ describe('AffiliateLinkCard', () => {
     );
   });
 
-  it('handles keyboard navigation (Space key)', () => {
+  it('handles keyboard navigation (Space key)', async () => {
     render(<AffiliateLinkCard link={defaultLink} onLinkClick={mockOnLinkClick} />);
 
     const card = screen.getByRole('button');
     fireEvent.keyDown(card, { key: ' ' });
+
+    // Wait for async trackClick to complete
+    await waitFor(() => {
+      expect(mockTrackClick).toHaveBeenCalledWith(defaultLink.id, expect.any(Object));
+    });
 
     expect(mockOnLinkClick).toHaveBeenCalledWith(defaultLink.id);
     expect(mockWindowOpen).toHaveBeenCalledWith(

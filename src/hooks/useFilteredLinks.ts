@@ -1,6 +1,5 @@
 import { useMemo } from 'react';
 import { useAppContext } from '../contexts';
-import { AffiliateLink, SortOption } from '../types';
 
 /**
  * Custom hook that returns filtered and sorted affiliate links based on current filters

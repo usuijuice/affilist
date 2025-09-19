@@ -14,7 +14,15 @@ export {
   useRealTimeAnalytics 
 } from './useAnalytics';
 
+export { 
+  useClickTracking, 
+  useClickAnalytics as useClickAnalyticsUtils, 
+  usePageTracking, 
+  useInteractionTracking 
+} from './useClickTracking';
+
 // Export types
 export type { UseAffiliateLinksOptions, UseAffiliateLinksReturn } from './useAffiliateLinks';
 export type { UseCategoriesOptions, UseCategoriesReturn } from './useCategories';
 export type { UseAnalyticsOptions, UseAnalyticsReturn } from './useAnalytics';
+export type { UseClickTrackingOptions, UseClickTrackingReturn } from './useClickTracking';

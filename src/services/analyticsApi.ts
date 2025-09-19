@@ -1,5 +1,6 @@
-import { apiClient, ApiResponse } from './apiClient';
-import { AnalyticsResponse } from '../types';
+import { apiClient } from './apiClient';
+import type { ApiResponse } from './apiClient';
+import type { AnalyticsResponse } from '../types';
 
 export interface AnalyticsParams {
   startDate?: string;
