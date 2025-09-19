@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { clickTrackingService, ClickAnalytics } from '../services/clickTrackingService';
-import { ClickTrackingConfig, SessionData } from '../types';
+import type { ClickTrackingConfig, SessionData } from '../types';
 
 export interface UseClickTrackingOptions {
   config?: Partial<ClickTrackingConfig>;

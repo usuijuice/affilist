@@ -21,6 +21,8 @@ export {
   useInteractionTracking 
 } from './useClickTracking';
 
+export { useSessionManagement } from './useSessionManagement';
+
 // Export types
 export type { UseAffiliateLinksOptions, UseAffiliateLinksReturn } from './useAffiliateLinks';
 export type { UseCategoriesOptions, UseCategoriesReturn } from './useCategories';

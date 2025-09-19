@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LinkPerformance } from '../services';
+import type { LinkPerformance } from '../services';
 
 interface PerformanceTableProps {
   data: LinkPerformance[];

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { analyticsApi, AnalyticsParams, ClickAnalytics, RevenueAnalytics, LinkPerformance } from '../services';
-import { AnalyticsResponse } from '../types';
+import { analyticsApi } from '../services';
+import type { AnalyticsParams, ClickAnalytics, RevenueAnalytics, LinkPerformance } from '../services';
+import type { AnalyticsResponse } from '../types';
 
 export interface UseAnalyticsOptions {
   autoFetch?: boolean;

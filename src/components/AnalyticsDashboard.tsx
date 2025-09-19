@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useAnalytics, useClickAnalytics, useRevenueAnalytics, useLinkPerformance } from '../hooks';
-import { AnalyticsParams } from '../services';
+import type { AnalyticsParams } from '../services';
 
 interface AnalyticsDashboardProps {
   className?: string;

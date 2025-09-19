@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 import { useAppContext } from '../contexts';
-import { AffiliateLink, Category, FilterState, SortOption } from '../types';
+import type { AffiliateLink, Category, FilterState, SortOption } from '../types';
 
 /**
  * Custom hook for accessing and updating global app state

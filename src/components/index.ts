@@ -23,3 +23,11 @@ export {
   ComparisonMetrics 
 } from './MetricsSummary';
 export { PerformanceTable, CategoryPerformanceTable } from './PerformanceTable';
+
+// Authentication components
+export { Login } from './Login';
+export { ProtectedRoute, withProtectedRoute, usePermissions } from './ProtectedRoute';
+export { AdminLayout } from './AdminLayout';
+export { AdminRoute, AdminOnlyRoute, EditorRoute, withAdminRoute } from './AdminRoute';
+export { UnauthorizedPage } from './UnauthorizedPage';
+export { SessionWarning } from './SessionWarning';

@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
-import { affiliateLinksApi, GetLinksParams } from '../services';
-import { AffiliateLink, FilterState } from '../types';
+import { affiliateLinksApi } from '../services';
+import type { GetLinksParams } from '../services';
+import type { AffiliateLink, FilterState } from '../types';
 import { useAppState } from './useAppState';
 
 export interface UseAffiliateLinksOptions {

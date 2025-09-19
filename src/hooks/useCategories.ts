@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { categoriesApi } from '../services';
-import { Category } from '../types';
+import type { Category } from '../types';
 import { useAppState } from './useAppState';
 
 export interface UseCategoriesOptions {
