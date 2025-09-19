@@ -31,3 +31,8 @@ export { AdminLayout } from './AdminLayout';
 export { AdminRoute, AdminOnlyRoute, EditorRoute, withAdminRoute } from './AdminRoute';
 export { UnauthorizedPage } from './UnauthorizedPage';
 export { SessionWarning } from './SessionWarning';
+
+// Admin components
+export { AdminDashboard } from './AdminDashboard';
+export { LinkForm } from './LinkForm';
+export { LinkManagementTable } from './LinkManagementTable';
