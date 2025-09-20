@@ -44,7 +44,7 @@ describe('Health Routes', () => {
       expect(response.body).toMatchObject({
         status: 'READY',
         services: {
-          database: 'pending',
+          database: 'healthy',
           server: 'healthy',
         },
       });
