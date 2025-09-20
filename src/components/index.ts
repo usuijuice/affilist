@@ -42,3 +42,7 @@ export { LoadingSpinner, LoadingOverlay, InlineLoading } from './LoadingSpinner'
 export { ErrorBoundary, useErrorHandler } from './ErrorBoundary';
 export { ToastProvider, useToast } from './Toast';
 export { ConfirmDialog, useConfirmDialog } from './ConfirmDialog';
+
+// Performance components
+export { LazyImage } from './LazyImage';
+export { LazyComponentWrapper, withLazyLoading, useLazyComponent } from './LazyComponentWrapper';

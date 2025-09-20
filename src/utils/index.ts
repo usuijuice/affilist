@@ -9,6 +9,15 @@ export * from './helpers'
 // API error handling utilities
 export * from './apiErrorHandler'
 
+// Performance monitoring utilities
+export * from './performance'
+
+// API caching utilities
+export * from './apiCache'
+
+// Service worker utilities
+export * from './serviceWorker'
+
 // Legacy utility functions (keeping for compatibility)
 export const formatDate = (date: Date): string => {
   return new Intl.DateTimeFormat('en-US', {
