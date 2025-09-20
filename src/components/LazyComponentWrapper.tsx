@@ -1,4 +1,4 @@
-import React, { Suspense, ComponentType } from 'react';
+import React, { Suspense, type ComponentType } from 'react';
 import { LoadingSpinner } from './LoadingSpinner';
 
 interface LazyComponentWrapperProps {

@@ -44,14 +44,16 @@ const generateToken = (user: AdminUser): string => {
 
   const options: jwt.SignOptions = {
     expiresIn: config.jwt.expiresIn,
-    algorithm: 'HS256'
+    algorithm: 'HS256',
   } as jwt.SignOptions;
 
   return jwt.sign(payload, config.jwt.secret, options);
 };
 
 // Helper function to create user response (without sensitive data)
-const createUserResponse = (user: Omit<AdminUser, 'password_hash'> | AdminUser) => ({
+const createUserResponse = (
+  user: Omit<AdminUser, 'password_hash'> | AdminUser
+) => ({
   id: user.id,
   email: user.email,
   name: user.name,

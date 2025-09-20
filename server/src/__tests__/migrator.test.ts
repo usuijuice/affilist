@@ -22,7 +22,7 @@ describe('Database Migrator', () => {
     it('should return empty status when no migrations exist', async () => {
       // Clear any existing migrations first
       await db.query('DELETE FROM migrations');
-      
+
       const status = await migrator.status();
       expect(Array.isArray(status)).toBe(true);
       expect(status).toHaveLength(0);

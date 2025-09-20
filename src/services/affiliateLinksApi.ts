@@ -107,7 +107,12 @@ export class AffiliateLinksApi {
         success: true,
       };
     }
-    return response as ApiResponse<AffiliateLink[]>;
+    // Handle error case properly
+    return {
+      success: false,
+      error: response.error,
+      data: [] as AffiliateLink[], // Provide empty array as fallback
+    };
   }
 
   /**
@@ -169,9 +174,10 @@ export class AffiliateLinksApi {
   async bulkDeleteLinks(
     ids: string[]
   ): Promise<ApiResponse<{ success: boolean; deletedCount: number }>> {
-    return apiClient.delete<{ success: boolean; deletedCount: number }>(
+    return apiClient.request<{ success: boolean; deletedCount: number }>(
       '/admin/links/bulk',
       {
+        method: 'DELETE',
         body: { ids },
       }
     );

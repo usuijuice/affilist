@@ -146,8 +146,8 @@ describe('Auth Routes', () => {
 
     it('should refresh valid token', async () => {
       // Wait a moment to ensure different timestamp in JWT
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
+      await new Promise((resolve) => setTimeout(resolve, 1000));
+
       const response = await request(app)
         .post('/api/auth/refresh')
         .set('Authorization', `Bearer ${authToken}`);

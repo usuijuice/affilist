@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { AdminLayout } from './AdminLayout';
 import { LinkManagementTable } from './LinkManagementTable';
 import { LinkForm } from './LinkForm';
@@ -15,7 +15,8 @@ interface AdminDashboardProps {
 export function AdminDashboard({
   initialView = 'dashboard',
 }: AdminDashboardProps) {
-  const { user } = useAuth();
+  const { state } = useAuth();
+  const { user } = state;
   const [currentView, setCurrentView] = useState<ViewMode>(initialView);
   const [links, setLinks] = useState<AffiliateLink[]>([]);
   const [editingLink, setEditingLink] = useState<AffiliateLink | null>(null);

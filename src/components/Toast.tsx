@@ -3,7 +3,7 @@ import React, {
   useEffect,
   createContext,
   useContext,
-  ReactNode,
+  type ReactNode,
 } from 'react';
 
 export type ToastType = 'success' | 'error' | 'warning' | 'info';
@@ -55,7 +55,7 @@ export function ToastProvider({ children }: ToastProviderProps) {
     setToasts((prev) => [...prev, newToast]);
 
     // Auto-remove toast after duration
-    if (newToast.duration > 0) {
+    if (newToast.duration && newToast.duration > 0) {
       setTimeout(() => {
         removeToast(id);
       }, newToast.duration);
@@ -67,7 +67,18 @@ export function ToastProvider({ children }: ToastProviderProps) {
     // Import notification service dynamically to avoid circular dependency
     import('../services/notificationService').then(
       ({ notificationService }) => {
-        notificationService.setToastHandler(addToast);
+        // Create adapter function to handle type conversion
+        const notificationAdapter = (notification: any) => {
+          addToast({
+            title: notification.title,
+            message: notification.message,
+            type: notification.type || 'info', // Default to 'info' if type is undefined
+            duration: notification.duration,
+            action: notification.action,
+          });
+        };
+
+        notificationService.setToastHandler(notificationAdapter);
       }
     );
   }, []);

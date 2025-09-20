@@ -11,7 +11,7 @@ async function setupTestDatabase() {
 
     // Create test database if it doesn't exist
     const createDbCommand = `psql postgresql://${config.database.user}:${config.database.password}@${config.database.host}:${config.database.port}/postgres -c "CREATE DATABASE ${config.database.name};" 2>/dev/null || echo "Database already exists"`;
-    
+
     console.log('📋 Creating test database...');
     execSync(createDbCommand, { stdio: 'inherit' });
 
@@ -20,7 +20,6 @@ async function setupTestDatabase() {
     await migrator.migrate();
 
     console.log('\n✅ Test database setup complete!');
-
   } catch (error) {
     logger.error('Failed to setup test database', error);
     console.error('❌ Error setting up test database:', error);

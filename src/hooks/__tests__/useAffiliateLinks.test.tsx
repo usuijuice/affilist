@@ -1,12 +1,11 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { ReactNode } from 'react';
-import { vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppProvider } from '../../contexts/AppContext';
 import {
   useAffiliateLinks,
   useAffiliateLinksSearch,
 } from '../useAffiliateLinks';
-import { affiliateLinksApi } from '../../services';
 import { createMockAffiliateLink } from '../../test/factories';
 
 // Mock the API

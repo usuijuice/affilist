@@ -24,9 +24,10 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
 
   // Clear errors when auth error changes
   useEffect(() => {
-    if (state.error) {
-      setErrors((prev) => ({ ...prev, general: state.error }));
-    }
+    setErrors((prev) => ({
+      ...prev,
+      general: state.error || undefined,
+    }));
   }, [state.error]);
 
   // Clear auth error when component unmounts

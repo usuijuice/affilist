@@ -34,7 +34,7 @@ class QueryOptimizer {
   private readonly MAX_SLOW_QUERIES = 100;
   private readonly DEFAULT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-  constructor(private pool: Pool) { }
+  constructor(private pool: Pool) {}
 
   private generateCacheKey(query: string, params: any[]): string {
     return `${query}:${JSON.stringify(params)}`;
@@ -44,7 +44,11 @@ class QueryOptimizer {
     return Date.now() - entry.timestamp > entry.ttl;
   }
 
-  private updateStats(executionTime: number, fromCache: boolean, queryText?: string): void {
+  private updateStats(
+    executionTime: number,
+    fromCache: boolean,
+    queryText?: string
+  ): void {
     this.stats.totalQueries++;
 
     if (fromCache) {
@@ -65,7 +69,8 @@ class QueryOptimizer {
       // Track slow queries
       if (executionTime > this.SLOW_QUERY_THRESHOLD && queryText) {
         this.stats.slowQueries.push({
-          query: queryText.substring(0, 200) + (queryText.length > 200 ? '...' : ''),
+          query:
+            queryText.substring(0, 200) + (queryText.length > 200 ? '...' : ''),
           executionTime,
           timestamp: Date.now(),
         });

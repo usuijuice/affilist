@@ -148,6 +148,10 @@ class APICache {
     return total === 0 ? 0 : this.stats.hits / total;
   }
 
+  getConfig(): CacheConfig {
+    return { ...this.defaultConfig };
+  }
+
   // Clean up expired entries
   cleanup(): number {
     let removedCount = 0;
@@ -236,11 +240,7 @@ export async function cachedFetch<T>(
     }
 
     // Return stale data while revalidating in background
-    if (
-      cached &&
-      cached.isStale &&
-      apiCache.defaultConfig.staleWhileRevalidate
-    ) {
+    if (cached && cached.isStale && apiCache.getConfig().staleWhileRevalidate) {
       console.log(`[Cache] Stale hit, revalidating: ${url}`);
 
       // Revalidate in background

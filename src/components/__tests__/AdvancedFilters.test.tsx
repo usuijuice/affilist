@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AdvancedFilters } from '../AdvancedFilters';
 import type { FilterState } from '../../types';
 

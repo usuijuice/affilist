@@ -12,9 +12,10 @@ beforeAll(async () => {
   process.env.NODE_ENV = 'test';
   process.env.PORT = '3001';
   process.env.CORS_ORIGIN = 'http://localhost:5173';
-  
+
   // Override database URL for tests
-  process.env.DATABASE_URL = 'postgresql://affilist_user:password@localhost:5432/affilist_test';
+  process.env.DATABASE_URL =
+    'postgresql://affilist_user:password@localhost:5432/affilist_test';
   process.env.DB_NAME = 'affilist_test';
 
   // Ensure test database is set up with migrations

@@ -66,29 +66,6 @@ export function PerformanceTable({
     return filtered.slice(0, maxRows);
   }, [data, filterText, sortField, sortDirection, maxRows]);
 
-  const formatNumber = (num: number): string => {
-    if (num >= 1000000) {
-      return `${(num / 1000000).toFixed(1)}M`;
-    }
-    if (num >= 1000) {
-      return `${(num / 1000).toFixed(1)}K`;
-    }
-    return num.toLocaleString();
-  };
-
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
-
-  const formatPercentage = (value: number): string => {
-    return `${value.toFixed(2)}%`;
-  };
-
   const getSortIcon = (field: SortField) => {
     if (sortField !== field) {
       return <span className="text-gray-400">↕️</span>;
@@ -316,7 +293,6 @@ function PerformanceRow({ item, rank }: PerformanceRowProps) {
 }
 
 function PerformanceTableSkeleton({
-  title,
   className,
 }: {
   title: string;
@@ -415,7 +391,7 @@ export function CategoryPerformanceTable({
     return (
       <PerformanceTableSkeleton
         title="Category Performance"
-        className={className}
+        className={className || ''}
       />
     );
   }
@@ -458,7 +434,7 @@ export function CategoryPerformanceTable({
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {sortedData.map((category, index) => (
+            {sortedData.map((category) => (
               <tr key={category.categoryId} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">

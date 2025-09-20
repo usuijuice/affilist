@@ -58,7 +58,14 @@ describe('useAdminOperations', () => {
         description: 'Test Description',
         url: 'https://example.com',
         affiliateUrl: 'https://affiliate.example.com',
-        category: { id: 'cat1', name: 'Test Category' },
+        category: {
+          id: 'cat1',
+          name: 'Test Category',
+          slug: 'test-category',
+          description: 'Test category description',
+          color: '#3B82F6',
+          linkCount: 5,
+        },
         tags: ['test'],
         featured: false,
         clickCount: 0,
@@ -135,7 +142,14 @@ describe('useAdminOperations', () => {
         description: 'Updated Description',
         url: 'https://example.com',
         affiliateUrl: 'https://affiliate.example.com',
-        category: { id: 'cat1', name: 'Test Category' },
+        category: {
+          id: 'cat1',
+          name: 'Test Category',
+          slug: 'test-category',
+          description: 'Test category description',
+          color: '#3B82F6',
+          linkCount: 5,
+        },
         tags: ['test'],
         featured: true,
         clickCount: 0,
@@ -179,7 +193,7 @@ describe('useAdminOperations', () => {
 
       const { result } = renderHook(() => useAdminOperations());
 
-      let deleteResult: boolean;
+      let deleteResult: boolean = false;
       await act(async () => {
         deleteResult = await result.current.deleteLink('1', 'Test Link');
       });
@@ -197,7 +211,7 @@ describe('useAdminOperations', () => {
 
       const { result } = renderHook(() => useAdminOperations());
 
-      let bulkDeleteResult: boolean;
+      let bulkDeleteResult: boolean = false;
       await act(async () => {
         bulkDeleteResult = await result.current.bulkDeleteLinks(
           ['1', '2', '3'],
@@ -226,7 +240,7 @@ describe('useAdminOperations', () => {
       const { result } = renderHook(() => useAdminOperations());
 
       const updates = { featured: true };
-      let bulkUpdateResult: boolean;
+      let bulkUpdateResult: boolean = false;
 
       await act(async () => {
         bulkUpdateResult = await result.current.bulkUpdateLinks(
@@ -331,7 +345,7 @@ describe('useAdminOperations', () => {
 
       const { result } = renderHook(() => useAdminOperations());
 
-      let deleteResult: boolean;
+      let deleteResult: boolean = false;
       await act(async () => {
         deleteResult = await result.current.deleteCategory(
           '1',
@@ -433,7 +447,7 @@ describe('useAdminOperations', () => {
   describe('Loading States', () => {
     it('should manage loading state during operations', async () => {
       let resolvePromise: (value: any) => void;
-      const promise = new Promise((resolve) => {
+      const promise = new Promise<any>((resolve) => {
         resolvePromise = resolve;
       });
 

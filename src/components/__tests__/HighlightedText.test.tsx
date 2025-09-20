@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import { HighlightedText } from '../HighlightedText';
+import { describe, expect, it } from 'vitest';
 
 describe('HighlightedText', () => {
   it('renders text without highlighting when no search query', () => {

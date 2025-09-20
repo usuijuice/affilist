@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { analyticsApi } from '../services';
 import type {
   AnalyticsParams,
-  ClickAnalytics,
+  ClickAnalyticsType as ClickAnalytics,
   RevenueAnalytics,
   LinkPerformance,
 } from '../services';

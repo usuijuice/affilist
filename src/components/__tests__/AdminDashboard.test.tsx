@@ -1,5 +1,4 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { AdminDashboard } from '../AdminDashboard';
@@ -136,11 +135,13 @@ describe('AdminDashboard', () => {
     vi.clearAllMocks();
 
     vi.mocked(useAuth).mockReturnValue({
-      user: mockUser,
-      token: 'mock-token',
-      isAuthenticated: true,
-      isLoading: false,
-      error: null,
+      state: {
+        user: mockUser,
+        token: 'mock-token',
+        isAuthenticated: true,
+        isLoading: false,
+        error: null,
+      },
       login: vi.fn(),
       logout: vi.fn(),
       clearError: vi.fn(),

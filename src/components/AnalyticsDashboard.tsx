@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import {
   useAnalytics,
   useClickAnalytics,
@@ -89,10 +89,6 @@ export function AnalyticsDashboard({
       style: 'currency',
       currency: 'USD',
     }).format(amount);
-  };
-
-  const formatPercentage = (value: number) => {
-    return `${value.toFixed(2)}%`;
   };
 
   return (
@@ -326,7 +322,7 @@ interface ChartCardProps {
   type: 'line' | 'area';
 }
 
-function ChartCard({ title, loading, data, type }: ChartCardProps) {
+function ChartCard({ title, loading, data }: ChartCardProps) {
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow p-6">

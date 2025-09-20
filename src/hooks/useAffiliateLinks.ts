@@ -3,12 +3,7 @@ import { affiliateLinksApi } from '../services';
 import type { GetLinksParams } from '../services';
 import type { AffiliateLink, FilterState } from '../types';
 import { useAppState } from './useAppState';
-import {
-  getErrorMessage,
-  isNetworkError,
-  shouldRetry,
-  getRetryDelay,
-} from '../utils/apiErrorHandler';
+import { getErrorMessage } from '../utils/apiErrorHandler';
 
 export interface UseAffiliateLinksOptions {
   autoFetch?: boolean;
@@ -237,7 +232,7 @@ export function useAffiliateLinksSearch(
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
 
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const search = useCallback(async (searchFilters: FilterState) => {
@@ -294,6 +289,7 @@ export function useAffiliateLinksSearch(
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
+        searchTimeoutRef.current = null;
       }
     };
   }, [filters, debounceMs, search]);

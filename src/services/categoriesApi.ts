@@ -32,7 +32,12 @@ export class CategoriesApi {
         success: true,
       };
     }
-    return response as ApiResponse<Category[]>;
+    // Handle error case properly
+    return {
+      success: false,
+      error: response.error,
+      data: [] as Category[], // Provide empty array as fallback
+    };
   }
 
   /**

@@ -440,8 +440,8 @@ router.get(
       const clicksTrend =
         previousPeriodClicks > 0
           ? ((currentPeriodClicks - previousPeriodClicks) /
-            previousPeriodClicks) *
-          100
+              previousPeriodClicks) *
+            100
           : 0;
 
       // Get link performance categories

@@ -65,7 +65,10 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should login successfully and store token and user', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
 
       const result = await authService.login(mockCredentials);
 
@@ -99,7 +102,10 @@ describe('AuthService', () => {
     });
 
     it('should handle localStorage errors gracefully', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
       mockLocalStorage.setItem.mockImplementationOnce(() => {
         throw new Error('Storage quota exceeded');
       });
@@ -120,7 +126,10 @@ describe('AuthService', () => {
     });
 
     it('should logout successfully and clear stored data', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce({});
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: {},
+        success: true,
+      });
 
       await authService.logout();
 
@@ -172,7 +181,10 @@ describe('AuthService', () => {
 
   describe('refreshToken', () => {
     it('should refresh token successfully', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
 
       const result = await authService.refreshToken();
 
@@ -211,8 +223,10 @@ describe('AuthService', () => {
 
   describe('verifyToken', () => {
     it('should verify token successfully', async () => {
-      const verifyResponse = { user: mockUser };
-      vi.mocked(apiClient.get).mockResolvedValueOnce(verifyResponse);
+      vi.mocked(apiClient.get).mockResolvedValueOnce({
+        data: { user: mockUser },
+        success: true,
+      });
 
       const result = await authService.verifyToken();
 
@@ -409,7 +423,10 @@ describe('AuthService', () => {
         .mockReturnValueOnce(expiredToken)
         .mockReturnValueOnce(JSON.stringify(mockUser));
 
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
 
       const result = await authService.initialize();
 
@@ -428,7 +445,10 @@ describe('AuthService', () => {
         .mockReturnValueOnce(validToken)
         .mockReturnValueOnce(JSON.stringify(mockUser));
 
-      vi.mocked(apiClient.get).mockResolvedValueOnce({ user: mockUser });
+      vi.mocked(apiClient.get).mockResolvedValueOnce({
+        data: { user: mockUser },
+        success: true,
+      });
 
       const result = await authService.initialize();
 

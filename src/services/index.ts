@@ -12,7 +12,7 @@ export type { CreateCategoryRequest } from './categoriesApi';
 export { analyticsApi, AnalyticsApi } from './analyticsApi';
 export type {
   AnalyticsParams,
-  ClickAnalytics,
+  ClickAnalytics as ClickAnalyticsType,
   RevenueAnalytics,
   LinkPerformance,
 } from './analyticsApi';
@@ -20,7 +20,7 @@ export type {
 export {
   clickTrackingService,
   ClickTrackingService,
-  ClickAnalytics,
+  ClickAnalytics as ClickAnalyticsClass,
 } from './clickTrackingService';
 export type {
   ClickTrackingData,

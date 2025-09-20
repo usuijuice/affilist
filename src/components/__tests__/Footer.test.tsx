@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Footer } from '../Footer';
 import { createMockCategories } from '../../test/factories';
+import { describe, expect, it } from 'vitest';
 
 // Wrapper component to provide router context
 const RouterWrapper = ({ children }: { children: React.ReactNode }) => (

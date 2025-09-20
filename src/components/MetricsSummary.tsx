@@ -1,4 +1,3 @@
-import React from 'react';
 import { MiniChart, TrendIndicator } from './AnalyticsChart';
 
 interface MetricData {
@@ -21,34 +20,6 @@ export function MetricsSummary({
   loading = false,
   className = '',
 }: MetricsSummaryProps) {
-  const formatValue = (
-    value: number,
-    format: MetricData['format'] = 'number'
-  ): string => {
-    switch (format) {
-      case 'currency':
-        return new Intl.NumberFormat('en-US', {
-          style: 'currency',
-          currency: 'USD',
-          minimumFractionDigits: 0,
-          maximumFractionDigits: 2,
-        }).format(value);
-
-      case 'percentage':
-        return `${value.toFixed(2)}%`;
-
-      case 'number':
-      default:
-        if (value >= 1000000) {
-          return `${(value / 1000000).toFixed(1)}M`;
-        }
-        if (value >= 1000) {
-          return `${(value / 1000).toFixed(1)}K`;
-        }
-        return value.toLocaleString();
-    }
-  };
-
   if (loading) {
     return (
       <div

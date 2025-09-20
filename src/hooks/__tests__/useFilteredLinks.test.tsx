@@ -7,6 +7,7 @@ import {
   createMockAffiliateLink,
   createMockCategory,
 } from '../../test/factories';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 // Test wrapper component
 const createWrapper = () => {

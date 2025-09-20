@@ -26,6 +26,7 @@ class AuthService {
         return {
           token: response.data.token,
           user: response.data.user,
+          expiresAt: this.getTokenExpiration(response.data.token),
         };
       } else {
         throw new Error(response.error?.message || 'Login failed');
@@ -76,6 +77,7 @@ class AuthService {
         return {
           token: response.data.token,
           user: response.data.user,
+          expiresAt: this.getTokenExpiration(response.data.token),
         };
       } else {
         throw new Error(response.error?.message || 'Token refresh failed');
@@ -161,6 +163,24 @@ class AuthService {
       console.warn('Failed to decode token:', error);
       return true;
     }
+  }
+
+  /**
+   * Get token expiration date
+   */
+  private getTokenExpiration(token: string): Date {
+    try {
+      // Decode JWT token to get expiration
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp) {
+        return new Date(payload.exp * 1000); // Convert from seconds to milliseconds
+      }
+    } catch (error) {
+      console.warn('Failed to decode token expiration:', error);
+    }
+
+    // Fallback: assume token expires in 7 days (default JWT expiration)
+    return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   }
 
   /**

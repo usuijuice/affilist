@@ -138,7 +138,7 @@ export function useAdminOperations(): UseAdminOperationsReturn {
   );
 
   const bulkDeleteLinks = useCallback(
-    async (ids: string[], titles: string[]): Promise<boolean> => {
+    async (ids: string[]): Promise<boolean> => {
       try {
         setIsLoading(true);
         setError(null);

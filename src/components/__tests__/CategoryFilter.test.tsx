@@ -1,5 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { CategoryFilter } from '../CategoryFilter';
 import { createMockCategory } from '../../test/factories';
 

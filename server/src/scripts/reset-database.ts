@@ -13,7 +13,7 @@ async function resetDatabase() {
       'DROP TABLE IF EXISTS affiliate_links CASCADE;',
       'DROP TABLE IF EXISTS categories CASCADE;',
       'DROP TABLE IF EXISTS admin_users CASCADE;',
-      'DROP TABLE IF EXISTS migrations CASCADE;'
+      'DROP TABLE IF EXISTS migrations CASCADE;',
     ];
 
     console.log('📋 Dropping existing tables...');
@@ -30,7 +30,7 @@ async function resetDatabase() {
     // Drop functions if they exist
     const dropFunctionsQueries = [
       'DROP FUNCTION IF EXISTS update_updated_at_column() CASCADE;',
-      'DROP FUNCTION IF EXISTS update_link_click_count() CASCADE;'
+      'DROP FUNCTION IF EXISTS update_link_click_count() CASCADE;',
     ];
 
     console.log('\n🔧 Dropping existing functions...');
@@ -53,7 +53,6 @@ async function resetDatabase() {
     }
 
     console.log('\n✨ Database reset complete! You can now run migrations.');
-
   } catch (error) {
     logger.error('Failed to reset database', error);
     console.error('❌ Error resetting database:', error);
