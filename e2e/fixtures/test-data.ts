@@ -1,0 +1,86 @@
+import { AffiliateLink, Category } from '../../src/types';
+
+export const testCategories: Category[] = [
+  {
+    id: '1',
+    name: 'Web Development',
+    slug: 'web-development',
+    description: 'Tools and services for web developers',
+    color: '#3B82F6',
+    linkCount: 5,
+  },
+  {
+    id: '2',
+    name: 'Design Tools',
+    slug: 'design-tools',
+    description: 'Design software and resources',
+    color: '#EF4444',
+    linkCount: 3,
+  },
+  {
+    id: '3',
+    name: 'Marketing',
+    slug: 'marketing',
+    description: 'Marketing tools and platforms',
+    color: '#10B981',
+    linkCount: 4,
+  },
+];
+
+export const testAffiliateLinks: AffiliateLink[] = [
+  {
+    id: '1',
+    title: 'Vercel Pro',
+    description: 'Deploy your React apps with zero configuration',
+    url: 'https://vercel.com',
+    affiliateUrl: 'https://vercel.com?ref=affiliate',
+    category: testCategories[0],
+    tags: ['hosting', 'deployment', 'react'],
+    imageUrl: 'https://vercel.com/logo.png',
+    commissionRate: 25,
+    featured: true,
+    clickCount: 150,
+    createdAt: new Date('2024-01-01'),
+    updatedAt: new Date('2024-01-15'),
+    status: 'active',
+  },
+  {
+    id: '2',
+    title: 'Figma Pro',
+    description: 'Professional design tool for teams',
+    url: 'https://figma.com',
+    affiliateUrl: 'https://figma.com?ref=affiliate',
+    category: testCategories[1],
+    tags: ['design', 'collaboration', 'ui'],
+    imageUrl: 'https://figma.com/logo.png',
+    commissionRate: 30,
+    featured: false,
+    clickCount: 89,
+    createdAt: new Date('2024-01-02'),
+    updatedAt: new Date('2024-01-16'),
+    status: 'active',
+  },
+  {
+    id: '3',
+    title: 'ConvertKit',
+    description: 'Email marketing for creators',
+    url: 'https://convertkit.com',
+    affiliateUrl: 'https://convertkit.com?ref=affiliate',
+    category: testCategories[2],
+    tags: ['email', 'marketing', 'automation'],
+    imageUrl: 'https://convertkit.com/logo.png',
+    commissionRate: 40,
+    featured: true,
+    clickCount: 234,
+    createdAt: new Date('2024-01-03'),
+    updatedAt: new Date('2024-01-17'),
+    status: 'active',
+  },
+];
+
+export const testAdminUser = {
+  email: 'admin@test.com',
+  password: 'testpassword123',
+  name: 'Test Admin',
+  role: 'admin' as const,
+};
