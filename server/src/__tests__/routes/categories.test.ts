@@ -2,14 +2,14 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../../app.js';
 import { CategoryModel } from '../../database/models/Category.js';
-import type { Express } from 'express';
+import type { Application } from 'express';
 import type { Category, PaginatedResult } from '../../database/models/types.js';
 
 // Mock the database model
 vi.mock('../../database/models/Category.js');
 
 describe('Categories API Routes', () => {
-  let app: Express;
+  let app: Application;
 
   const mockCategory: Category = {
     id: '456e7890-e89b-12d3-a456-426614174001',

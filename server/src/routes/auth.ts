@@ -36,19 +36,22 @@ const handleValidationErrors = (req: Request, res: Response): boolean => {
 
 // Helper function to generate JWT token
 const generateToken = (user: AdminUser): string => {
-  return jwt.sign(
-    {
-      userId: user.id,
-      email: user.email,
-      role: user.role,
-    },
-    config.jwt.secret,
-    { expiresIn: config.jwt.expiresIn }
-  );
+  const payload = {
+    userId: user.id,
+    email: user.email,
+    role: user.role,
+  };
+
+  const options: jwt.SignOptions = {
+    expiresIn: config.jwt.expiresIn,
+    algorithm: 'HS256'
+  } as jwt.SignOptions;
+
+  return jwt.sign(payload, config.jwt.secret, options);
 };
 
 // Helper function to create user response (without sensitive data)
-const createUserResponse = (user: AdminUser) => ({
+const createUserResponse = (user: Omit<AdminUser, 'password_hash'> | AdminUser) => ({
   id: user.id,
   email: user.email,
   name: user.name,

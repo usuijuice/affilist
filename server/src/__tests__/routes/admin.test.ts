@@ -6,7 +6,7 @@ import { AffiliateLinkModel } from '../../database/models/AffiliateLink.js';
 import { CategoryModel } from '../../database/models/Category.js';
 import { AdminUserModel } from '../../database/models/AdminUser.js';
 import { config } from '../../config/environment.js';
-import type { Express } from 'express';
+import type { Application } from 'express';
 import type {
   AffiliateLink,
   AdminUser,
@@ -20,7 +20,7 @@ vi.mock('../../database/models/Category.js');
 vi.mock('../../database/models/AdminUser.js');
 
 describe('Admin API Routes', () => {
-  let app: Express;
+  let app: Application;
   let adminToken: string;
   let editorToken: string;
 

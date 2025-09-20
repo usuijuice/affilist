@@ -3,7 +3,7 @@ import request from 'supertest';
 import { createApp } from '../../app.js';
 import { ClickEventModel } from '../../database/models/ClickEvent.js';
 import { AffiliateLinkModel } from '../../database/models/AffiliateLink.js';
-import type { Express } from 'express';
+import type { Application } from 'express';
 import type { ClickEvent, AffiliateLink } from '../../database/models/types.js';
 
 // Mock the database models
@@ -11,7 +11,7 @@ vi.mock('../../database/models/ClickEvent.js');
 vi.mock('../../database/models/AffiliateLink.js');
 
 describe('Clicks Routes', () => {
-  let app: Express;
+  let app: Application;
   const testLinkId = '123e4567-e89b-12d3-a456-426614174000';
   const inactiveLinkId = '456e7890-e89b-12d3-a456-426614174001';
 
@@ -24,6 +24,7 @@ describe('Clicks Routes', () => {
     ip_address: '127.0.0.1',
     session_id: 'test-session-123',
     country_code: 'US',
+    created_at: new Date('2024-01-01T00:00:00Z'),
   };
 
   const mockAffiliateLink: AffiliateLink = {

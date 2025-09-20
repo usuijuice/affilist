@@ -2,7 +2,6 @@ import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
 import { config } from './config/environment.js';
-import { logger } from './utils/logger.js';
 import {
   rateLimiter,
   securityHeaders,

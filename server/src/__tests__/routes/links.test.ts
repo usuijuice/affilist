@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi, afterEach } from 'vitest';
 import request from 'supertest';
 import { createApp } from '../../app.js';
 import { AffiliateLinkModel } from '../../database/models/AffiliateLink.js';
-import type { Express } from 'express';
+import type { Application } from 'express';
 import type {
   AffiliateLink,
   PaginatedResult,
@@ -12,7 +12,7 @@ import type {
 vi.mock('../../database/models/AffiliateLink.js');
 
 describe('Links API Routes', () => {
-  let app: Express;
+  let app: Application;
 
   const mockAffiliateLink: AffiliateLink = {
     id: '123e4567-e89b-12d3-a456-426614174000',

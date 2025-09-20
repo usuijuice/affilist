@@ -96,19 +96,21 @@ router.get(
     const uuidRegex =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Invalid category ID format',
       });
+      return;
     }
 
     const category = await CategoryModel.findById(id);
 
     if (!category) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Category not found',
       });
+      return;
     }
 
     res.json({
@@ -127,19 +129,21 @@ router.get(
     // Validate slug format (alphanumeric, hyphens, underscores)
     const slugRegex = /^[a-z0-9-_]+$/i;
     if (!slugRegex.test(slug)) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Invalid category slug format',
       });
+      return;
     }
 
     const category = await CategoryModel.findBySlug(slug);
 
     if (!category) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Category not found',
       });
+      return;
     }
 
     res.json({

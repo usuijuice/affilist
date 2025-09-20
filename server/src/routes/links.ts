@@ -2,7 +2,6 @@ import { Router } from 'express';
 import type { Request, Response } from 'express';
 import { asyncHandler } from '../middleware/errorHandler.js';
 import { AffiliateLinkModel } from '../database/models/AffiliateLink.js';
-import { CategoryModel } from '../database/models/Category.js';
 import type {
   AffiliateLinkFilters,
   PaginationOptions,
@@ -147,27 +146,30 @@ router.get(
     const uuidRegex =
       /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
     if (!uuidRegex.test(id)) {
-      return res.status(400).json({
+      res.status(400).json({
         success: false,
         error: 'Invalid link ID format',
       });
+      return;
     }
 
     const link = await AffiliateLinkModel.findWithCategory(id);
 
     if (!link) {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Affiliate link not found',
       });
+      return;
     }
 
     // Only return active links for public API
     if (link.status !== 'active') {
-      return res.status(404).json({
+      res.status(404).json({
         success: false,
         error: 'Affiliate link not found',
       });
+      return;
     }
 
     res.json({

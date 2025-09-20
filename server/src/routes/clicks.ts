@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, type Request, type Response } from 'express';
 import { ClickEventModel } from '../database/models/ClickEvent.js';
 import { AffiliateLinkModel } from '../database/models/AffiliateLink.js';
 import { logger } from '../utils/logger.js';
@@ -50,19 +50,21 @@ router.post('/clicks', async (req: Request, res: Response) => {
 
     // Check rate limit
     if (!checkRateLimit(clientIp)) {
-      return res.status(429).json({
+      res.status(429).json({
         error: 'Too many requests',
         message: 'Rate limit exceeded. Please try again later.',
       });
+      return;
     }
 
     // Validate request body
     const validationResult = createClickEventSchema.safeParse(req.body);
     if (!validationResult.success) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Validation failed',
-        details: validationResult.error.errors,
+        details: validationResult.error.issues,
       });
+      return;
     }
 
     const { link_id, user_agent, referrer, session_id, country_code } =
@@ -71,10 +73,11 @@ router.post('/clicks', async (req: Request, res: Response) => {
     // Verify the affiliate link exists
     const linkExists = await AffiliateLinkModel.exists(link_id);
     if (!linkExists) {
-      return res.status(404).json({
+      res.status(404).json({
         error: 'Link not found',
         message: 'The specified affiliate link does not exist.',
       });
+      return;
     }
 
     // Create click event
@@ -119,35 +122,39 @@ router.get('/redirect/:linkId', async (req: Request, res: Response) => {
 
     // Validate linkId format
     if (!linkId || !z.string().uuid().safeParse(linkId).success) {
-      return res.status(400).json({
+      res.status(400).json({
         error: 'Invalid link ID',
         message: 'Link ID must be a valid UUID.',
       });
+      return;
     }
 
     // Check rate limit
     if (!checkRateLimit(clientIp)) {
-      return res.status(429).json({
+      res.status(429).json({
         error: 'Too many requests',
         message: 'Rate limit exceeded. Please try again later.',
       });
+      return;
     }
 
     // Get the affiliate link
     const affiliateLink = await AffiliateLinkModel.findById(linkId);
     if (!affiliateLink) {
-      return res.status(404).json({
+      res.status(404).json({
         error: 'Link not found',
         message: 'The specified affiliate link does not exist.',
       });
+      return;
     }
 
     // Check if link is active
     if (affiliateLink.status !== 'active') {
-      return res.status(410).json({
+      res.status(410).json({
         error: 'Link unavailable',
         message: 'This affiliate link is no longer available.',
       });
+      return;
     }
 
     // Record the click event

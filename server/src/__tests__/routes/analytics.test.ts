@@ -5,7 +5,7 @@ import { ClickEventModel } from '../../database/models/ClickEvent.js';
 import { AffiliateLinkModel } from '../../database/models/AffiliateLink.js';
 import { AdminUserModel } from '../../database/models/AdminUser.js';
 import jwt from 'jsonwebtoken';
-import type { Express } from 'express';
+import type { Application } from 'express';
 import type { AffiliateLink, AdminUser } from '../../database/models/types.js';
 
 // Mock the database models
@@ -30,7 +30,7 @@ vi.mock('../../middleware/auth.js', () => ({
 }));
 
 describe('Analytics Routes', () => {
-  let app: Express;
+  let app: Application;
   let authToken: string;
   const testLinkId = '123e4567-e89b-12d3-a456-426614174000';
 

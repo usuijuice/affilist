@@ -1,6 +1,6 @@
 // Database Query Optimization Utilities
 
-import { Pool, PoolClient } from 'pg';
+import { Pool, type PoolClient } from 'pg';
 
 interface QueryCacheEntry {
   result: any;
@@ -34,7 +34,7 @@ class QueryOptimizer {
   private readonly MAX_SLOW_QUERIES = 100;
   private readonly DEFAULT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes
 
-  constructor(private pool: Pool) {}
+  constructor(private pool: Pool) { }
 
   private generateCacheKey(query: string, params: any[]): string {
     return `${query}:${JSON.stringify(params)}`;
@@ -44,7 +44,7 @@ class QueryOptimizer {
     return Date.now() - entry.timestamp > entry.ttl;
   }
 
-  private updateStats(executionTime: number, fromCache: boolean): void {
+  private updateStats(executionTime: number, fromCache: boolean, queryText?: string): void {
     this.stats.totalQueries++;
 
     if (fromCache) {
@@ -63,9 +63,9 @@ class QueryOptimizer {
         this.executionTimes.length;
 
       // Track slow queries
-      if (executionTime > this.SLOW_QUERY_THRESHOLD) {
+      if (executionTime > this.SLOW_QUERY_THRESHOLD && queryText) {
         this.stats.slowQueries.push({
-          query: query.substring(0, 200) + (query.length > 200 ? '...' : ''),
+          query: queryText.substring(0, 200) + (queryText.length > 200 ? '...' : ''),
           executionTime,
           timestamp: Date.now(),
         });
@@ -100,8 +100,8 @@ class QueryOptimizer {
       const cached = this.cache.get(cacheKey);
 
       if (cached && !this.isExpired(cached)) {
-        this.updateStats(Date.now() - startTime, true);
-        return cached.result;
+        this.updateStats(Date.now() - startTime, true, query);
+        return cached.result as T;
       }
     }
 
@@ -125,7 +125,7 @@ class QueryOptimizer {
       ]);
 
       const executionTime = Date.now() - startTime;
-      this.updateStats(executionTime, false);
+      this.updateStats(executionTime, false, query);
 
       // Cache SELECT query results
       if (cache && query.trim().toLowerCase().startsWith('select')) {
@@ -137,10 +137,10 @@ class QueryOptimizer {
         });
       }
 
-      return result.rows;
+      return result.rows as T;
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      this.updateStats(executionTime, false);
+      this.updateStats(executionTime, false, query);
 
       console.error('Query execution failed:', {
         query: query.substring(0, 200),
@@ -178,7 +178,7 @@ class QueryOptimizer {
 
       for (const { query, params = [] } of queries) {
         const result = await client.query(query, params);
-        results.push(result.rows);
+        results.push(result.rows as T);
       }
 
       if (transaction) {
@@ -225,8 +225,8 @@ class QueryOptimizer {
       const cached = this.cache.get(cacheKey);
 
       if (cached && !this.isExpired(cached)) {
-        this.updateStats(Date.now() - startTime, true);
-        return cached.result;
+        this.updateStats(Date.now() - startTime, true, query);
+        return cached.result as T;
       }
     }
 
@@ -249,7 +249,7 @@ class QueryOptimizer {
       );
 
       const executionTime = Date.now() - startTime;
-      this.updateStats(executionTime, false);
+      this.updateStats(executionTime, false, query);
 
       // Cache result
       if (cache) {
@@ -261,10 +261,10 @@ class QueryOptimizer {
         });
       }
 
-      return result.rows;
+      return result.rows as T;
     } catch (error) {
       const executionTime = Date.now() - startTime;
-      this.updateStats(executionTime, false);
+      this.updateStats(executionTime, false, query);
       throw error;
     } finally {
       if (client) {

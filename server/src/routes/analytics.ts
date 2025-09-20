@@ -1,4 +1,4 @@
-import { Router, Request, Response } from 'express';
+import { Router, type Request, type Response } from 'express';
 import { ClickEventModel } from '../database/models/ClickEvent.js';
 import { AffiliateLinkModel } from '../database/models/AffiliateLink.js';
 import { authenticateToken } from '../middleware/auth.js';
@@ -71,13 +71,14 @@ router.get(
       const queryValidation = analyticsQuerySchema.safeParse(req.query);
 
       if (!dateValidation.success || !queryValidation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'Invalid query parameters',
           details: {
-            date: dateValidation.error?.errors,
-            query: queryValidation.error?.errors,
+            date: dateValidation.error?.issues,
+            query: queryValidation.error?.issues,
           },
         });
+        return;
       }
 
       const { startDate, endDate } = getDateRange(req.query);
@@ -191,13 +192,14 @@ router.get(
       const queryValidation = analyticsQuerySchema.safeParse(req.query);
 
       if (!dateValidation.success || !queryValidation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'Invalid query parameters',
           details: {
-            date: dateValidation.error?.errors,
-            query: queryValidation.error?.errors,
+            date: dateValidation.error?.issues,
+            query: queryValidation.error?.issues,
           },
         });
+        return;
       }
 
       const { startDate, endDate } = getDateRange(req.query);
@@ -277,28 +279,31 @@ router.get(
 
       // Validate linkId format
       if (!z.string().uuid().safeParse(linkId).success) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'Invalid link ID format',
           message: 'Link ID must be a valid UUID.',
         });
+        return;
       }
 
       // Validate query parameters
       const dateValidation = dateRangeSchema.safeParse(req.query);
       if (!dateValidation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'Invalid query parameters',
-          details: dateValidation.error.errors,
+          details: dateValidation.error.issues,
         });
+        return;
       }
 
       // Check if link exists
       const link = await AffiliateLinkModel.findById(linkId);
       if (!link) {
-        return res.status(404).json({
+        res.status(404).json({
           error: 'Link not found',
           message: 'The specified affiliate link does not exist.',
         });
+        return;
       }
 
       const { startDate, endDate } = getDateRange(req.query);
@@ -389,10 +394,11 @@ router.get(
       // Validate query parameters
       const dateValidation = dateRangeSchema.safeParse(req.query);
       if (!dateValidation.success) {
-        return res.status(400).json({
+        res.status(400).json({
           error: 'Invalid query parameters',
-          details: dateValidation.error.errors,
+          details: dateValidation.error.issues,
         });
+        return;
       }
 
       const { startDate, endDate } = getDateRange(req.query);
@@ -434,8 +440,8 @@ router.get(
       const clicksTrend =
         previousPeriodClicks > 0
           ? ((currentPeriodClicks - previousPeriodClicks) /
-              previousPeriodClicks) *
-            100
+            previousPeriodClicks) *
+          100
           : 0;
 
       // Get link performance categories
