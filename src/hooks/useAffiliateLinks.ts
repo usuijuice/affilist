@@ -3,6 +3,7 @@ import { affiliateLinksApi } from '../services';
 import type { GetLinksParams } from '../services';
 import type { AffiliateLink, FilterState } from '../types';
 import { useAppState } from './useAppState';
+import { getErrorMessage, isNetworkError, shouldRetry, getRetryDelay } from '../utils/apiErrorHandler';
 
 export interface UseAffiliateLinksOptions {
   autoFetch?: boolean;
@@ -82,7 +83,7 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
         setAffiliateLinks(newLinks);
         setLoading(false);
       } else {
-        const errorMessage = response?.error?.message || 'Failed to fetch affiliate links';
+        const errorMessage = getErrorMessage(response, 'Failed to fetch affiliate links');
         setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
         setError(errorMessage);
         onError?.(errorMessage);
@@ -92,7 +93,7 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
         return; // Request was cancelled
       }
 
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      const errorMessage = getErrorMessage(error, 'Failed to fetch affiliate links');
       setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
       setError(errorMessage);
       setLoading(false);

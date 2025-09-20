@@ -36,3 +36,9 @@ export { SessionWarning } from './SessionWarning';
 export { AdminDashboard } from './AdminDashboard';
 export { LinkForm } from './LinkForm';
 export { LinkManagementTable } from './LinkManagementTable';
+
+// Utility components
+export { LoadingSpinner, LoadingOverlay, InlineLoading } from './LoadingSpinner';
+export { ErrorBoundary, useErrorHandler } from './ErrorBoundary';
+export { ToastProvider, useToast } from './Toast';
+export { ConfirmDialog, useConfirmDialog } from './ConfirmDialog';

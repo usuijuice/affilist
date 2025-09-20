@@ -22,6 +22,7 @@ export {
 } from './useClickTracking';
 
 export { useSessionManagement } from './useSessionManagement';
+export { useAdminOperations } from './useAdminOperations';
 
 // Export types
 export type { UseAffiliateLinksOptions, UseAffiliateLinksReturn } from './useAffiliateLinks';

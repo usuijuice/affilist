@@ -6,6 +6,9 @@ export * from './validation'
 // Helper functions
 export * from './helpers'
 
+// API error handling utilities
+export * from './apiErrorHandler'
+
 // Legacy utility functions (keeping for compatibility)
 export const formatDate = (date: Date): string => {
   return new Intl.DateTimeFormat('en-US', {

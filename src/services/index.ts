@@ -21,3 +21,4 @@ export { clickTrackingService, ClickTrackingService, ClickAnalytics } from './cl
 export type { ClickTrackingData, SessionData, ClickTrackingConfig } from '../types';
 
 export { authService } from './authService';
+export { notificationService } from './notificationService';

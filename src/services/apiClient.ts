@@ -2,6 +2,8 @@
  * Base API client with error handling, retry logic, and caching
  */
 
+import { config } from '../config/environment';
+
 export interface ApiError {
   message: string;
   status?: number;
@@ -37,7 +39,7 @@ class ApiClient {
   private readonly DEFAULT_TIMEOUT = 10000; // 10 seconds
   private readonly DEFAULT_RETRIES = 3;
 
-  constructor(baseUrl: string = '/api') {
+  constructor(baseUrl: string = config.apiBaseUrl) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = {
       'Content-Type': 'application/json',
