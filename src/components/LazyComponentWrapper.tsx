@@ -7,10 +7,10 @@ interface LazyComponentWrapperProps {
   children: React.ReactNode;
 }
 
-export function LazyComponentWrapper({ 
-  fallback, 
+export function LazyComponentWrapper({
+  fallback,
   className = '',
-  children 
+  children,
 }: LazyComponentWrapperProps) {
   const defaultFallback = (
     <div className={`flex items-center justify-center p-8 ${className}`}>
@@ -18,11 +18,7 @@ export function LazyComponentWrapper({
     </div>
   );
 
-  return (
-    <Suspense fallback={fallback || defaultFallback}>
-      {children}
-    </Suspense>
-  );
+  return <Suspense fallback={fallback || defaultFallback}>{children}</Suspense>;
 }
 
 // Higher-order component for lazy loading
@@ -55,15 +51,17 @@ export function useLazyComponent<T>(
       try {
         setLoading(true);
         setError(null);
-        
+
         const module = await importFn();
-        
+
         if (!cancelled) {
           setComponent(module.default);
         }
       } catch (err) {
         if (!cancelled) {
-          setError(err instanceof Error ? err : new Error('Failed to load component'));
+          setError(
+            err instanceof Error ? err : new Error('Failed to load component')
+          );
         }
       } finally {
         if (!cancelled) {

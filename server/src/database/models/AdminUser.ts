@@ -1,29 +1,39 @@
 import { db } from '../connection.js';
-import type { 
-  AdminUser, 
-  CreateAdminUserInput, 
+import type {
+  AdminUser,
+  CreateAdminUserInput,
   UpdateAdminUserInput,
   PaginationOptions,
-  PaginatedResult 
+  PaginatedResult,
 } from './types.js';
 
 export class AdminUserModel {
-  static async findAll(options: PaginationOptions = {}): Promise<PaginatedResult<Omit<AdminUser, 'password_hash'>>> {
-    const { limit = 20, offset = 0, sort_by = 'created_at', sort_order = 'DESC' } = options;
-    
+  static async findAll(
+    options: PaginationOptions = {}
+  ): Promise<PaginatedResult<Omit<AdminUser, 'password_hash'>>> {
+    const {
+      limit = 20,
+      offset = 0,
+      sort_by = 'created_at',
+      sort_order = 'DESC',
+    } = options;
+
     const countQuery = 'SELECT COUNT(*) as total FROM admin_users';
     const countResult = await db.query(countQuery);
     const total = parseInt(countResult.rows[0].total);
-    
+
     const query = `
       SELECT id, email, name, role, last_login, created_at, updated_at
       FROM admin_users 
       ORDER BY ${sort_by} ${sort_order}
       LIMIT $1 OFFSET $2
     `;
-    
-    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, [limit, offset]);
-    
+
+    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, [
+      limit,
+      offset,
+    ]);
+
     return {
       data: result.rows,
       total,
@@ -33,13 +43,17 @@ export class AdminUserModel {
     };
   }
 
-  static async findById(id: string): Promise<Omit<AdminUser, 'password_hash'> | null> {
+  static async findById(
+    id: string
+  ): Promise<Omit<AdminUser, 'password_hash'> | null> {
     const query = `
       SELECT id, email, name, role, last_login, created_at, updated_at
       FROM admin_users 
       WHERE id = $1
     `;
-    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, [id]);
+    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, [
+      id,
+    ]);
     return result.rows[0] || null;
   }
 
@@ -49,35 +63,47 @@ export class AdminUserModel {
     return result.rows[0] || null;
   }
 
-  static async findByEmailWithoutPassword(email: string): Promise<Omit<AdminUser, 'password_hash'> | null> {
+  static async findByEmailWithoutPassword(
+    email: string
+  ): Promise<Omit<AdminUser, 'password_hash'> | null> {
     const query = `
       SELECT id, email, name, role, last_login, created_at, updated_at
       FROM admin_users 
       WHERE email = $1
     `;
-    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, [email]);
+    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, [
+      email,
+    ]);
     return result.rows[0] || null;
   }
 
-  static async create(input: CreateAdminUserInput): Promise<Omit<AdminUser, 'password_hash'>> {
+  static async create(
+    input: CreateAdminUserInput
+  ): Promise<Omit<AdminUser, 'password_hash'>> {
     const query = `
       INSERT INTO admin_users (email, name, password_hash, role)
       VALUES ($1, $2, $3, $4)
       RETURNING id, email, name, role, last_login, created_at, updated_at
     `;
-    
+
     const values = [
       input.email,
       input.name,
       input.password_hash,
       input.role || 'editor',
     ];
-    
-    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, values);
+
+    const result = await db.query<Omit<AdminUser, 'password_hash'>>(
+      query,
+      values
+    );
     return result.rows[0];
   }
 
-  static async update(id: string, input: UpdateAdminUserInput): Promise<Omit<AdminUser, 'password_hash'> | null> {
+  static async update(
+    id: string,
+    input: UpdateAdminUserInput
+  ): Promise<Omit<AdminUser, 'password_hash'> | null> {
     const fields: string[] = [];
     const values: any[] = [];
     let paramCount = 1;
@@ -115,7 +141,10 @@ export class AdminUserModel {
       RETURNING id, email, name, role, last_login, created_at, updated_at
     `;
 
-    const result = await db.query<Omit<AdminUser, 'password_hash'>>(query, values);
+    const result = await db.query<Omit<AdminUser, 'password_hash'>>(
+      query,
+      values
+    );
     return result.rows[0] || null;
   }
 

@@ -7,7 +7,10 @@ export class TestSetup {
   async loginAsAdmin() {
     await this.page.goto('/admin/login');
     await this.page.fill('[data-testid="email-input"]', testAdminUser.email);
-    await this.page.fill('[data-testid="password-input"]', testAdminUser.password);
+    await this.page.fill(
+      '[data-testid="password-input"]',
+      testAdminUser.password
+    );
     await this.page.click('[data-testid="login-button"]');
     await expect(this.page).toHaveURL('/admin/dashboard');
   }
@@ -21,7 +24,7 @@ export class TestSetup {
   }
 
   async mockApiResponse(url: string | RegExp, response: any) {
-    await this.page.route(url, async route => {
+    await this.page.route(url, async (route) => {
       await route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -31,7 +34,7 @@ export class TestSetup {
   }
 
   async mockApiError(url: string | RegExp, status: number = 500) {
-    await this.page.route(url, async route => {
+    await this.page.route(url, async (route) => {
       await route.fulfill({
         status,
         contentType: 'application/json',
@@ -53,7 +56,7 @@ export class TestSetup {
       tablet: { width: 768, height: 1024 },
       desktop: { width: 1280, height: 720 },
     };
-    
+
     await this.page.setViewportSize(viewports[device]);
   }
 
@@ -79,7 +82,9 @@ export class TestSetup {
   }
 
   async expectToastMessage(message: string) {
-    await expect(this.page.locator('[data-testid="toast"]')).toContainText(message);
+    await expect(this.page.locator('[data-testid="toast"]')).toContainText(
+      message
+    );
   }
 
   async expectErrorMessage(selector: string, message: string) {

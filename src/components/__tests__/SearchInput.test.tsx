@@ -16,9 +16,16 @@ describe('SearchInput', () => {
   });
 
   it('renders with custom placeholder', () => {
-    render(<SearchInput onSearch={mockOnSearch} placeholder="Search affiliate links..." />);
+    render(
+      <SearchInput
+        onSearch={mockOnSearch}
+        placeholder="Search affiliate links..."
+      />
+    );
 
-    expect(screen.getByPlaceholderText('Search affiliate links...')).toBeInTheDocument();
+    expect(
+      screen.getByPlaceholderText('Search affiliate links...')
+    ).toBeInTheDocument();
   });
 
   it('renders with initial value', () => {
@@ -40,9 +47,12 @@ describe('SearchInput', () => {
     expect(mockOnSearch).not.toHaveBeenCalled();
 
     // Should call after debounce delay
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith('test');
-    }, { timeout: 200 });
+    await waitFor(
+      () => {
+        expect(mockOnSearch).toHaveBeenCalledWith('test');
+      },
+      { timeout: 200 }
+    );
   });
 
   it('debounces multiple rapid changes', async () => {
@@ -60,10 +70,13 @@ describe('SearchInput', () => {
     fireEvent.change(input, { target: { value: 'test' } });
 
     // Should only call once with final value
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledTimes(1);
-      expect(mockOnSearch).toHaveBeenCalledWith('test');
-    }, { timeout: 200 });
+    await waitFor(
+      () => {
+        expect(mockOnSearch).toHaveBeenCalledTimes(1);
+        expect(mockOnSearch).toHaveBeenCalledWith('test');
+      },
+      { timeout: 200 }
+    );
   });
 
   it('shows clear button when there is text', () => {
@@ -93,9 +106,12 @@ describe('SearchInput', () => {
     expect(input).toHaveValue('');
 
     // Should call onSearch with empty string after debounce
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith('');
-    }, { timeout: 100 });
+    await waitFor(
+      () => {
+        expect(mockOnSearch).toHaveBeenCalledWith('');
+      },
+      { timeout: 100 }
+    );
   });
 
   it('shows result count when enabled', () => {
@@ -162,7 +178,9 @@ describe('SearchInput', () => {
     const input = screen.getByRole('textbox');
     expect(input).toHaveAttribute('aria-label', 'Search');
 
-    const searchIcon = screen.getByRole('textbox').parentElement?.querySelector('svg');
+    const searchIcon = screen
+      .getByRole('textbox')
+      .parentElement?.querySelector('svg');
     expect(searchIcon).toHaveAttribute('aria-hidden', 'true');
   });
 
@@ -174,19 +192,31 @@ describe('SearchInput', () => {
     // Test with only whitespace
     fireEvent.change(input, { target: { value: '   ' } });
 
-    await waitFor(() => {
-      // Should eventually be called with whitespace after debounce
-      const calls = mockOnSearch.mock.calls;
-      const hasWhitespaceCall = calls.some(call => call[0] === '   ');
-      expect(hasWhitespaceCall).toBe(true);
-    }, { timeout: 150 });
+    await waitFor(
+      () => {
+        // Should eventually be called with whitespace after debounce
+        const calls = mockOnSearch.mock.calls;
+        const hasWhitespaceCall = calls.some((call) => call[0] === '   ');
+        expect(hasWhitespaceCall).toBe(true);
+      },
+      { timeout: 150 }
+    );
   });
 
   it('calls onSearch with initial value on mount', async () => {
-    render(<SearchInput onSearch={mockOnSearch} initialValue="initial" debounceDelay={50} />);
+    render(
+      <SearchInput
+        onSearch={mockOnSearch}
+        initialValue="initial"
+        debounceDelay={50}
+      />
+    );
 
-    await waitFor(() => {
-      expect(mockOnSearch).toHaveBeenCalledWith('initial');
-    }, { timeout: 100 });
+    await waitFor(
+      () => {
+        expect(mockOnSearch).toHaveBeenCalledWith('initial');
+      },
+      { timeout: 100 }
+    );
   });
 });

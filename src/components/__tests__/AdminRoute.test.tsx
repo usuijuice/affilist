@@ -2,7 +2,12 @@ import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { AdminRoute, AdminOnlyRoute, EditorRoute, withAdminRoute } from '../AdminRoute';
+import {
+  AdminRoute,
+  AdminOnlyRoute,
+  EditorRoute,
+  withAdminRoute,
+} from '../AdminRoute';
 import { useAuth } from '../../contexts/AuthContext';
 import type { AdminUser, AuthState } from '../../types';
 
@@ -16,7 +21,11 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     Navigate: ({ to, state }: { to: string; state?: any }) => (
-      <div data-testid="navigate" data-to={to} data-state={JSON.stringify(state)}>
+      <div
+        data-testid="navigate"
+        data-to={to}
+        data-state={JSON.stringify(state)}
+      >
         Navigate to {to}
       </div>
     ),
@@ -49,11 +58,12 @@ describe('AdminRoute', () => {
     vi.clearAllMocks();
   });
 
-  const renderWithRouter = (component: React.ReactElement, initialEntries = ['/']) => {
+  const renderWithRouter = (
+    component: React.ReactElement,
+    initialEntries = ['/']
+  ) => {
     return render(
-      <MemoryRouter initialEntries={initialEntries}>
-        {component}
-      </MemoryRouter>
+      <MemoryRouter initialEntries={initialEntries}>{component}</MemoryRouter>
     );
   };
 
@@ -101,7 +111,9 @@ describe('AdminRoute', () => {
       );
 
       expect(screen.getByText('Admin Content')).toBeInTheDocument();
-      expect(screen.queryByText('Affiliate Link Admin')).not.toBeInTheDocument(); // No admin layout
+      expect(
+        screen.queryByText('Affiliate Link Admin')
+      ).not.toBeInTheDocument(); // No admin layout
     });
 
     it('should redirect when not authenticated', () => {

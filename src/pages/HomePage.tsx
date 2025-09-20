@@ -17,7 +17,7 @@ export function HomePage() {
     // Simulate API call
     setTimeout(() => {
       const newLinks = createMockAffiliateLinks(4);
-      setLinks(prev => [...prev, ...newLinks]);
+      setLinks((prev) => [...prev, ...newLinks]);
       setLoading(false);
       // Simulate reaching end after a few loads
       if (links.length > 16) {
@@ -34,11 +34,12 @@ export function HomePage() {
             Discover the Best Affiliate Links
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Find trusted services and opportunities across various categories. 
-            Start earning commissions with our curated collection of affiliate links.
+            Find trusted services and opportunities across various categories.
+            Start earning commissions with our curated collection of affiliate
+            links.
           </p>
         </div>
-        
+
         {/* Demo of the new AffiliateLinkGrid component */}
         <AffiliateLinkGrid
           links={links}

@@ -2,7 +2,6 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import { vi } from 'vitest';
 import { SortControls } from '../SortControls';
 
-
 describe('SortControls', () => {
   const mockOnSortChange = vi.fn();
 
@@ -12,10 +11,7 @@ describe('SortControls', () => {
 
   it('renders all sort options', () => {
     render(
-      <SortControls
-        sortBy="popularity"
-        onSortChange={mockOnSortChange}
-      />
+      <SortControls sortBy="popularity" onSortChange={mockOnSortChange} />
     );
 
     expect(screen.getByText('Sort By')).toBeInTheDocument();
@@ -30,12 +26,7 @@ describe('SortControls', () => {
   });
 
   it('shows selected sort option as checked', () => {
-    render(
-      <SortControls
-        sortBy="newest"
-        onSortChange={mockOnSortChange}
-      />
-    );
+    render(<SortControls sortBy="newest" onSortChange={mockOnSortChange} />);
 
     const radioButtons = screen.getAllByRole('radio', { hidden: true });
     expect(radioButtons[0]).not.toBeChecked(); // Most Popular
@@ -46,10 +37,7 @@ describe('SortControls', () => {
 
   it('calls onSortChange when option is selected', () => {
     render(
-      <SortControls
-        sortBy="popularity"
-        onSortChange={mockOnSortChange}
-      />
+      <SortControls sortBy="popularity" onSortChange={mockOnSortChange} />
     );
 
     fireEvent.click(screen.getByText('Highest Commission'));
@@ -59,17 +47,14 @@ describe('SortControls', () => {
 
   it('handles all sort options correctly', () => {
     const { rerender } = render(
-      <SortControls
-        sortBy="popularity"
-        onSortChange={mockOnSortChange}
-      />
+      <SortControls sortBy="popularity" onSortChange={mockOnSortChange} />
     );
 
     const optionLabels = {
       popularity: 'Most Popular',
       newest: 'Newest',
       commission: 'Highest Commission',
-      alphabetical: 'A-Z'
+      alphabetical: 'A-Z',
     };
 
     // Test newest
@@ -85,12 +70,7 @@ describe('SortControls', () => {
     expect(mockOnSortChange).toHaveBeenNthCalledWith(3, 'alphabetical');
 
     // Test popularity by re-rendering with different selected value first
-    rerender(
-      <SortControls
-        sortBy="newest"
-        onSortChange={mockOnSortChange}
-      />
-    );
+    rerender(<SortControls sortBy="newest" onSortChange={mockOnSortChange} />);
 
     fireEvent.click(screen.getByText(optionLabels.popularity));
     expect(mockOnSortChange).toHaveBeenNthCalledWith(4, 'popularity');
@@ -110,14 +90,11 @@ describe('SortControls', () => {
 
   it('has proper radio button grouping', () => {
     render(
-      <SortControls
-        sortBy="popularity"
-        onSortChange={mockOnSortChange}
-      />
+      <SortControls sortBy="popularity" onSortChange={mockOnSortChange} />
     );
 
     const radioButtons = screen.getAllByRole('radio', { hidden: true });
-    
+
     // All radio buttons should have the same name attribute for proper grouping
     radioButtons.forEach((radio) => {
       expect(radio).toHaveAttribute('name', 'sort');
@@ -126,32 +103,28 @@ describe('SortControls', () => {
 
   it('has proper accessibility structure', () => {
     render(
-      <SortControls
-        sortBy="popularity"
-        onSortChange={mockOnSortChange}
-      />
+      <SortControls sortBy="popularity" onSortChange={mockOnSortChange} />
     );
 
     // Check that each option has proper label structure
     const popularityLabel = screen.getByText('Most Popular').closest('label');
     expect(popularityLabel).toBeInTheDocument();
-    
+
     const newestLabel = screen.getByText('Newest').closest('label');
     expect(newestLabel).toBeInTheDocument();
   });
 
   it('shows correct visual state for selected option', () => {
     render(
-      <SortControls
-        sortBy="commission"
-        onSortChange={mockOnSortChange}
-      />
+      <SortControls sortBy="commission" onSortChange={mockOnSortChange} />
     );
 
     // Find the commission option's radio button container
-    const commissionLabel = screen.getByText('Highest Commission').closest('label');
+    const commissionLabel = screen
+      .getByText('Highest Commission')
+      .closest('label');
     const radioContainer = commissionLabel?.querySelector('div > div');
-    
+
     expect(radioContainer).toHaveClass('bg-blue-600', 'border-blue-600');
   });
 });

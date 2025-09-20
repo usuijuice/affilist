@@ -68,8 +68,8 @@ class APICache {
   }
 
   set<T>(
-    url: string, 
-    data: T, 
+    url: string,
+    data: T,
     options: {
       params?: Record<string, any>;
       ttl?: number;
@@ -98,7 +98,7 @@ class APICache {
   }
 
   get<T>(
-    url: string, 
+    url: string,
     params?: Record<string, any>
   ): { data: T; isStale: boolean } | null {
     const key = this.generateKey(url, params);
@@ -236,16 +236,22 @@ export async function cachedFetch<T>(
     }
 
     // Return stale data while revalidating in background
-    if (cached && cached.isStale && apiCache.defaultConfig.staleWhileRevalidate) {
+    if (
+      cached &&
+      cached.isStale &&
+      apiCache.defaultConfig.staleWhileRevalidate
+    ) {
       console.log(`[Cache] Stale hit, revalidating: ${url}`);
-      
+
       // Revalidate in background
       cachedFetch(url, { ...options, useCache: false })
-        .then(freshData => {
+        .then((freshData) => {
           apiCache.set(url, freshData, { params, ttl: cacheTTL });
         })
-        .catch(error => {
-          console.warn(`[Cache] Background revalidation failed: ${error.message}`);
+        .catch((error) => {
+          console.warn(
+            `[Cache] Background revalidation failed: ${error.message}`
+          );
         });
 
       return cached.data;
@@ -257,7 +263,7 @@ export async function cachedFetch<T>(
   // Fetch from network
   try {
     const response = await fetch(url, fetchOptions);
-    
+
     if (!response.ok) {
       throw new Error(`HTTP ${response.status}: ${response.statusText}`);
     }
@@ -268,7 +274,7 @@ export async function cachedFetch<T>(
     if (useCache) {
       const etag = response.headers.get('etag') || undefined;
       const lastModified = response.headers.get('last-modified') || undefined;
-      
+
       apiCache.set(url, data, {
         params,
         ttl: cacheTTL,
@@ -314,7 +320,7 @@ export function useCachedAPI<T>(
     try {
       setLoading(true);
       setError(null);
-      
+
       const result = await cachedFetch<T>(url, { params, cacheTTL });
       setData(result);
     } catch (err) {
@@ -374,12 +380,15 @@ export function invalidateCachePattern(pattern: RegExp): number {
 
 // Auto cleanup expired entries every 10 minutes
 if (typeof window !== 'undefined') {
-  setInterval(() => {
-    const removed = cleanupExpiredCache();
-    if (removed > 0) {
-      console.log(`[Cache] Cleaned up ${removed} expired entries`);
-    }
-  }, 10 * 60 * 1000);
+  setInterval(
+    () => {
+      const removed = cleanupExpiredCache();
+      if (removed > 0) {
+        console.log(`[Cache] Cleaned up ${removed} expired entries`);
+      }
+    },
+    10 * 60 * 1000
+  );
 }
 
 // Export types

@@ -23,7 +23,7 @@ export function FilterPanel({
   onFiltersChange,
   onClearFilters,
   hasActiveFilters,
-  className = ''
+  className = '',
 }: FilterPanelProps) {
   const [isMobileOpen, setIsMobileOpen] = useState(false);
 
@@ -60,7 +60,10 @@ export function FilterPanel({
       {/* Mobile overlay */}
       {isMobileOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
-          <div className="fixed inset-0 bg-black bg-opacity-25" onClick={() => setIsMobileOpen(false)} />
+          <div
+            className="fixed inset-0 bg-black bg-opacity-25"
+            onClick={() => setIsMobileOpen(false)}
+          />
           <div className="fixed inset-y-0 right-0 max-w-xs w-full bg-white shadow-xl overflow-y-auto">
             <div className="p-4 border-b border-gray-200">
               <div className="flex items-center justify-between">
@@ -69,8 +72,18 @@ export function FilterPanel({
                   onClick={() => setIsMobileOpen(false)}
                   className="p-2 text-gray-400 hover:text-gray-600"
                 >
-                  <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  <svg
+                    className="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
@@ -126,15 +139,9 @@ export function FilterPanel({
           onCategoryChange={onCategoryChange}
         />
 
-        <SortControls
-          sortBy={filters.sortBy}
-          onSortChange={onSortChange}
-        />
+        <SortControls sortBy={filters.sortBy} onSortChange={onSortChange} />
 
-        <AdvancedFilters
-          filters={filters}
-          onFiltersChange={onFiltersChange}
-        />
+        <AdvancedFilters filters={filters} onFiltersChange={onFiltersChange} />
       </div>
     </>
   );

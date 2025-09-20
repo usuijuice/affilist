@@ -103,7 +103,7 @@ describe('ApiClient', () => {
     it('should make successful POST request', async () => {
       const requestData = { name: 'New Item' };
       const responseData = { id: 1, name: 'New Item' };
-      
+
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: () => Promise.resolve(responseData),
@@ -156,7 +156,7 @@ describe('ApiClient', () => {
         method: 'GET',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: undefined,
         signal: expect.any(AbortSignal),
@@ -196,10 +196,10 @@ describe('ApiClient', () => {
         });
 
       const responsePromise = apiClient.get('/test');
-      
+
       // Fast-forward timers to trigger retry
       await vi.runAllTimersAsync();
-      
+
       const response = await responsePromise;
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -221,10 +221,10 @@ describe('ApiClient', () => {
         });
 
       const responsePromise = apiClient.get('/test');
-      
+
       // Fast-forward timers to trigger retry
       await vi.runAllTimersAsync();
-      
+
       const response = await responsePromise;
 
       expect(mockFetch).toHaveBeenCalledTimes(2);
@@ -249,10 +249,10 @@ describe('ApiClient', () => {
       mockFetch.mockRejectedValue(new TypeError('Network error'));
 
       const responsePromise = apiClient.get('/test', { retries: 2 });
-      
+
       // Fast-forward timers to trigger retries
       await vi.runAllTimersAsync();
-      
+
       const response = await responsePromise;
 
       expect(mockFetch).toHaveBeenCalledTimes(3); // Initial + 2 retries
@@ -271,10 +271,10 @@ describe('ApiClient', () => {
       // Make cached request
       await apiClient.get('/test1');
       await apiClient.get('/test2');
-      
+
       // Clear cache
       apiClient.clearCache();
-      
+
       // Should make new requests
       await apiClient.get('/test1');
       await apiClient.get('/test2');
@@ -292,10 +292,10 @@ describe('ApiClient', () => {
       // Make cached requests
       await apiClient.get('/test1');
       await apiClient.get('/test2');
-      
+
       // Clear cache for specific endpoint
       apiClient.clearCacheForEndpoint('/test1');
-      
+
       // test1 should make new request, test2 should use cache
       await apiClient.get('/test1');
       await apiClient.get('/test2');
@@ -306,14 +306,19 @@ describe('ApiClient', () => {
 
   describe('Timeout handling', () => {
     it('should timeout requests', async () => {
-      mockFetch.mockImplementation(() => 
-        new Promise((resolve) => {
-          // Simulate a slow request that will be aborted
-          setTimeout(() => resolve({
-            ok: true,
-            json: () => Promise.resolve({ data: 'slow response' }),
-          }), 2000);
-        })
+      mockFetch.mockImplementation(
+        () =>
+          new Promise((resolve) => {
+            // Simulate a slow request that will be aborted
+            setTimeout(
+              () =>
+                resolve({
+                  ok: true,
+                  json: () => Promise.resolve({ data: 'slow response' }),
+                }),
+              2000
+            );
+          })
       );
 
       const response = await apiClient.get('/test', { timeout: 100 });

@@ -56,7 +56,7 @@ describe('Database Connection', () => {
         const res = await client.query('SELECT 1 as value');
         return res.rows[0].value;
       });
-      
+
       expect(result).toBe(1);
     });
 

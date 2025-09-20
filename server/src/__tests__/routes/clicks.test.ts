@@ -53,7 +53,7 @@ describe('Clicks Routes', () => {
   beforeEach(async () => {
     app = createApp();
     vi.clearAllMocks();
-    
+
     // Clear rate limiting map between tests
     const { clickRateLimit } = await import('../../routes/clicks.js');
     clickRateLimit.clear();
@@ -97,7 +97,9 @@ describe('Clicks Routes', () => {
         session_id: clickData.session_id,
         country_code: clickData.country_code,
       });
-      expect(AffiliateLinkModel.incrementClickCount).toHaveBeenCalledWith(testLinkId);
+      expect(AffiliateLinkModel.incrementClickCount).toHaveBeenCalledWith(
+        testLinkId
+      );
     });
 
     it('should record click with minimal data', async () => {
@@ -163,7 +165,9 @@ describe('Clicks Routes', () => {
         message: 'The specified affiliate link does not exist.',
       });
 
-      expect(AffiliateLinkModel.exists).toHaveBeenCalledWith('123e4567-e89b-12d3-a456-426614174000');
+      expect(AffiliateLinkModel.exists).toHaveBeenCalledWith(
+        '123e4567-e89b-12d3-a456-426614174000'
+      );
       expect(ClickEventModel.create).not.toHaveBeenCalled();
     });
 
@@ -191,10 +195,7 @@ describe('Clicks Routes', () => {
         referrer: '',
       };
 
-      await request(app)
-        .post('/api/clicks')
-        .send(clickData)
-        .expect(201);
+      await request(app).post('/api/clicks').send(clickData).expect(201);
     });
 
     it('should validate country_code length', async () => {
@@ -221,16 +222,16 @@ describe('Clicks Routes', () => {
       };
 
       // Make multiple requests quickly to trigger rate limit
-      const requests = Array(12).fill(null).map(() =>
-        request(app).post('/api/clicks').send(clickData)
-      );
+      const requests = Array(12)
+        .fill(null)
+        .map(() => request(app).post('/api/clicks').send(clickData));
 
       const responses = await Promise.all(requests);
-      
+
       // Some requests should succeed, others should be rate limited
-      const successCount = responses.filter(r => r.status === 201).length;
-      const rateLimitedCount = responses.filter(r => r.status === 429).length;
-      
+      const successCount = responses.filter((r) => r.status === 201).length;
+      const rateLimitedCount = responses.filter((r) => r.status === 429).length;
+
       expect(successCount).toBeLessThanOrEqual(10); // Rate limit is 10 per minute
       expect(rateLimitedCount).toBeGreaterThan(0);
     });
@@ -238,7 +239,9 @@ describe('Clicks Routes', () => {
 
   describe('GET /api/redirect/:linkId', () => {
     it('should redirect to affiliate URL and track click', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(ClickEventModel.create).mockResolvedValue(mockClickEvent);
       vi.mocked(AffiliateLinkModel.incrementClickCount).mockResolvedValue();
 
@@ -248,7 +251,9 @@ describe('Clicks Routes', () => {
         .set('Referer', 'https://test.com')
         .expect(302);
 
-      expect(response.headers.location).toBe('https://affiliate.example.com/ref123');
+      expect(response.headers.location).toBe(
+        'https://affiliate.example.com/ref123'
+      );
 
       expect(AffiliateLinkModel.findById).toHaveBeenCalledWith(testLinkId);
       expect(ClickEventModel.create).toHaveBeenCalledWith({
@@ -259,16 +264,20 @@ describe('Clicks Routes', () => {
         session_id: expect.any(String),
         country_code: undefined,
       });
-      expect(AffiliateLinkModel.incrementClickCount).toHaveBeenCalledWith(testLinkId);
+      expect(AffiliateLinkModel.incrementClickCount).toHaveBeenCalledWith(
+        testLinkId
+      );
     });
 
     it('should redirect with session_id query parameter', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(ClickEventModel.create).mockResolvedValue(mockClickEvent);
       vi.mocked(AffiliateLinkModel.incrementClickCount).mockResolvedValue();
 
       const sessionId = 'custom-session-123';
-      
+
       await request(app)
         .get(`/api/redirect/${testLinkId}?session_id=${sessionId}`)
         .expect(302);
@@ -284,12 +293,14 @@ describe('Clicks Routes', () => {
     });
 
     it('should redirect with country query parameter', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(ClickEventModel.create).mockResolvedValue(mockClickEvent);
       vi.mocked(AffiliateLinkModel.incrementClickCount).mockResolvedValue();
 
       const country = 'CA';
-      
+
       await request(app)
         .get(`/api/redirect/${testLinkId}?country=${country}`)
         .expect(302);
@@ -319,7 +330,7 @@ describe('Clicks Routes', () => {
       vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(null);
 
       const nonExistentId = '123e4567-e89b-12d3-a456-426614174000';
-      
+
       const response = await request(app)
         .get(`/api/redirect/${nonExistentId}`)
         .expect(404);
@@ -334,7 +345,9 @@ describe('Clicks Routes', () => {
     });
 
     it('should return 410 for inactive link', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockInactiveLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockInactiveLink
+      );
 
       const response = await request(app)
         .get(`/api/redirect/${inactiveLinkId}`)
@@ -350,34 +363,42 @@ describe('Clicks Routes', () => {
     });
 
     it('should still redirect even if click tracking fails', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
-      vi.mocked(ClickEventModel.create).mockRejectedValue(new Error('Database error'));
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
+      vi.mocked(ClickEventModel.create).mockRejectedValue(
+        new Error('Database error')
+      );
       vi.mocked(AffiliateLinkModel.incrementClickCount).mockResolvedValue();
 
       const response = await request(app)
         .get(`/api/redirect/${testLinkId}`)
         .expect(302);
 
-      expect(response.headers.location).toBe('https://affiliate.example.com/ref123');
+      expect(response.headers.location).toBe(
+        'https://affiliate.example.com/ref123'
+      );
       expect(ClickEventModel.create).toHaveBeenCalled();
     });
 
     it('should handle rate limiting for redirects', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(ClickEventModel.create).mockResolvedValue(mockClickEvent);
       vi.mocked(AffiliateLinkModel.incrementClickCount).mockResolvedValue();
 
       // Make multiple redirect requests quickly
-      const requests = Array(12).fill(null).map(() =>
-        request(app).get(`/api/redirect/${testLinkId}`)
-      );
+      const requests = Array(12)
+        .fill(null)
+        .map(() => request(app).get(`/api/redirect/${testLinkId}`));
 
       const responses = await Promise.all(requests);
-      
+
       // Some requests should succeed (302), others should be rate limited (429)
-      const successCount = responses.filter(r => r.status === 302).length;
-      const rateLimitedCount = responses.filter(r => r.status === 429).length;
-      
+      const successCount = responses.filter((r) => r.status === 302).length;
+      const rateLimitedCount = responses.filter((r) => r.status === 429).length;
+
       expect(successCount).toBeLessThanOrEqual(10);
       expect(rateLimitedCount).toBeGreaterThan(0);
     });
@@ -390,7 +411,7 @@ describe('Clicks Routes', () => {
       vi.mocked(AffiliateLinkModel.incrementClickCount).mockResolvedValue();
 
       const sessions = ['session-1', 'session-2', 'session-3'];
-      
+
       // Record clicks from different sessions
       for (const sessionId of sessions) {
         await request(app)
@@ -406,7 +427,7 @@ describe('Clicks Routes', () => {
       // Verify all clicks were attempted to be recorded
       expect(ClickEventModel.create).toHaveBeenCalledTimes(3);
       expect(AffiliateLinkModel.incrementClickCount).toHaveBeenCalledTimes(3);
-      
+
       // Verify each session was recorded correctly
       sessions.forEach((sessionId, index) => {
         expect(ClickEventModel.create).toHaveBeenNthCalledWith(index + 1, {

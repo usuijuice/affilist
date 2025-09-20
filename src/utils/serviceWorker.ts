@@ -14,7 +14,9 @@ class ServiceWorkerManager {
     this.config = config;
   }
 
-  async register(swUrl: string = '/sw.js'): Promise<ServiceWorkerRegistration | null> {
+  async register(
+    swUrl: string = '/sw.js'
+  ): Promise<ServiceWorkerRegistration | null> {
     if (!('serviceWorker' in navigator)) {
       console.log('Service Worker not supported');
       return null;
@@ -22,7 +24,7 @@ class ServiceWorkerManager {
 
     try {
       console.log('Registering service worker:', swUrl);
-      
+
       const registration = await navigator.serviceWorker.register(swUrl, {
         scope: '/',
       });
@@ -50,7 +52,10 @@ class ServiceWorkerManager {
       });
 
       // Listen for messages from service worker
-      navigator.serviceWorker.addEventListener('message', this.handleMessage.bind(this));
+      navigator.serviceWorker.addEventListener(
+        'message',
+        this.handleMessage.bind(this)
+      );
 
       console.log('Service Worker registered successfully');
       return registration;
@@ -113,7 +118,7 @@ class ServiceWorkerManager {
 
   private handleMessage(event: MessageEvent): void {
     console.log('Message from service worker:', event.data);
-    
+
     // Handle different message types
     switch (event.data?.type) {
       case 'CACHE_UPDATED':
@@ -163,8 +168,11 @@ export const serviceWorkerManager = new ServiceWorkerManager({
 
 // React hook for service worker
 export function useServiceWorker() {
-  const [isSupported] = React.useState(() => serviceWorkerManager.isSupported());
-  const [registration, setRegistration] = React.useState<ServiceWorkerRegistration | null>(null);
+  const [isSupported] = React.useState(() =>
+    serviceWorkerManager.isSupported()
+  );
+  const [registration, setRegistration] =
+    React.useState<ServiceWorkerRegistration | null>(null);
   const [isOnline, setIsOnline] = React.useState(() => navigator.onLine);
 
   React.useEffect(() => {
@@ -226,9 +234,7 @@ export async function clearCache(): Promise<void> {
 
   try {
     const cacheNames = await caches.keys();
-    await Promise.all(
-      cacheNames.map(cacheName => caches.delete(cacheName))
-    );
+    await Promise.all(cacheNames.map((cacheName) => caches.delete(cacheName)));
     console.log('All caches cleared');
   } catch (error) {
     console.error('Failed to clear caches:', error);

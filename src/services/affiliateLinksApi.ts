@@ -1,10 +1,10 @@
 import { apiClient } from './apiClient';
 import type { ApiResponse } from './apiClient';
-import type { 
-  AffiliateLink, 
-  GetLinksResponse, 
+import type {
+  AffiliateLink,
+  GetLinksResponse,
   CreateLinkRequest,
-  FilterState 
+  FilterState,
 } from '../types';
 
 export interface GetLinksParams {
@@ -25,16 +25,27 @@ export class AffiliateLinksApi {
   /**
    * Get paginated list of affiliate links with filtering and sorting
    */
-  async getLinks(params: GetLinksParams = {}): Promise<ApiResponse<GetLinksResponse>> {
+  async getLinks(
+    params: GetLinksParams = {}
+  ): Promise<ApiResponse<GetLinksResponse>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params.page) searchParams.set('page', params.page.toString());
     if (params.limit) searchParams.set('limit', params.limit.toString());
     if (params.search) searchParams.set('search', params.search);
-    if (params.categories?.length) searchParams.set('categories', params.categories.join(','));
+    if (params.categories?.length)
+      searchParams.set('categories', params.categories.join(','));
     if (params.sortBy) searchParams.set('sortBy', params.sortBy);
-    if (params.commissionRateMin !== undefined) searchParams.set('commissionRateMin', params.commissionRateMin.toString());
-    if (params.commissionRateMax !== undefined) searchParams.set('commissionRateMax', params.commissionRateMax.toString());
+    if (params.commissionRateMin !== undefined)
+      searchParams.set(
+        'commissionRateMin',
+        params.commissionRateMin.toString()
+      );
+    if (params.commissionRateMax !== undefined)
+      searchParams.set(
+        'commissionRateMax',
+        params.commissionRateMax.toString()
+      );
     if (params.featuredOnly) searchParams.set('featuredOnly', 'true');
 
     const endpoint = `/links${searchParams.toString() ? `?${searchParams.toString()}` : ''}`;
@@ -58,21 +69,28 @@ export class AffiliateLinksApi {
   /**
    * Get featured affiliate links
    */
-  async getFeaturedLinks(limit: number = 10): Promise<ApiResponse<AffiliateLink[]>> {
+  async getFeaturedLinks(
+    limit: number = 10
+  ): Promise<ApiResponse<AffiliateLink[]>> {
     return apiClient.get<AffiliateLink[]>(`/links/featured?limit=${limit}`);
   }
 
   /**
    * Get popular affiliate links
    */
-  async getPopularLinks(limit: number = 10): Promise<ApiResponse<AffiliateLink[]>> {
+  async getPopularLinks(
+    limit: number = 10
+  ): Promise<ApiResponse<AffiliateLink[]>> {
     return apiClient.get<AffiliateLink[]>(`/links/popular?limit=${limit}`);
   }
 
   /**
    * Search affiliate links
    */
-  async searchLinks(query: string, filters?: Partial<FilterState>): Promise<ApiResponse<AffiliateLink[]>> {
+  async searchLinks(
+    query: string,
+    filters?: Partial<FilterState>
+  ): Promise<ApiResponse<AffiliateLink[]>> {
     const params: GetLinksParams = {
       search: query,
       categories: filters?.categories,
@@ -95,7 +113,9 @@ export class AffiliateLinksApi {
   /**
    * Record a click event for tracking
    */
-  async recordClick(linkId: string): Promise<ApiResponse<{ success: boolean }>> {
+  async recordClick(
+    linkId: string
+  ): Promise<ApiResponse<{ success: boolean }>> {
     return apiClient.post<{ success: boolean }>('/clicks', { linkId });
   }
 
@@ -111,14 +131,19 @@ export class AffiliateLinksApi {
   /**
    * Create a new affiliate link (admin only)
    */
-  async createLink(linkData: CreateLinkRequest): Promise<ApiResponse<AffiliateLink>> {
+  async createLink(
+    linkData: CreateLinkRequest
+  ): Promise<ApiResponse<AffiliateLink>> {
     return apiClient.post<AffiliateLink>('/admin/links', linkData);
   }
 
   /**
    * Update an existing affiliate link (admin only)
    */
-  async updateLink(id: string, linkData: Partial<CreateLinkRequest>): Promise<ApiResponse<AffiliateLink>> {
+  async updateLink(
+    id: string,
+    linkData: Partial<CreateLinkRequest>
+  ): Promise<ApiResponse<AffiliateLink>> {
     return apiClient.put<AffiliateLink>(`/admin/links/${id}`, linkData);
   }
 
@@ -132,17 +157,24 @@ export class AffiliateLinksApi {
   /**
    * Bulk update affiliate links (admin only)
    */
-  async bulkUpdateLinks(updates: Array<{ id: string; data: Partial<CreateLinkRequest> }>): Promise<ApiResponse<AffiliateLink[]>> {
+  async bulkUpdateLinks(
+    updates: Array<{ id: string; data: Partial<CreateLinkRequest> }>
+  ): Promise<ApiResponse<AffiliateLink[]>> {
     return apiClient.put<AffiliateLink[]>('/admin/links/bulk', { updates });
   }
 
   /**
    * Bulk delete affiliate links (admin only)
    */
-  async bulkDeleteLinks(ids: string[]): Promise<ApiResponse<{ success: boolean; deletedCount: number }>> {
-    return apiClient.delete<{ success: boolean; deletedCount: number }>('/admin/links/bulk', {
-      body: { ids },
-    });
+  async bulkDeleteLinks(
+    ids: string[]
+  ): Promise<ApiResponse<{ success: boolean; deletedCount: number }>> {
+    return apiClient.delete<{ success: boolean; deletedCount: number }>(
+      '/admin/links/bulk',
+      {
+        body: { ids },
+      }
+    );
   }
 }
 

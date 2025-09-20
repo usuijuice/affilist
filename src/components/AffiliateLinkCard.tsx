@@ -11,12 +11,17 @@ interface AffiliateLinkCardProps {
   searchQuery?: string;
 }
 
-export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQuery = '' }: AffiliateLinkCardProps) {
+export function AffiliateLinkCard({
+  link,
+  onLinkClick,
+  featured = false,
+  searchQuery = '',
+}: AffiliateLinkCardProps) {
   const { trackClick } = useClickTracking();
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    
+
     // Track the click with metadata
     await trackClick(link.id, {
       title: link.title,
@@ -28,10 +33,10 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
       clickSource: 'card',
       timestamp: new Date().toISOString(),
     });
-    
+
     // Call the parent's click handler
     onLinkClick(link.id);
-    
+
     // Open the affiliate URL in a new tab
     window.open(link.affiliateUrl, '_blank', 'noopener,noreferrer');
   };
@@ -95,7 +100,9 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
           <div className="w-full h-full flex items-center justify-center bg-gray-200">
             <div className="text-center">
               <div className="text-4xl mb-2">{link.category.icon || '🔗'}</div>
-              <div className="text-gray-500 text-sm font-medium">{link.category.name}</div>
+              <div className="text-gray-500 text-sm font-medium">
+                {link.category.name}
+              </div>
             </div>
           </div>
         )}
@@ -125,7 +132,10 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
         {/* Description */}
         <p className="text-gray-600 text-sm mb-3 line-clamp-3">
           {searchQuery ? (
-            <HighlightedText text={link.description} searchQuery={searchQuery} />
+            <HighlightedText
+              text={link.description}
+              searchQuery={searchQuery}
+            />
           ) : (
             link.description
           )}
@@ -166,7 +176,7 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
             )}
             <span>{formatClickCount(link.clickCount)}</span>
           </div>
-          
+
           {/* External link indicator */}
           <div className="flex items-center text-blue-500">
             <span className="text-xs mr-1">Visit</span>

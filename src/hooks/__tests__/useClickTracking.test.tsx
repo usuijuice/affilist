@@ -1,6 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
-import { useClickTracking, useClickAnalytics, usePageTracking, useInteractionTracking } from '../useClickTracking';
+import {
+  useClickTracking,
+  useClickAnalytics,
+  usePageTracking,
+  useInteractionTracking,
+} from '../useClickTracking';
 import { clickTrackingService } from '../../services/clickTrackingService';
 
 // Mock the click tracking service
@@ -41,8 +46,12 @@ describe('useClickTracking', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    (clickTrackingService.getSessionData as any).mockReturnValue(mockSessionData);
-    (clickTrackingService.getSessionAnalytics as any).mockReturnValue(mockSessionAnalytics);
+    (clickTrackingService.getSessionData as any).mockReturnValue(
+      mockSessionData
+    );
+    (clickTrackingService.getSessionAnalytics as any).mockReturnValue(
+      mockSessionAnalytics
+    );
     (clickTrackingService.trackClick as any).mockResolvedValue(undefined);
   });
 
@@ -62,7 +71,9 @@ describe('useClickTracking', () => {
       await result.current.trackClick('link-123', { category: 'test' });
     });
 
-    expect(clickTrackingService.trackClick).toHaveBeenCalledWith('link-123', { category: 'test' });
+    expect(clickTrackingService.trackClick).toHaveBeenCalledWith('link-123', {
+      category: 'test',
+    });
     expect(result.current.error).toBeNull();
   });
 
@@ -110,7 +121,9 @@ describe('useClickTracking', () => {
 
   it('should enable debug logging', async () => {
     const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
-    const { result } = renderHook(() => useClickTracking({ enableDebug: true }));
+    const { result } = renderHook(() =>
+      useClickTracking({ enableDebug: true })
+    );
 
     await act(async () => {
       await result.current.trackClick('link-123', { test: true });
@@ -126,7 +139,7 @@ describe('useClickTracking', () => {
 
   it('should update session data periodically', async () => {
     vi.useFakeTimers();
-    
+
     const { result } = renderHook(() => useClickTracking());
 
     // Initial session data
@@ -134,7 +147,9 @@ describe('useClickTracking', () => {
 
     // Update mock data
     const updatedSessionData = { ...mockSessionData, clickCount: 10 };
-    (clickTrackingService.getSessionData as any).mockReturnValue(updatedSessionData);
+    (clickTrackingService.getSessionData as any).mockReturnValue(
+      updatedSessionData
+    );
 
     // Fast-forward timer
     act(() => {
@@ -162,7 +177,9 @@ describe('useClickAnalytics', () => {
 describe('usePageTracking', () => {
   it('should track page views on mount', () => {
     const mockTrackClick = vi.fn();
-    vi.mocked(clickTrackingService.trackClick).mockImplementation(mockTrackClick);
+    vi.mocked(clickTrackingService.trackClick).mockImplementation(
+      mockTrackClick
+    );
 
     renderHook(() => usePageTracking('home', { section: 'hero' }));
 
@@ -176,18 +193,26 @@ describe('usePageTracking', () => {
 
   it('should track new page when pageName changes', () => {
     const mockTrackClick = vi.fn();
-    vi.mocked(clickTrackingService.trackClick).mockImplementation(mockTrackClick);
+    vi.mocked(clickTrackingService.trackClick).mockImplementation(
+      mockTrackClick
+    );
 
     const { rerender } = renderHook(
       ({ pageName }) => usePageTracking(pageName),
       { initialProps: { pageName: 'home' } }
     );
 
-    expect(mockTrackClick).toHaveBeenCalledWith('page:home', expect.any(Object));
+    expect(mockTrackClick).toHaveBeenCalledWith(
+      'page:home',
+      expect.any(Object)
+    );
 
     rerender({ pageName: 'about' });
 
-    expect(mockTrackClick).toHaveBeenCalledWith('page:about', expect.any(Object));
+    expect(mockTrackClick).toHaveBeenCalledWith(
+      'page:about',
+      expect.any(Object)
+    );
     expect(mockTrackClick).toHaveBeenCalledTimes(2);
   });
 });
@@ -197,14 +222,18 @@ describe('useInteractionTracking', () => {
 
   beforeEach(() => {
     mockTrackClick = vi.fn();
-    vi.mocked(clickTrackingService.trackClick).mockImplementation(mockTrackClick);
+    vi.mocked(clickTrackingService.trackClick).mockImplementation(
+      mockTrackClick
+    );
   });
 
   it('should track generic interactions', () => {
     const { result } = renderHook(() => useInteractionTracking());
 
     act(() => {
-      result.current.trackInteraction('button_click', 'submit-btn', { form: 'contact' });
+      result.current.trackInteraction('button_click', 'submit-btn', {
+        form: 'contact',
+      });
     });
 
     expect(mockTrackClick).toHaveBeenCalledWith('interaction:button_click', {

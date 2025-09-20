@@ -19,12 +19,13 @@ const nodeEnv = getEnvVar('MODE', 'development');
 
 export const config: EnvironmentConfig = {
   // API base URL - defaults to localhost:3001 in development
-  apiBaseUrl: getEnvVar('VITE_API_BASE_URL', 
-    nodeEnv === 'production' 
+  apiBaseUrl: getEnvVar(
+    'VITE_API_BASE_URL',
+    nodeEnv === 'production'
       ? '/api' // Use relative path in production (same domain)
       : 'http://localhost:3001/api' // Full URL in development
   ),
-  
+
   // Environment flags
   isDevelopment: nodeEnv === 'development',
   isProduction: nodeEnv === 'production',

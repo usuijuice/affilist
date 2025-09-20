@@ -1,4 +1,8 @@
-import type { ClickTrackingData, SessionData, ClickTrackingConfig } from '../types';
+import type {
+  ClickTrackingData,
+  SessionData,
+  ClickTrackingConfig,
+} from '../types';
 import { apiClient } from './apiClient';
 
 /**
@@ -45,7 +49,10 @@ export class ClickTrackingService {
     window.addEventListener('offline', this.handleOffline.bind(this));
 
     // Listen for page visibility changes
-    document.addEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
+    document.addEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange.bind(this)
+    );
 
     // Listen for beforeunload to flush remaining data
     window.addEventListener('beforeunload', this.handleBeforeUnload.bind(this));
@@ -100,7 +107,10 @@ export class ClickTrackingService {
    * Get stored session from localStorage
    */
   private getStoredSession(): SessionData | null {
-    if (!this.config.enableLocalStorage || typeof localStorage === 'undefined') {
+    if (
+      !this.config.enableLocalStorage ||
+      typeof localStorage === 'undefined'
+    ) {
       return null;
     }
 
@@ -125,12 +135,19 @@ export class ClickTrackingService {
    * Store session data to localStorage
    */
   private storeSession(): void {
-    if (!this.config.enableLocalStorage || !this.sessionData || typeof localStorage === 'undefined') {
+    if (
+      !this.config.enableLocalStorage ||
+      !this.sessionData ||
+      typeof localStorage === 'undefined'
+    ) {
       return;
     }
 
     try {
-      localStorage.setItem('clickTracking_session', JSON.stringify(this.sessionData));
+      localStorage.setItem(
+        'clickTracking_session',
+        JSON.stringify(this.sessionData)
+      );
     } catch (error) {
       console.warn('Failed to store session data:', error);
     }
@@ -139,13 +156,16 @@ export class ClickTrackingService {
   /**
    * Track a click event
    */
-  public async trackClick(linkId: string, metadata?: Record<string, any>): Promise<void> {
+  public async trackClick(
+    linkId: string,
+    metadata?: Record<string, any>
+  ): Promise<void> {
     if (!this.config.enableTracking || !this.sessionData) {
       return;
     }
 
     const now = new Date();
-    
+
     // Update session activity
     this.sessionData.lastActivity = now;
     this.sessionData.clickCount++;
@@ -206,13 +226,16 @@ export class ClickTrackingService {
 
       if (!response.success) {
         // Re-queue failed clicks if offline or server error
-        if (!this.isOnline || (response.error?.status && response.error.status >= 500)) {
+        if (
+          !this.isOnline ||
+          (response.error?.status && response.error.status >= 500)
+        ) {
           this.clickQueue.unshift(...clicksToSend);
         }
       }
     } catch (error) {
       console.warn('Failed to send click data:', error);
-      
+
       // Re-queue clicks if network error
       if (!this.isOnline) {
         this.clickQueue.unshift(...clicksToSend);
@@ -293,7 +316,9 @@ export class ClickTrackingService {
 
     return {
       sessionId: this.sessionData.sessionId,
-      duration: this.sessionData.lastActivity.getTime() - this.sessionData.startTime.getTime(),
+      duration:
+        this.sessionData.lastActivity.getTime() -
+        this.sessionData.startTime.getTime(),
       clickCount: this.sessionData.clickCount,
       startTime: this.sessionData.startTime,
       lastActivity: this.sessionData.lastActivity,
@@ -316,7 +341,7 @@ export class ClickTrackingService {
    */
   public updateConfig(newConfig: Partial<ClickTrackingConfig>): void {
     this.config = { ...this.config, ...newConfig };
-    
+
     if (!this.config.enableTracking) {
       this.destroy();
     } else {
@@ -340,8 +365,14 @@ export class ClickTrackingService {
     // Remove event listeners
     window.removeEventListener('online', this.handleOnline.bind(this));
     window.removeEventListener('offline', this.handleOffline.bind(this));
-    document.removeEventListener('visibilitychange', this.handleVisibilityChange.bind(this));
-    window.removeEventListener('beforeunload', this.handleBeforeUnload.bind(this));
+    document.removeEventListener(
+      'visibilitychange',
+      this.handleVisibilityChange.bind(this)
+    );
+    window.removeEventListener(
+      'beforeunload',
+      this.handleBeforeUnload.bind(this)
+    );
   }
 }
 
@@ -442,11 +473,18 @@ export class ClickAnalytics {
     }
 
     const totalDuration = sessions.reduce((sum, session) => {
-      return sum + (session.lastActivity.getTime() - session.startTime.getTime());
+      return (
+        sum + (session.lastActivity.getTime() - session.startTime.getTime())
+      );
     }, 0);
 
-    const totalClicks = sessions.reduce((sum, session) => sum + session.clickCount, 0);
-    const bouncedSessions = sessions.filter(session => session.clickCount === 0).length;
+    const totalClicks = sessions.reduce(
+      (sum, session) => sum + session.clickCount,
+      0
+    );
+    const bouncedSessions = sessions.filter(
+      (session) => session.clickCount === 0
+    ).length;
 
     return {
       averageSessionDuration: totalDuration / sessions.length,

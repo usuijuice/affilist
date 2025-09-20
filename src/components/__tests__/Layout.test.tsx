@@ -20,7 +20,7 @@ describe('Layout', () => {
   it('renders header, main content, and footer', () => {
     render(
       <RouterWrapper>
-        <Layout 
+        <Layout
           categories={mockCategories}
           onSearch={mockOnSearch}
           searchQuery=""
@@ -32,11 +32,11 @@ describe('Layout', () => {
 
     // Header should be present (check for brand - there are multiple instances)
     expect(screen.getAllByText('Affiliate Links').length).toBeGreaterThan(0);
-    
+
     // Main content should be rendered
     expect(screen.getByTestId('main-content')).toBeInTheDocument();
     expect(screen.getByText('Test Content')).toBeInTheDocument();
-    
+
     // Footer should be present (check for copyright)
     expect(screen.getByText(/All rights reserved/)).toBeInTheDocument();
   });
@@ -44,7 +44,7 @@ describe('Layout', () => {
   it('passes search props to header correctly', () => {
     render(
       <RouterWrapper>
-        <Layout 
+        <Layout
           categories={mockCategories}
           onSearch={mockOnSearch}
           searchQuery="test search"
@@ -61,7 +61,7 @@ describe('Layout', () => {
   it('passes categories to footer correctly', () => {
     render(
       <RouterWrapper>
-        <Layout 
+        <Layout
           categories={mockCategories}
           onSearch={mockOnSearch}
           searchQuery=""
@@ -72,7 +72,7 @@ describe('Layout', () => {
     );
 
     // Categories should be displayed in footer
-    mockCategories.slice(0, 6).forEach(category => {
+    mockCategories.slice(0, 6).forEach((category) => {
       expect(screen.getByText(category.name)).toBeInTheDocument();
     });
   });
@@ -102,7 +102,12 @@ describe('Layout', () => {
 
     // Check for proper CSS classes on the main container
     const layoutContainer = container.firstChild as HTMLElement;
-    expect(layoutContainer).toHaveClass('min-h-screen', 'bg-gray-50', 'flex', 'flex-col');
+    expect(layoutContainer).toHaveClass(
+      'min-h-screen',
+      'bg-gray-50',
+      'flex',
+      'flex-col'
+    );
   });
 
   it('renders main element with flex-1 class for proper layout', () => {

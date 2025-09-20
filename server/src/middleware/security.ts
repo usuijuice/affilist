@@ -32,16 +32,20 @@ export const securityHeaders = helmet({
       defaultSrc: ["'self'"],
       styleSrc: ["'self'", "'unsafe-inline'"],
       scriptSrc: ["'self'"],
-      imgSrc: ["'self'", "data:", "https:"],
+      imgSrc: ["'self'", 'data:', 'https:'],
     },
   },
   crossOriginEmbedderPolicy: false,
 });
 
 // Request logging middleware
-export const requestLogger = (req: Request, res: Response, next: NextFunction): void => {
+export const requestLogger = (
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void => {
   const start = Date.now();
-  
+
   res.on('finish', () => {
     const duration = Date.now() - start;
     const logData = {
@@ -52,13 +56,13 @@ export const requestLogger = (req: Request, res: Response, next: NextFunction): 
       ip: req.ip,
       userAgent: req.get('User-Agent'),
     };
-    
+
     if (res.statusCode >= 400) {
       logger.warn('HTTP Request', logData);
     } else {
       logger.info('HTTP Request', logData);
     }
   });
-  
+
   next();
 };

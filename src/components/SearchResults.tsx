@@ -8,7 +8,12 @@ interface SearchResultsProps {
   loading?: boolean;
 }
 
-export function SearchResults({ links, searchQuery, onLinkClick, loading = false }: SearchResultsProps) {
+export function SearchResults({
+  links,
+  searchQuery,
+  onLinkClick,
+  loading = false,
+}: SearchResultsProps) {
   if (loading) {
     return (
       <div className="flex justify-center items-center py-12">
@@ -31,7 +36,9 @@ export function SearchResults({ links, searchQuery, onLinkClick, loading = false
             />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">No results found</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">
+          No results found
+        </h3>
         <p className="text-gray-600 mb-4">
           We couldn't find any affiliate links matching "{searchQuery}".
         </p>

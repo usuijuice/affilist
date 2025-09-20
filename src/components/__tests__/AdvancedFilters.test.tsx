@@ -11,7 +11,7 @@ describe('AdvancedFilters', () => {
     commissionRateMax: undefined,
     featuredOnly: false,
     searchQuery: '',
-    sortBy: 'popularity'
+    sortBy: 'popularity',
   };
 
   beforeEach(() => {
@@ -50,7 +50,7 @@ describe('AdvancedFilters', () => {
       ...defaultFilters,
       commissionRateMin: 5,
       commissionRateMax: 25,
-      featuredOnly: true
+      featuredOnly: true,
     };
 
     render(
@@ -97,7 +97,7 @@ describe('AdvancedFilters', () => {
     const filtersWithValues: FilterState = {
       ...defaultFilters,
       commissionRateMin: 5,
-      commissionRateMax: 25
+      commissionRateMax: 25,
     };
 
     render(
@@ -110,7 +110,9 @@ describe('AdvancedFilters', () => {
     const minInput = screen.getByLabelText('Minimum');
     fireEvent.change(minInput, { target: { value: '' } });
 
-    expect(mockOnFiltersChange).toHaveBeenCalledWith({ commissionRateMin: undefined });
+    expect(mockOnFiltersChange).toHaveBeenCalledWith({
+      commissionRateMin: undefined,
+    });
   });
 
   it('handles invalid commission rate inputs', () => {
@@ -146,7 +148,7 @@ describe('AdvancedFilters', () => {
       ...defaultFilters,
       commissionRateMin: 5,
       commissionRateMax: 25,
-      featuredOnly: true
+      featuredOnly: true,
     };
 
     render(
@@ -166,7 +168,7 @@ describe('AdvancedFilters', () => {
     const filtersWithRange: FilterState = {
       ...defaultFilters,
       commissionRateMin: 10,
-      commissionRateMax: 30
+      commissionRateMax: 30,
     };
 
     render(
@@ -176,14 +178,16 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    expect(screen.getByText('Showing 10% - 30% commission')).toBeInTheDocument();
+    expect(
+      screen.getByText('Showing 10% - 30% commission')
+    ).toBeInTheDocument();
   });
 
   it('shows clear button when filters are active', () => {
     const filtersWithValues: FilterState = {
       ...defaultFilters,
       commissionRateMin: 5,
-      featuredOnly: true
+      featuredOnly: true,
     };
 
     render(
@@ -201,7 +205,7 @@ describe('AdvancedFilters', () => {
       ...defaultFilters,
       commissionRateMin: 5,
       commissionRateMax: 25,
-      featuredOnly: true
+      featuredOnly: true,
     };
 
     render(
@@ -216,7 +220,7 @@ describe('AdvancedFilters', () => {
     expect(mockOnFiltersChange).toHaveBeenCalledWith({
       commissionRateMin: undefined,
       commissionRateMax: undefined,
-      featuredOnly: false
+      featuredOnly: false,
     });
   });
 
@@ -254,7 +258,9 @@ describe('AdvancedFilters', () => {
     const minInput = screen.getByLabelText('Minimum');
     fireEvent.change(minInput, { target: { value: '2.5' } });
 
-    expect(mockOnFiltersChange).toHaveBeenCalledWith({ commissionRateMin: 2.5 });
+    expect(mockOnFiltersChange).toHaveBeenCalledWith({
+      commissionRateMin: 2.5,
+    });
   });
 
   it('prevents negative commission rates', () => {

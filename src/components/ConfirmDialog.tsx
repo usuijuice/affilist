@@ -29,8 +29,9 @@ export function ConfirmDialog({
   if (!isOpen) return null;
 
   const getConfirmButtonClasses = () => {
-    const baseClasses = 'px-4 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
-    
+    const baseClasses =
+      'px-4 py-2 text-sm font-medium rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed';
+
     switch (confirmVariant) {
       case 'danger':
         return `${baseClasses} bg-red-600 text-white hover:bg-red-700 focus:ring-red-500`;
@@ -115,17 +116,13 @@ export function ConfirmDialog({
               )}
             </div>
             <div className="ml-3">
-              <h3 className="text-lg font-medium text-gray-900">
-                {title}
-              </h3>
+              <h3 className="text-lg font-medium text-gray-900">{title}</h3>
             </div>
           </div>
 
           {/* Message */}
           <div className="mb-6">
-            <p className="text-sm text-gray-600">
-              {message}
-            </p>
+            <p className="text-sm text-gray-600">{message}</p>
           </div>
 
           {/* Actions */}
@@ -197,27 +194,30 @@ export function useConfirmDialog() {
     message: '',
   });
 
-  const showConfirm = React.useCallback((options: {
-    title: string;
-    message: string;
-    confirmText?: string;
-    cancelText?: string;
-    confirmVariant?: 'danger' | 'primary' | 'warning';
-    onConfirm: () => void;
-  }) => {
-    setDialogState({
-      ...options,
-      isOpen: true,
-      isLoading: false,
-    });
-  }, []);
+  const showConfirm = React.useCallback(
+    (options: {
+      title: string;
+      message: string;
+      confirmText?: string;
+      cancelText?: string;
+      confirmVariant?: 'danger' | 'primary' | 'warning';
+      onConfirm: () => void;
+    }) => {
+      setDialogState({
+        ...options,
+        isOpen: true,
+        isLoading: false,
+      });
+    },
+    []
+  );
 
   const hideConfirm = React.useCallback(() => {
-    setDialogState(prev => ({ ...prev, isOpen: false }));
+    setDialogState((prev) => ({ ...prev, isOpen: false }));
   }, []);
 
   const setLoading = React.useCallback((loading: boolean) => {
-    setDialogState(prev => ({ ...prev, isLoading: loading }));
+    setDialogState((prev) => ({ ...prev, isLoading: loading }));
   }, []);
 
   const handleConfirm = React.useCallback(async () => {
@@ -235,19 +235,22 @@ export function useConfirmDialog() {
     }
   }, [dialogState.onConfirm, setLoading, hideConfirm]);
 
-  const ConfirmDialogComponent = React.useCallback(() => (
-    <ConfirmDialog
-      isOpen={dialogState.isOpen}
-      title={dialogState.title}
-      message={dialogState.message}
-      confirmText={dialogState.confirmText}
-      cancelText={dialogState.cancelText}
-      confirmVariant={dialogState.confirmVariant}
-      onConfirm={handleConfirm}
-      onCancel={hideConfirm}
-      isLoading={dialogState.isLoading}
-    />
-  ), [dialogState, handleConfirm, hideConfirm]);
+  const ConfirmDialogComponent = React.useCallback(
+    () => (
+      <ConfirmDialog
+        isOpen={dialogState.isOpen}
+        title={dialogState.title}
+        message={dialogState.message}
+        confirmText={dialogState.confirmText}
+        cancelText={dialogState.cancelText}
+        confirmVariant={dialogState.confirmVariant}
+        onConfirm={handleConfirm}
+        onCancel={hideConfirm}
+        isLoading={dialogState.isLoading}
+      />
+    ),
+    [dialogState, handleConfirm, hideConfirm]
+  );
 
   return {
     showConfirm,

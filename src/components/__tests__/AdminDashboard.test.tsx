@@ -40,7 +40,9 @@ vi.mock('../LinkManagementTable', () => ({
             <div key={link.id}>
               <span>{link.title}</span>
               <button onClick={() => onEdit(link)}>Edit {link.title}</button>
-              <button onClick={() => onDelete(link.id)}>Delete {link.title}</button>
+              <button onClick={() => onDelete(link.id)}>
+                Delete {link.title}
+              </button>
             </div>
           ))}
         </div>
@@ -55,15 +57,17 @@ vi.mock('../LinkForm', () => ({
       <h2>{link ? 'Edit Link' : 'Create Link'}</h2>
       {isLoading && <div>Form Loading...</div>}
       <button
-        onClick={() => onSubmit({
-          title: 'Test Link',
-          description: 'Test Description',
-          url: 'https://example.com',
-          affiliateUrl: 'https://affiliate.example.com',
-          categoryId: '1',
-          tags: ['test'],
-          featured: false,
-        })}
+        onClick={() =>
+          onSubmit({
+            title: 'Test Link',
+            description: 'Test Description',
+            url: 'https://example.com',
+            affiliateUrl: 'https://affiliate.example.com',
+            categoryId: '1',
+            tags: ['test'],
+            featured: false,
+          })
+        }
       >
         Submit
       </button>
@@ -87,7 +91,14 @@ const mockLinks: AffiliateLink[] = [
     description: 'Test description 1',
     url: 'https://example1.com',
     affiliateUrl: 'https://affiliate1.example.com',
-    category: { id: '1', name: 'Web Development', slug: 'web-dev', description: '', color: '#3B82F6', linkCount: 1 },
+    category: {
+      id: '1',
+      name: 'Web Development',
+      slug: 'web-dev',
+      description: '',
+      color: '#3B82F6',
+      linkCount: 1,
+    },
     tags: ['web', 'development'],
     imageUrl: 'https://example1.com/logo.png',
     commissionRate: 5.5,
@@ -103,7 +114,14 @@ const mockLinks: AffiliateLink[] = [
     description: 'Test description 2',
     url: 'https://example2.com',
     affiliateUrl: 'https://affiliate2.example.com',
-    category: { id: '2', name: 'Design Tools', slug: 'design', description: '', color: '#EF4444', linkCount: 1 },
+    category: {
+      id: '2',
+      name: 'Design Tools',
+      slug: 'design',
+      description: '',
+      color: '#EF4444',
+      linkCount: 1,
+    },
     tags: ['design'],
     featured: false,
     clickCount: 50,
@@ -116,7 +134,7 @@ const mockLinks: AffiliateLink[] = [
 describe('AdminDashboard', () => {
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     vi.mocked(useAuth).mockReturnValue({
       user: mockUser,
       token: 'mock-token',
@@ -200,7 +218,7 @@ describe('AdminDashboard', () => {
 
   it('handles link creation', async () => {
     const user = userEvent.setup();
-    
+
     vi.mocked(affiliateLinksApi.createLink).mockResolvedValue({
       success: true,
       data: mockLinks[0],
@@ -238,7 +256,7 @@ describe('AdminDashboard', () => {
 
   it('handles link editing', async () => {
     const user = userEvent.setup();
-    
+
     vi.mocked(affiliateLinksApi.updateLink).mockResolvedValue({
       success: true,
       data: { ...mockLinks[0], title: 'Updated Link' },
@@ -280,7 +298,7 @@ describe('AdminDashboard', () => {
 
   it('handles link deletion', async () => {
     const user = userEvent.setup();
-    
+
     vi.mocked(affiliateLinksApi.deleteLink).mockResolvedValue({
       success: true,
       data: { success: true },
@@ -328,14 +346,18 @@ describe('AdminDashboard', () => {
   });
 
   it('displays error state when API fails', async () => {
-    vi.mocked(affiliateLinksApi.getAllLinks).mockRejectedValue(new Error('API Error'));
+    vi.mocked(affiliateLinksApi.getAllLinks).mockRejectedValue(
+      new Error('API Error')
+    );
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
     render(<AdminDashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText('An error occurred while loading data')).toBeInTheDocument();
+      expect(
+        screen.getByText('An error occurred while loading data')
+      ).toBeInTheDocument();
     });
 
     expect(screen.getByText('Try Again')).toBeInTheDocument();
@@ -346,7 +368,10 @@ describe('AdminDashboard', () => {
   it('shows loading state', async () => {
     // Mock a delayed response
     vi.mocked(affiliateLinksApi.getAllLinks).mockImplementation(
-      () => new Promise(resolve => setTimeout(() => resolve({ success: true, data: mockLinks }), 100))
+      () =>
+        new Promise((resolve) =>
+          setTimeout(() => resolve({ success: true, data: mockLinks }), 100)
+        )
     );
 
     render(<AdminDashboard />);
@@ -369,14 +394,18 @@ describe('AdminDashboard', () => {
     // Should show recent links
     expect(screen.getByText('Test Link 1')).toBeInTheDocument();
     expect(screen.getByText('Test Link 2')).toBeInTheDocument();
-    expect(screen.getByText('Web Development • 100 clicks')).toBeInTheDocument();
+    expect(
+      screen.getByText('Web Development • 100 clicks')
+    ).toBeInTheDocument();
     expect(screen.getByText('Design Tools • 50 clicks')).toBeInTheDocument();
   });
 
   it('handles API errors during link operations', async () => {
     const user = userEvent.setup();
-    
-    vi.mocked(affiliateLinksApi.createLink).mockRejectedValue(new Error('Create failed'));
+
+    vi.mocked(affiliateLinksApi.createLink).mockRejectedValue(
+      new Error('Create failed')
+    );
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
@@ -395,7 +424,9 @@ describe('AdminDashboard', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('An error occurred while creating the link')).toBeInTheDocument();
+      expect(
+        screen.getByText('An error occurred while creating the link')
+      ).toBeInTheDocument();
     });
 
     consoleSpy.mockRestore();

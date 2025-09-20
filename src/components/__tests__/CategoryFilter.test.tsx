@@ -6,9 +6,24 @@ import { createMockCategory } from '../../test/factories';
 describe('CategoryFilter', () => {
   const mockOnCategoryChange = vi.fn();
   const mockCategories = [
-    createMockCategory({ id: 'cat1', name: 'Web Development', linkCount: 5, color: '#3B82F6' }),
-    createMockCategory({ id: 'cat2', name: 'Design', linkCount: 3, color: '#EF4444' }),
-    createMockCategory({ id: 'cat3', name: 'Marketing', linkCount: 8, color: '#10B981' })
+    createMockCategory({
+      id: 'cat1',
+      name: 'Web Development',
+      linkCount: 5,
+      color: '#3B82F6',
+    }),
+    createMockCategory({
+      id: 'cat2',
+      name: 'Design',
+      linkCount: 3,
+      color: '#EF4444',
+    }),
+    createMockCategory({
+      id: 'cat3',
+      name: 'Marketing',
+      linkCount: 8,
+      color: '#10B981',
+    }),
   ];
 
   beforeEach(() => {
@@ -145,12 +160,16 @@ describe('CategoryFilter', () => {
     );
 
     // The "All Categories" checkbox should show indeterminate state
-    const allCategoriesCheckbox = screen.getAllByRole('checkbox', { hidden: true })[0];
+    const allCategoriesCheckbox = screen.getAllByRole('checkbox', {
+      hidden: true,
+    })[0];
     expect(allCategoriesCheckbox).not.toBeChecked();
-    
+
     // Check for indeterminate visual indicator (the small square)
     const container = allCategoriesCheckbox.parentElement;
-    expect(container?.querySelector('.bg-blue-600.rounded-sm')).toBeInTheDocument();
+    expect(
+      container?.querySelector('.bg-blue-600.rounded-sm')
+    ).toBeInTheDocument();
   });
 
   it('applies custom className', () => {
@@ -193,7 +212,7 @@ describe('CategoryFilter', () => {
     // Check that checkboxes have proper labels
     const webDevLabel = screen.getByText('Web Development').closest('label');
     expect(webDevLabel).toBeInTheDocument();
-    
+
     // Check that color indicators are hidden from screen readers
     const colorIndicators = document.querySelectorAll('[aria-hidden="true"]');
     expect(colorIndicators.length).toBeGreaterThan(0);

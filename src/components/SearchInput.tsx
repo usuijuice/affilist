@@ -18,7 +18,7 @@ export function SearchInput({
   className = '',
   showResultCount = false,
   resultCount = 0,
-  initialValue = ''
+  initialValue = '',
 }: SearchInputProps) {
   const [searchQuery, setSearchQuery] = useState(initialValue);
   const debouncedSearchQuery = useDebounce(searchQuery, debounceDelay);

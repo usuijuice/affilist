@@ -30,9 +30,7 @@ export default defineConfig({
         'docs/',
         'server/',
       ],
-      include: [
-        'src/**/*.{ts,tsx}',
-      ],
+      include: ['src/**/*.{ts,tsx}'],
       thresholds: {
         global: {
           branches: 80,
@@ -72,17 +70,12 @@ export default defineConfig({
       'src/**/*.{test,spec}.{js,ts,tsx}',
       'src/**/__tests__/**/*.{js,ts,tsx}',
     ],
-    exclude: [
-      'node_modules/',
-      'dist/',
-      'e2e/',
-      'server/',
-    ],
+    exclude: ['node_modules/', 'dist/', 'e2e/', 'server/'],
     // Test timeout
     testTimeout: 10000,
     hookTimeout: 10000,
     // Reporters
-    reporter: ['verbose', 'json', 'html'],
+    reporters: ['verbose', 'json', 'html'],
     outputFile: {
       json: './test-results/results.json',
       html: './test-results/index.html',

@@ -13,7 +13,7 @@ describe('Auth Routes', () => {
   beforeEach(async () => {
     // Clear admin_users table
     await db.query('DELETE FROM admin_users');
-    
+
     // Create a test admin user
     const hashedPassword = await bcrypt.hash('testpassword123', 10);
     await AdminUserModel.create({
@@ -31,12 +31,10 @@ describe('Auth Routes', () => {
 
   describe('POST /api/auth/login', () => {
     it('should login with valid credentials', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'admin@test.com',
-          password: 'testpassword123',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        email: 'admin@test.com',
+        password: 'testpassword123',
+      });
 
       expect(response.status).toBe(200);
       expect(response.body.success).toBe(true);
@@ -47,12 +45,10 @@ describe('Auth Routes', () => {
     });
 
     it('should reject invalid email', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'wrong@test.com',
-          password: 'testpassword123',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        email: 'wrong@test.com',
+        password: 'testpassword123',
+      });
 
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
@@ -60,12 +56,10 @@ describe('Auth Routes', () => {
     });
 
     it('should reject invalid password', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'admin@test.com',
-          password: 'wrongpassword',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        email: 'admin@test.com',
+        password: 'wrongpassword',
+      });
 
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
@@ -73,12 +67,10 @@ describe('Auth Routes', () => {
     });
 
     it('should validate email format', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'invalid-email',
-          password: 'testpassword123',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        email: 'invalid-email',
+        password: 'testpassword123',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
@@ -86,11 +78,9 @@ describe('Auth Routes', () => {
     });
 
     it('should require password', async () => {
-      const response = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'admin@test.com',
-        });
+      const response = await request(app).post('/api/auth/login').send({
+        email: 'admin@test.com',
+      });
 
       expect(response.status).toBe(400);
       expect(response.body.success).toBe(false);
@@ -103,12 +93,10 @@ describe('Auth Routes', () => {
 
     beforeEach(async () => {
       // Login to get token
-      const loginResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'admin@test.com',
-          password: 'testpassword123',
-        });
+      const loginResponse = await request(app).post('/api/auth/login').send({
+        email: 'admin@test.com',
+        password: 'testpassword123',
+      });
 
       authToken = loginResponse.body.data.token;
     });
@@ -125,8 +113,7 @@ describe('Auth Routes', () => {
     });
 
     it('should reject missing token', async () => {
-      const response = await request(app)
-        .get('/api/auth/verify');
+      const response = await request(app).get('/api/auth/verify');
 
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
@@ -149,12 +136,10 @@ describe('Auth Routes', () => {
 
     beforeEach(async () => {
       // Login to get token
-      const loginResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'admin@test.com',
-          password: 'testpassword123',
-        });
+      const loginResponse = await request(app).post('/api/auth/login').send({
+        email: 'admin@test.com',
+        password: 'testpassword123',
+      });
 
       authToken = loginResponse.body.data.token;
     });
@@ -172,8 +157,7 @@ describe('Auth Routes', () => {
     });
 
     it('should reject missing token', async () => {
-      const response = await request(app)
-        .post('/api/auth/refresh');
+      const response = await request(app).post('/api/auth/refresh');
 
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
@@ -186,12 +170,10 @@ describe('Auth Routes', () => {
 
     beforeEach(async () => {
       // Login to get token
-      const loginResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'admin@test.com',
-          password: 'testpassword123',
-        });
+      const loginResponse = await request(app).post('/api/auth/login').send({
+        email: 'admin@test.com',
+        password: 'testpassword123',
+      });
 
       authToken = loginResponse.body.data.token;
     });
@@ -207,8 +189,7 @@ describe('Auth Routes', () => {
     });
 
     it('should require authentication', async () => {
-      const response = await request(app)
-        .post('/api/auth/logout');
+      const response = await request(app).post('/api/auth/logout');
 
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);
@@ -221,12 +202,10 @@ describe('Auth Routes', () => {
 
     beforeEach(async () => {
       // Login to get token
-      const loginResponse = await request(app)
-        .post('/api/auth/login')
-        .send({
-          email: 'admin@test.com',
-          password: 'testpassword123',
-        });
+      const loginResponse = await request(app).post('/api/auth/login').send({
+        email: 'admin@test.com',
+        password: 'testpassword123',
+      });
 
       authToken = loginResponse.body.data.token;
     });
@@ -245,8 +224,7 @@ describe('Auth Routes', () => {
     });
 
     it('should require authentication', async () => {
-      const response = await request(app)
-        .get('/api/auth/profile');
+      const response = await request(app).get('/api/auth/profile');
 
       expect(response.status).toBe(401);
       expect(response.body.success).toBe(false);

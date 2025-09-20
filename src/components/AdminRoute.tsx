@@ -12,13 +12,13 @@ interface AdminRouteProps {
   showLayout?: boolean;
 }
 
-export function AdminRoute({ 
-  children, 
+export function AdminRoute({
+  children,
   requiredRole,
   title,
   subtitle,
   fallbackPath = '/admin/login',
-  showLayout = true
+  showLayout = true,
 }: AdminRouteProps) {
   return (
     <ProtectedRoute requiredRole={requiredRole} fallbackPath={fallbackPath}>

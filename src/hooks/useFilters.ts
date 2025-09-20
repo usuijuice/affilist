@@ -8,19 +8,20 @@ const defaultFilters: FilterState = {
   commissionRateMax: undefined,
   featuredOnly: false,
   searchQuery: '',
-  sortBy: 'popularity'
+  sortBy: 'popularity',
 };
 
 export function useFilters() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState<FilterState>(() => {
     // Initialize from URL parameters
-    const categories = searchParams.get('categories')?.split(',').filter(Boolean) || [];
-    const commissionRateMin = searchParams.get('minCommission') 
-      ? parseFloat(searchParams.get('minCommission')!) 
+    const categories =
+      searchParams.get('categories')?.split(',').filter(Boolean) || [];
+    const commissionRateMin = searchParams.get('minCommission')
+      ? parseFloat(searchParams.get('minCommission')!)
       : undefined;
-    const commissionRateMax = searchParams.get('maxCommission') 
-      ? parseFloat(searchParams.get('maxCommission')!) 
+    const commissionRateMax = searchParams.get('maxCommission')
+      ? parseFloat(searchParams.get('maxCommission')!)
       : undefined;
     const featuredOnly = searchParams.get('featured') === 'true';
     const searchQuery = searchParams.get('q') || '';
@@ -28,11 +29,15 @@ export function useFilters() {
 
     return {
       categories,
-      commissionRateMin: isNaN(commissionRateMin!) ? undefined : commissionRateMin,
-      commissionRateMax: isNaN(commissionRateMax!) ? undefined : commissionRateMax,
+      commissionRateMin: isNaN(commissionRateMin!)
+        ? undefined
+        : commissionRateMin,
+      commissionRateMax: isNaN(commissionRateMax!)
+        ? undefined
+        : commissionRateMax,
       featuredOnly,
       searchQuery,
-      sortBy
+      sortBy,
     };
   });
 
@@ -68,20 +73,29 @@ export function useFilters() {
   }, [filters, setSearchParams]);
 
   const updateFilters = useCallback((updates: Partial<FilterState>) => {
-    setFilters(prev => ({ ...prev, ...updates }));
+    setFilters((prev) => ({ ...prev, ...updates }));
   }, []);
 
-  const updateCategories = useCallback((categories: string[]) => {
-    updateFilters({ categories });
-  }, [updateFilters]);
+  const updateCategories = useCallback(
+    (categories: string[]) => {
+      updateFilters({ categories });
+    },
+    [updateFilters]
+  );
 
-  const updateSort = useCallback((sortBy: SortOption) => {
-    updateFilters({ sortBy });
-  }, [updateFilters]);
+  const updateSort = useCallback(
+    (sortBy: SortOption) => {
+      updateFilters({ sortBy });
+    },
+    [updateFilters]
+  );
 
-  const updateSearch = useCallback((searchQuery: string) => {
-    updateFilters({ searchQuery });
-  }, [updateFilters]);
+  const updateSearch = useCallback(
+    (searchQuery: string) => {
+      updateFilters({ searchQuery });
+    },
+    [updateFilters]
+  );
 
   const clearFilters = useCallback(() => {
     setFilters(defaultFilters);
@@ -91,11 +105,11 @@ export function useFilters() {
     updateFilters({
       commissionRateMin: undefined,
       commissionRateMax: undefined,
-      featuredOnly: false
+      featuredOnly: false,
     });
   }, [updateFilters]);
 
-  const hasActiveFilters = 
+  const hasActiveFilters =
     filters.categories.length > 0 ||
     filters.commissionRateMin !== undefined ||
     filters.commissionRateMax !== undefined ||
@@ -103,7 +117,7 @@ export function useFilters() {
     filters.searchQuery.trim() !== '' ||
     filters.sortBy !== 'popularity';
 
-  const hasAdvancedFilters = 
+  const hasAdvancedFilters =
     filters.commissionRateMin !== undefined ||
     filters.commissionRateMax !== undefined ||
     filters.featuredOnly;
@@ -117,6 +131,6 @@ export function useFilters() {
     clearFilters,
     clearAdvancedFilters,
     hasActiveFilters,
-    hasAdvancedFilters
+    hasAdvancedFilters,
   };
 }

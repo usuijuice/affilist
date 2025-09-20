@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 import { execSync } from 'child_process';
-import { existsSync } from 'fs';
 
 interface TestOptions {
   headed?: boolean;
@@ -22,15 +21,15 @@ class TestRunner {
 
   async runTests() {
     console.log('🚀 Starting E2E tests...');
-    
+
     // Check if servers are running
     await this.checkServers();
-    
+
     // Build the command
     const command = this.buildCommand();
-    
+
     console.log(`Running: ${command}`);
-    
+
     try {
       execSync(command, { stdio: 'inherit' });
       console.log('✅ All tests passed!');
@@ -43,12 +42,12 @@ class TestRunner {
   private async checkServers() {
     const frontendRunning = await this.isServerRunning('http://localhost:5173');
     const backendRunning = await this.isServerRunning('http://localhost:3000');
-    
+
     if (!frontendRunning) {
       console.log('⚠️  Frontend server not running. Starting...');
       // In a real scenario, you might want to start the server here
     }
-    
+
     if (!backendRunning) {
       console.log('⚠️  Backend server not running. Starting...');
       // In a real scenario, you might want to start the server here
@@ -66,35 +65,35 @@ class TestRunner {
 
   private buildCommand(): string {
     let command = 'npx playwright test';
-    
+
     if (this.options.headed) {
       command += ' --headed';
     }
-    
+
     if (this.options.debug) {
       command += ' --debug';
     }
-    
+
     if (this.options.ui) {
       command += ' --ui';
     }
-    
+
     if (this.options.project) {
       command += ` --project=${this.options.project}`;
     }
-    
+
     if (this.options.grep) {
       command += ` --grep="${this.options.grep}"`;
     }
-    
+
     if (this.options.reporter) {
       command += ` --reporter=${this.options.reporter}`;
     }
-    
+
     if (this.options.workers) {
       command += ` --workers=${this.options.workers}`;
     }
-    
+
     return command;
   }
 }
@@ -105,7 +104,7 @@ const options: TestOptions = {};
 
 for (let i = 0; i < args.length; i++) {
   const arg = args[i];
-  
+
   switch (arg) {
     case '--headed':
       options.headed = true;

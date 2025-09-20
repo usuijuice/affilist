@@ -38,7 +38,9 @@ describe('Header', () => {
     );
 
     expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /categories/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /categories/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /featured/i })).toBeInTheDocument();
   });
 
@@ -49,7 +51,9 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    const searchInputs = screen.getAllByPlaceholderText('Search affiliate links...');
+    const searchInputs = screen.getAllByPlaceholderText(
+      'Search affiliate links...'
+    );
     expect(searchInputs).toHaveLength(2); // Desktop and mobile versions
   });
 
@@ -60,7 +64,9 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    const searchInput = screen.getAllByPlaceholderText('Search affiliate links...')[0];
+    const searchInput = screen.getAllByPlaceholderText(
+      'Search affiliate links...'
+    )[0];
     fireEvent.change(searchInput, { target: { value: 'test query' } });
 
     expect(mockOnSearch).toHaveBeenCalledWith('test query');
@@ -85,13 +91,13 @@ describe('Header', () => {
     );
 
     const menuButton = screen.getByRole('button', { name: /open main menu/i });
-    
+
     // Initially should only have desktop navigation (1 Home link)
     expect(screen.getAllByText('Home')).toHaveLength(1);
-    
+
     // Click to open menu
     fireEvent.click(menuButton);
-    
+
     // Mobile menu links should now be visible (desktop + mobile = 2 Home links)
     const mobileHomeLinks = screen.getAllByText('Home');
     expect(mobileHomeLinks.length).toBe(2); // Desktop + mobile versions
@@ -105,17 +111,19 @@ describe('Header', () => {
     );
 
     const menuButton = screen.getByRole('button', { name: /open main menu/i });
-    
+
     // Open mobile menu
     fireEvent.click(menuButton);
-    
+
     // Click on a mobile navigation link
     const mobileLinks = screen.getAllByText('Home');
     const mobileHomeLink = mobileLinks[mobileLinks.length - 1]; // Get the mobile version
     fireEvent.click(mobileHomeLink);
-    
+
     // Menu should close (button text should change back)
-    expect(screen.getByRole('button', { name: /open main menu/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /open main menu/i })
+    ).toBeInTheDocument();
   });
 
   it('has proper accessibility attributes', () => {

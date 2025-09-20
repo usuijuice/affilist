@@ -17,9 +17,7 @@ const validateLogin = [
     .isEmail()
     .normalizeEmail()
     .withMessage('Valid email is required'),
-  body('password')
-    .isLength({ min: 1 })
-    .withMessage('Password is required'),
+  body('password').isLength({ min: 1 }).withMessage('Password is required'),
 ];
 
 // Helper function to handle validation errors
@@ -29,7 +27,7 @@ const handleValidationErrors = (req: Request, res: Response): boolean => {
     res.status(400).json({
       success: false,
       error: 'Validation failed',
-      details: errors.array()
+      details: errors.array(),
     });
     return true;
   }
@@ -60,124 +58,144 @@ const createUserResponse = (user: AdminUser) => ({
 });
 
 // POST /api/auth/login - Admin login
-router.post('/login', validateLogin, asyncHandler(async (req: Request, res: Response) => {
-  if (handleValidationErrors(req, res)) return;
+router.post(
+  '/login',
+  validateLogin,
+  asyncHandler(async (req: Request, res: Response) => {
+    if (handleValidationErrors(req, res)) return;
 
-  const { email, password } = req.body;
+    const { email, password } = req.body;
 
-  // Find user by email
-  const user = await AdminUserModel.findByEmail(email);
-  if (!user) {
-    res.status(401).json({
-      success: false,
-      error: 'Invalid email or password'
+    // Find user by email
+    const user = await AdminUserModel.findByEmail(email);
+    if (!user) {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid email or password',
+      });
+      return;
+    }
+
+    // Verify password
+    const isValidPassword = await bcrypt.compare(password, user.password_hash);
+    if (!isValidPassword) {
+      res.status(401).json({
+        success: false,
+        error: 'Invalid email or password',
+      });
+      return;
+    }
+
+    // Update last login timestamp
+    await AdminUserModel.updateLastLogin(user.id);
+
+    // Generate JWT token
+    const token = generateToken(user);
+
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: createUserResponse(user),
+      },
+      message: 'Login successful',
     });
-    return;
-  }
-
-  // Verify password
-  const isValidPassword = await bcrypt.compare(password, user.password_hash);
-  if (!isValidPassword) {
-    res.status(401).json({
-      success: false,
-      error: 'Invalid email or password'
-    });
-    return;
-  }
-
-  // Update last login timestamp
-  await AdminUserModel.updateLastLogin(user.id);
-
-  // Generate JWT token
-  const token = generateToken(user);
-
-  res.json({
-    success: true,
-    data: {
-      token,
-      user: createUserResponse(user),
-    },
-    message: 'Login successful'
-  });
-}));
+  })
+);
 
 // POST /api/auth/logout - Admin logout
-router.post('/logout', authenticateToken, asyncHandler(async (req: Request, res: Response) => {
-  // In a more sophisticated implementation, you might maintain a blacklist of tokens
-  // For now, we'll just return success since JWT tokens are stateless
-  res.json({
-    success: true,
-    message: 'Logout successful'
-  });
-}));
+router.post(
+  '/logout',
+  authenticateToken,
+  asyncHandler(async (req: Request, res: Response) => {
+    // In a more sophisticated implementation, you might maintain a blacklist of tokens
+    // For now, we'll just return success since JWT tokens are stateless
+    res.json({
+      success: true,
+      message: 'Logout successful',
+    });
+  })
+);
 
 // GET /api/auth/verify - Verify token and get current user
-router.get('/verify', authenticateToken, asyncHandler(async (req: Request, res: Response) => {
-  if (!req.user) {
-    res.status(401).json({
-      success: false,
-      error: 'Authentication required'
-    });
-    return;
-  }
-
-  res.json({
-    success: true,
-    data: {
-      user: createUserResponse(req.user),
+router.get(
+  '/verify',
+  authenticateToken,
+  asyncHandler(async (req: Request, res: Response) => {
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        error: 'Authentication required',
+      });
+      return;
     }
-  });
-}));
+
+    res.json({
+      success: true,
+      data: {
+        user: createUserResponse(req.user),
+      },
+    });
+  })
+);
 
 // POST /api/auth/refresh - Refresh JWT token
-router.post('/refresh', authenticateToken, asyncHandler(async (req: Request, res: Response) => {
-  if (!req.user) {
-    res.status(401).json({
-      success: false,
-      error: 'Authentication required'
+router.post(
+  '/refresh',
+  authenticateToken,
+  asyncHandler(async (req: Request, res: Response) => {
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        error: 'Authentication required',
+      });
+      return;
+    }
+
+    // Generate new token
+    const token = generateToken(req.user);
+
+    res.json({
+      success: true,
+      data: {
+        token,
+        user: createUserResponse(req.user),
+      },
+      message: 'Token refreshed successfully',
     });
-    return;
-  }
-
-  // Generate new token
-  const token = generateToken(req.user);
-
-  res.json({
-    success: true,
-    data: {
-      token,
-      user: createUserResponse(req.user),
-    },
-    message: 'Token refreshed successfully'
-  });
-}));
+  })
+);
 
 // GET /api/auth/profile - Get current user profile
-router.get('/profile', authenticateToken, asyncHandler(async (req: Request, res: Response) => {
-  if (!req.user) {
-    res.status(401).json({
-      success: false,
-      error: 'Authentication required'
-    });
-    return;
-  }
-
-  // Get fresh user data from database
-  const user = await AdminUserModel.findById(req.user.id);
-  if (!user) {
-    res.status(404).json({
-      success: false,
-      error: 'User not found'
-    });
-    return;
-  }
-
-  res.json({
-    success: true,
-    data: {
-      user: createUserResponse(user),
+router.get(
+  '/profile',
+  authenticateToken,
+  asyncHandler(async (req: Request, res: Response) => {
+    if (!req.user) {
+      res.status(401).json({
+        success: false,
+        error: 'Authentication required',
+      });
+      return;
     }
-  });
-}));
+
+    // Get fresh user data from database
+    const user = await AdminUserModel.findById(req.user.id);
+    if (!user) {
+      res.status(404).json({
+        success: false,
+        error: 'User not found',
+      });
+      return;
+    }
+
+    res.json({
+      success: true,
+      data: {
+        user: createUserResponse(user),
+      },
+    });
+  })
+);
 
 export { router as authRouter };

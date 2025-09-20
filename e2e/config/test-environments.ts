@@ -18,5 +18,8 @@ export const testEnvironments = {
 
 export const getCurrentEnvironment = () => {
   const env = process.env.NODE_ENV || 'development';
-  return testEnvironments[env as keyof typeof testEnvironments] || testEnvironments.development;
+  return (
+    testEnvironments[env as keyof typeof testEnvironments] ||
+    testEnvironments.development
+  );
 };

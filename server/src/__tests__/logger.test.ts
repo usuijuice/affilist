@@ -38,7 +38,9 @@ describe('Logger', () => {
       logger.error(message, meta);
 
       expect(consoleSpy.error).toHaveBeenCalledWith(
-        expect.stringContaining(`${LogLevel.ERROR}: ${message} ${JSON.stringify(meta)}`)
+        expect.stringContaining(
+          `${LogLevel.ERROR}: ${message} ${JSON.stringify(meta)}`
+        )
       );
     });
   });
@@ -82,7 +84,9 @@ describe('Logger', () => {
       logger.info(message);
 
       const loggedMessage = consoleSpy.info.mock.calls[0][0];
-      expect(loggedMessage).toMatch(/^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\]/);
+      expect(loggedMessage).toMatch(
+        /^\[\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z\]/
+      );
     });
 
     it('should format messages consistently', () => {

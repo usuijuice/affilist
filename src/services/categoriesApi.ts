@@ -59,7 +59,9 @@ export class CategoriesApi {
   /**
    * Get popular categories (by link count)
    */
-  async getPopularCategories(limit: number = 10): Promise<ApiResponse<Category[]>> {
+  async getPopularCategories(
+    limit: number = 10
+  ): Promise<ApiResponse<Category[]>> {
     return apiClient.get<Category[]>(`/categories/popular?limit=${limit}`);
   }
 
@@ -68,14 +70,19 @@ export class CategoriesApi {
   /**
    * Create a new category (admin only)
    */
-  async createCategory(categoryData: CreateCategoryRequest): Promise<ApiResponse<Category>> {
+  async createCategory(
+    categoryData: CreateCategoryRequest
+  ): Promise<ApiResponse<Category>> {
     return apiClient.post<Category>('/admin/categories', categoryData);
   }
 
   /**
    * Update an existing category (admin only)
    */
-  async updateCategory(id: string, categoryData: Partial<CreateCategoryRequest>): Promise<ApiResponse<Category>> {
+  async updateCategory(
+    id: string,
+    categoryData: Partial<CreateCategoryRequest>
+  ): Promise<ApiResponse<Category>> {
     return apiClient.put<Category>(`/admin/categories/${id}`, categoryData);
   }
 
@@ -89,8 +96,12 @@ export class CategoriesApi {
   /**
    * Reorder categories (admin only)
    */
-  async reorderCategories(categoryIds: string[]): Promise<ApiResponse<Category[]>> {
-    return apiClient.put<Category[]>('/admin/categories/reorder', { categoryIds });
+  async reorderCategories(
+    categoryIds: string[]
+  ): Promise<ApiResponse<Category[]>> {
+    return apiClient.put<Category[]>('/admin/categories/reorder', {
+      categoryIds,
+    });
   }
 }
 

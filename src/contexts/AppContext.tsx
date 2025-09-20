@@ -1,18 +1,23 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
 import type { ReactNode } from 'react';
-import type { AffiliateLink, Category, FilterState, SortOption } from '../types';
+import type {
+  AffiliateLink,
+  Category,
+  FilterState,
+  SortOption,
+} from '../types';
 
 // State interface
 export interface AppState {
   // Data
   affiliateLinks: AffiliateLink[];
   categories: Category[];
-  
+
   // UI State
   filters: FilterState;
   loading: boolean;
   error: string | null;
-  
+
   // User preferences (persisted)
   preferences: {
     defaultSortBy: SortOption;
@@ -196,7 +201,9 @@ export function AppProvider({ children }: AppProviderProps) {
 
   // Load preferences from localStorage on mount
   useEffect(() => {
-    const savedPreferences = localStorage.getItem('affiliateAggregatorPreferences');
+    const savedPreferences = localStorage.getItem(
+      'affiliateAggregatorPreferences'
+    );
     if (savedPreferences) {
       try {
         const preferences = JSON.parse(savedPreferences);

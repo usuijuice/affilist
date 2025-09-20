@@ -7,7 +7,12 @@ import { CategoryModel } from '../../database/models/Category.js';
 import { AdminUserModel } from '../../database/models/AdminUser.js';
 import { config } from '../../config/environment.js';
 import type { Express } from 'express';
-import type { AffiliateLink, AdminUser, Category, PaginatedResult } from '../../database/models/types.js';
+import type {
+  AffiliateLink,
+  AdminUser,
+  Category,
+  PaginatedResult,
+} from '../../database/models/types.js';
 
 // Mock the database models
 vi.mock('../../database/models/AffiliateLink.js');
@@ -73,23 +78,33 @@ describe('Admin API Routes', () => {
 
     // Generate test tokens
     adminToken = jwt.sign(
-      { userId: mockAdminUser.id, email: mockAdminUser.email, role: mockAdminUser.role },
+      {
+        userId: mockAdminUser.id,
+        email: mockAdminUser.email,
+        role: mockAdminUser.role,
+      },
       config.jwt.secret,
       { expiresIn: '1h' }
     );
 
     editorToken = jwt.sign(
-      { userId: mockEditorUser.id, email: mockEditorUser.email, role: mockEditorUser.role },
+      {
+        userId: mockEditorUser.id,
+        email: mockEditorUser.email,
+        role: mockEditorUser.role,
+      },
       config.jwt.secret,
       { expiresIn: '1h' }
     );
 
     // Mock AdminUserModel.findById for authentication
-    vi.mocked(AdminUserModel.findById).mockImplementation(async (id: string) => {
-      if (id === mockAdminUser.id) return mockAdminUser;
-      if (id === mockEditorUser.id) return mockEditorUser;
-      return null;
-    });
+    vi.mocked(AdminUserModel.findById).mockImplementation(
+      async (id: string) => {
+        if (id === mockAdminUser.id) return mockAdminUser;
+        if (id === mockEditorUser.id) return mockEditorUser;
+        return null;
+      }
+    );
   });
 
   afterEach(() => {
@@ -98,13 +113,11 @@ describe('Admin API Routes', () => {
 
   describe('Authentication', () => {
     it('should reject requests without token', async () => {
-      const response = await request(app)
-        .get('/api/admin/links')
-        .expect(401);
+      const response = await request(app).get('/api/admin/links').expect(401);
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Access token required'
+        error: 'Access token required',
       });
     });
 
@@ -116,13 +129,17 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid token'
+        error: 'Invalid token',
       });
     });
 
     it('should reject requests with expired token', async () => {
       const expiredToken = jwt.sign(
-        { userId: mockAdminUser.id, email: mockAdminUser.email, role: mockAdminUser.role },
+        {
+          userId: mockAdminUser.id,
+          email: mockAdminUser.email,
+          role: mockAdminUser.role,
+        },
         config.jwt.secret,
         { expiresIn: '-1h' }
       );
@@ -134,13 +151,17 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: expect.stringMatching(/Token expired|Invalid token/)
+        error: expect.stringMatching(/Token expired|Invalid token/),
       });
     });
 
     it('should reject requests for non-existent user', async () => {
       const nonExistentToken = jwt.sign(
-        { userId: 'non-existent-id', email: 'nonexistent@example.com', role: 'admin' },
+        {
+          userId: 'non-existent-id',
+          email: 'nonexistent@example.com',
+          role: 'admin',
+        },
         config.jwt.secret,
         { expiresIn: '1h' }
       );
@@ -152,7 +173,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid token - user not found'
+        error: 'Invalid token - user not found',
       });
     });
   });
@@ -167,7 +188,9 @@ describe('Admin API Routes', () => {
         has_more: false,
       };
 
-      vi.mocked(AffiliateLinkModel.findAll).mockResolvedValue(mockPaginatedResult);
+      vi.mocked(AffiliateLinkModel.findAll).mockResolvedValue(
+        mockPaginatedResult
+      );
 
       const response = await request(app)
         .get('/api/admin/links')
@@ -181,9 +204,9 @@ describe('Admin API Routes', () => {
             id: mockAffiliateLink.id,
             title: mockAffiliateLink.title,
             status: mockAffiliateLink.status,
-          })
+          }),
         ]),
-        pagination: expect.any(Object)
+        pagination: expect.any(Object),
       });
     });
 
@@ -196,7 +219,9 @@ describe('Admin API Routes', () => {
         has_more: false,
       };
 
-      vi.mocked(AffiliateLinkModel.findAll).mockResolvedValue(mockPaginatedResult);
+      vi.mocked(AffiliateLinkModel.findAll).mockResolvedValue(
+        mockPaginatedResult
+      );
 
       await request(app)
         .get('/api/admin/links')
@@ -213,7 +238,9 @@ describe('Admin API Routes', () => {
         has_more: false,
       };
 
-      vi.mocked(AffiliateLinkModel.findAll).mockResolvedValue(mockPaginatedResult);
+      vi.mocked(AffiliateLinkModel.findAll).mockResolvedValue(
+        mockPaginatedResult
+      );
 
       await request(app)
         .get('/api/admin/links?status=active&limit=10&sort_by=title')
@@ -224,7 +251,7 @@ describe('Admin API Routes', () => {
         { status: 'active' },
         expect.objectContaining({
           limit: 10,
-          sort_by: 'title'
+          sort_by: 'title',
         })
       );
     });
@@ -240,7 +267,7 @@ describe('Admin API Routes', () => {
       tags: ['new', 'test'],
       commission_rate: 7.5,
       featured: true,
-      status: 'active'
+      status: 'active',
     };
 
     it('should create new affiliate link for admin', async () => {
@@ -259,7 +286,7 @@ describe('Admin API Routes', () => {
           id: mockAffiliateLink.id,
           title: mockAffiliateLink.title,
         }),
-        message: 'Affiliate link created successfully'
+        message: 'Affiliate link created successfully',
       });
 
       expect(AffiliateLinkModel.create).toHaveBeenCalledWith(
@@ -294,7 +321,7 @@ describe('Admin API Routes', () => {
       expect(response.body).toMatchObject({
         success: false,
         error: 'Validation failed',
-        details: expect.any(Array)
+        details: expect.any(Array),
       });
     });
 
@@ -309,7 +336,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Category not found'
+        error: 'Category not found',
       });
     });
 
@@ -317,7 +344,7 @@ describe('Admin API Routes', () => {
       const invalidData = {
         ...validLinkData,
         url: 'not-a-url',
-        affiliate_url: 'also-not-a-url'
+        affiliate_url: 'also-not-a-url',
       };
 
       const response = await request(app)
@@ -328,7 +355,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Validation failed'
+        error: 'Validation failed',
       });
     });
   });
@@ -337,10 +364,12 @@ describe('Admin API Routes', () => {
     it('should return specific affiliate link', async () => {
       const mockLinkWithCategory = {
         ...mockAffiliateLink,
-        category: mockCategory
+        category: mockCategory,
       };
 
-      vi.mocked(AffiliateLinkModel.findWithCategory).mockResolvedValue(mockLinkWithCategory);
+      vi.mocked(AffiliateLinkModel.findWithCategory).mockResolvedValue(
+        mockLinkWithCategory
+      );
 
       const response = await request(app)
         .get(`/api/admin/links/${mockAffiliateLink.id}`)
@@ -355,8 +384,8 @@ describe('Admin API Routes', () => {
           category: expect.objectContaining({
             id: mockCategory.id,
             name: mockCategory.name,
-          })
-        })
+          }),
+        }),
       });
     });
 
@@ -370,7 +399,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Affiliate link not found'
+        error: 'Affiliate link not found',
       });
     });
 
@@ -382,7 +411,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid link ID format'
+        error: 'Invalid link ID format',
       });
     });
   });
@@ -390,14 +419,16 @@ describe('Admin API Routes', () => {
   describe('PUT /api/admin/links/:id', () => {
     const updateData = {
       title: 'Updated Title',
-      status: 'inactive' as const
+      status: 'inactive' as const,
     };
 
     it('should update affiliate link', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(AffiliateLinkModel.update).mockResolvedValue({
         ...mockAffiliateLink,
-        ...updateData
+        ...updateData,
       });
 
       const response = await request(app)
@@ -413,7 +444,7 @@ describe('Admin API Routes', () => {
           title: updateData.title,
           status: updateData.status,
         }),
-        message: 'Affiliate link updated successfully'
+        message: 'Affiliate link updated successfully',
       });
 
       expect(AffiliateLinkModel.update).toHaveBeenCalledWith(
@@ -433,12 +464,14 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Affiliate link not found'
+        error: 'Affiliate link not found',
       });
     });
 
     it('should validate category if provided', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(CategoryModel.exists).mockResolvedValue(false);
 
       const response = await request(app)
@@ -449,14 +482,16 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Category not found'
+        error: 'Category not found',
       });
     });
   });
 
   describe('DELETE /api/admin/links/:id', () => {
     it('should delete affiliate link for admin', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(AffiliateLinkModel.delete).mockResolvedValue(true);
 
       const response = await request(app)
@@ -466,10 +501,12 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: true,
-        message: 'Affiliate link deleted successfully'
+        message: 'Affiliate link deleted successfully',
       });
 
-      expect(AffiliateLinkModel.delete).toHaveBeenCalledWith(mockAffiliateLink.id);
+      expect(AffiliateLinkModel.delete).toHaveBeenCalledWith(
+        mockAffiliateLink.id
+      );
     });
 
     it('should reject delete request from editor', async () => {
@@ -480,7 +517,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Insufficient permissions'
+        error: 'Insufficient permissions',
       });
     });
 
@@ -494,7 +531,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Affiliate link not found'
+        error: 'Affiliate link not found',
       });
     });
   });
@@ -502,7 +539,7 @@ describe('Admin API Routes', () => {
   describe('POST /api/admin/links/bulk-delete', () => {
     const linkIds = [
       '123e4567-e89b-12d3-a456-426614174000',
-      '456e7890-e89b-12d3-a456-426614174001'
+      '456e7890-e89b-12d3-a456-426614174001',
     ];
 
     it('should bulk delete links for admin', async () => {
@@ -519,8 +556,8 @@ describe('Admin API Routes', () => {
         data: {
           deleted: 2,
           failed: 0,
-          errors: []
-        }
+          errors: [],
+        },
       });
     });
 
@@ -533,7 +570,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Insufficient permissions'
+        error: 'Insufficient permissions',
       });
     });
 
@@ -546,7 +583,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'IDs array is required and must not be empty'
+        error: 'IDs array is required and must not be empty',
       });
     });
 
@@ -559,7 +596,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid ID format'
+        error: 'Invalid ID format',
       });
     });
 
@@ -577,7 +614,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Cannot delete more than 100 items at once'
+        error: 'Cannot delete more than 100 items at once',
       });
     });
   });
@@ -585,12 +622,12 @@ describe('Admin API Routes', () => {
   describe('PATCH /api/admin/links/bulk-update', () => {
     const linkIds = [
       '123e4567-e89b-12d3-a456-426614174000',
-      '456e7890-e89b-12d3-a456-426614174001'
+      '456e7890-e89b-12d3-a456-426614174001',
     ];
 
     const updates = {
       status: 'inactive' as const,
-      featured: false
+      featured: false,
     };
 
     it('should bulk update links', async () => {
@@ -607,8 +644,8 @@ describe('Admin API Routes', () => {
         data: {
           updated: 2,
           failed: 0,
-          errors: []
-        }
+          errors: [],
+        },
       });
     });
 
@@ -631,7 +668,7 @@ describe('Admin API Routes', () => {
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Invalid update fields'
+        error: 'Invalid update fields',
       });
     });
 
@@ -641,15 +678,15 @@ describe('Admin API Routes', () => {
       const response = await request(app)
         .patch('/api/admin/links/bulk-update')
         .set('Authorization', `Bearer ${adminToken}`)
-        .send({ 
-          ids: linkIds, 
-          updates: { category_id: 'non-existent-category' } 
+        .send({
+          ids: linkIds,
+          updates: { category_id: 'non-existent-category' },
         })
         .expect(400);
 
       expect(response.body).toMatchObject({
         success: false,
-        error: 'Category not found'
+        error: 'Category not found',
       });
     });
   });

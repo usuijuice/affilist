@@ -124,7 +124,10 @@ describe('AdminLayout', () => {
 
     await waitFor(() => {
       expect(mockLogout).toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalledWith('Logout failed:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Logout failed:',
+        expect.any(Error)
+      );
     });
 
     consoleSpy.mockRestore();

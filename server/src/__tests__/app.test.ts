@@ -12,9 +12,7 @@ describe('Express App', () => {
 
   describe('Health Endpoints', () => {
     it('should return health status', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toMatchObject({
         status: 'OK',
@@ -26,9 +24,7 @@ describe('Express App', () => {
     });
 
     it('should return readiness status', async () => {
-      const response = await request(app)
-        .get('/ready')
-        .expect(200);
+      const response = await request(app).get('/ready').expect(200);
 
       expect(response.body).toMatchObject({
         status: 'READY',
@@ -43,9 +39,7 @@ describe('Express App', () => {
 
   describe('API Root', () => {
     it('should return API information', async () => {
-      const response = await request(app)
-        .get('/api')
-        .expect(200);
+      const response = await request(app).get('/api').expect(200);
 
       expect(response.body).toMatchObject({
         message: 'Affilist API Server',
@@ -57,9 +51,7 @@ describe('Express App', () => {
 
   describe('Error Handling', () => {
     it('should return 404 for unknown routes', async () => {
-      const response = await request(app)
-        .get('/unknown-route')
-        .expect(404);
+      const response = await request(app).get('/unknown-route').expect(404);
 
       expect(response.body).toMatchObject({
         error: expect.stringContaining('Route /unknown-route not found'),
@@ -70,9 +62,7 @@ describe('Express App', () => {
 
   describe('Security Headers', () => {
     it('should include security headers', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.headers).toHaveProperty('x-content-type-options');
       expect(response.headers).toHaveProperty('x-frame-options');
@@ -88,7 +78,9 @@ describe('Express App', () => {
         .set('Access-Control-Request-Method', 'GET')
         .expect(204);
 
-      expect(response.headers['access-control-allow-origin']).toBe('http://localhost:5173');
+      expect(response.headers['access-control-allow-origin']).toBe(
+        'http://localhost:5173'
+      );
     });
   });
 });

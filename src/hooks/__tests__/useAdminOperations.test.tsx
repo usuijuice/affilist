@@ -5,7 +5,11 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { renderHook, act } from '@testing-library/react';
 import { useAdminOperations } from '../useAdminOperations';
-import { affiliateLinksApi, categoriesApi, notificationService } from '../../services';
+import {
+  affiliateLinksApi,
+  categoriesApi,
+  notificationService,
+} from '../../services';
 import type { CreateLinkRequest } from '../../types';
 
 // Mock the services
@@ -118,7 +122,10 @@ describe('useAdminOperations', () => {
 
       expect(createdLink).toBe(null);
       expect(result.current.error).toBe('Validation failed');
-      expect(notificationService.operationFailed).toHaveBeenCalledWith('Create Link', 'Validation failed');
+      expect(notificationService.operationFailed).toHaveBeenCalledWith(
+        'Create Link',
+        'Validation failed'
+      );
     });
 
     it('should update a link successfully', async () => {
@@ -154,8 +161,13 @@ describe('useAdminOperations', () => {
         updatedLink = await result.current.updateLink('1', updateData);
       });
 
-      expect(affiliateLinksApi.updateLink).toHaveBeenCalledWith('1', updateData);
-      expect(notificationService.linkUpdated).toHaveBeenCalledWith('Updated Link');
+      expect(affiliateLinksApi.updateLink).toHaveBeenCalledWith(
+        '1',
+        updateData
+      );
+      expect(notificationService.linkUpdated).toHaveBeenCalledWith(
+        'Updated Link'
+      );
       expect(updatedLink).toEqual(mockLink);
     });
 
@@ -193,8 +205,15 @@ describe('useAdminOperations', () => {
         );
       });
 
-      expect(affiliateLinksApi.bulkDeleteLinks).toHaveBeenCalledWith(['1', '2', '3']);
-      expect(notificationService.bulkOperationCompleted).toHaveBeenCalledWith('Bulk Delete', 3);
+      expect(affiliateLinksApi.bulkDeleteLinks).toHaveBeenCalledWith([
+        '1',
+        '2',
+        '3',
+      ]);
+      expect(notificationService.bulkOperationCompleted).toHaveBeenCalledWith(
+        'Bulk Delete',
+        3
+      );
       expect(bulkDeleteResult).toBe(true);
     });
 
@@ -208,16 +227,22 @@ describe('useAdminOperations', () => {
 
       const updates = { featured: true };
       let bulkUpdateResult: boolean;
-      
+
       await act(async () => {
-        bulkUpdateResult = await result.current.bulkUpdateLinks(['1', '2'], updates);
+        bulkUpdateResult = await result.current.bulkUpdateLinks(
+          ['1', '2'],
+          updates
+        );
       });
 
       expect(affiliateLinksApi.bulkUpdateLinks).toHaveBeenCalledWith([
         { id: '1', data: updates },
         { id: '2', data: updates },
       ]);
-      expect(notificationService.bulkOperationCompleted).toHaveBeenCalledWith('Bulk Update', 2);
+      expect(notificationService.bulkOperationCompleted).toHaveBeenCalledWith(
+        'Bulk Update',
+        2
+      );
       expect(bulkUpdateResult).toBe(true);
     });
   });
@@ -287,7 +312,10 @@ describe('useAdminOperations', () => {
         updatedCategory = await result.current.updateCategory('1', updateData);
       });
 
-      expect(categoriesApi.updateCategory).toHaveBeenCalledWith('1', updateData);
+      expect(categoriesApi.updateCategory).toHaveBeenCalledWith(
+        '1',
+        updateData
+      );
       expect(notificationService.success).toHaveBeenCalledWith(
         'Category Updated',
         '"Updated Category" has been updated successfully.'
@@ -305,7 +333,10 @@ describe('useAdminOperations', () => {
 
       let deleteResult: boolean;
       await act(async () => {
-        deleteResult = await result.current.deleteCategory('1', 'Test Category');
+        deleteResult = await result.current.deleteCategory(
+          '1',
+          'Test Category'
+        );
       });
 
       expect(categoriesApi.deleteCategory).toHaveBeenCalledWith('1');
@@ -320,9 +351,9 @@ describe('useAdminOperations', () => {
   describe('Error Handling', () => {
     it('should handle network errors', async () => {
       const networkError = new Error('Network error');
-      
+
       vi.mocked(affiliateLinksApi.createLink).mockRejectedValue(networkError);
-      
+
       // Mock the error handler to return network error
       const { isNetworkError } = await import('../../utils/apiErrorHandler');
       vi.mocked(isNetworkError).mockReturnValue(true);
@@ -349,9 +380,9 @@ describe('useAdminOperations', () => {
 
     it('should handle authentication errors', async () => {
       const authError = new Error('Unauthorized');
-      
+
       vi.mocked(affiliateLinksApi.deleteLink).mockRejectedValue(authError);
-      
+
       // Mock the error handler to return auth error
       const { isAuthError } = await import('../../utils/apiErrorHandler');
       vi.mocked(isAuthError).mockReturnValue(true);
@@ -402,7 +433,7 @@ describe('useAdminOperations', () => {
   describe('Loading States', () => {
     it('should manage loading state during operations', async () => {
       let resolvePromise: (value: any) => void;
-      const promise = new Promise(resolve => {
+      const promise = new Promise((resolve) => {
         resolvePromise = resolve;
       });
 

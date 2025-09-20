@@ -10,7 +10,7 @@ vi.mock('react-router-dom', async () => {
   const actual = await vi.importActual('react-router-dom');
   return {
     ...actual,
-    useSearchParams: () => [new URLSearchParams(), mockSetSearchParams]
+    useSearchParams: () => [new URLSearchParams(), mockSetSearchParams],
   };
 });
 
@@ -32,7 +32,7 @@ describe('useFilters', () => {
       commissionRateMax: undefined,
       featuredOnly: false,
       searchQuery: '',
-      sortBy: 'popularity'
+      sortBy: 'popularity',
     });
   });
 
@@ -73,7 +73,7 @@ describe('useFilters', () => {
       result.current.updateFilters({
         commissionRateMin: 5,
         commissionRateMax: 25,
-        featuredOnly: true
+        featuredOnly: true,
       });
     });
 
@@ -92,7 +92,7 @@ describe('useFilters', () => {
         commissionRateMin: 10,
         featuredOnly: true,
         searchQuery: 'test',
-        sortBy: 'newest'
+        sortBy: 'newest',
       });
     });
 
@@ -107,7 +107,7 @@ describe('useFilters', () => {
       commissionRateMax: undefined,
       featuredOnly: false,
       searchQuery: '',
-      sortBy: 'popularity'
+      sortBy: 'popularity',
     });
   });
 
@@ -122,7 +122,7 @@ describe('useFilters', () => {
         commissionRateMax: 25,
         featuredOnly: true,
         searchQuery: 'test',
-        sortBy: 'newest'
+        sortBy: 'newest',
       });
     });
 
@@ -137,7 +137,7 @@ describe('useFilters', () => {
       commissionRateMax: undefined,
       featuredOnly: false,
       searchQuery: 'test',
-      sortBy: 'newest'
+      sortBy: 'newest',
     });
   });
 
@@ -211,14 +211,15 @@ describe('useFilters', () => {
         commissionRateMax: 25,
         featuredOnly: true,
         searchQuery: 'test query',
-        sortBy: 'newest'
+        sortBy: 'newest',
       });
     });
 
     // Should call setSearchParams with the correct parameters
     expect(mockSetSearchParams).toHaveBeenCalled();
-    const [params] = mockSetSearchParams.mock.calls[mockSetSearchParams.mock.calls.length - 1];
-    
+    const [params] =
+      mockSetSearchParams.mock.calls[mockSetSearchParams.mock.calls.length - 1];
+
     expect(params.get('categories')).toBe('cat1,cat2');
     expect(params.get('minCommission')).toBe('5');
     expect(params.get('maxCommission')).toBe('25');
@@ -234,7 +235,8 @@ describe('useFilters', () => {
       result.current.updateSort('popularity'); // Default value
     });
 
-    const [params] = mockSetSearchParams.mock.calls[mockSetSearchParams.mock.calls.length - 1];
+    const [params] =
+      mockSetSearchParams.mock.calls[mockSetSearchParams.mock.calls.length - 1];
     expect(params.get('sort')).toBeNull();
   });
 
@@ -246,11 +248,12 @@ describe('useFilters', () => {
         categories: [],
         commissionRateMin: undefined,
         featuredOnly: false,
-        searchQuery: ''
+        searchQuery: '',
       });
     });
 
-    const [params] = mockSetSearchParams.mock.calls[mockSetSearchParams.mock.calls.length - 1];
+    const [params] =
+      mockSetSearchParams.mock.calls[mockSetSearchParams.mock.calls.length - 1];
     expect(params.get('categories')).toBeNull();
     expect(params.get('minCommission')).toBeNull();
     expect(params.get('featured')).toBeNull();

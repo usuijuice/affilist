@@ -42,10 +42,18 @@ Object.defineProperty(document, 'visibilityState', {
 // Mock event listeners
 const mockAddEventListener = vi.fn();
 const mockRemoveEventListener = vi.fn();
-Object.defineProperty(window, 'addEventListener', { value: mockAddEventListener });
-Object.defineProperty(window, 'removeEventListener', { value: mockRemoveEventListener });
-Object.defineProperty(document, 'addEventListener', { value: mockAddEventListener });
-Object.defineProperty(document, 'removeEventListener', { value: mockRemoveEventListener });
+Object.defineProperty(window, 'addEventListener', {
+  value: mockAddEventListener,
+});
+Object.defineProperty(window, 'removeEventListener', {
+  value: mockRemoveEventListener,
+});
+Object.defineProperty(document, 'addEventListener', {
+  value: mockAddEventListener,
+});
+Object.defineProperty(document, 'removeEventListener', {
+  value: mockRemoveEventListener,
+});
 
 describe('ClickTrackingService', () => {
   let service: ClickTrackingService;
@@ -55,7 +63,7 @@ describe('ClickTrackingService', () => {
     vi.clearAllMocks();
     mockLocalStorage.getItem.mockReturnValue(null);
     mockApiPost.mockResolvedValue({ success: true });
-    
+
     service = new ClickTrackingService({
       enableTracking: true,
       sessionTimeout: 30 * 60 * 1000,
@@ -72,7 +80,7 @@ describe('ClickTrackingService', () => {
   describe('Session Management', () => {
     it('should create a new session on initialization', () => {
       const sessionData = service.getSessionData();
-      
+
       expect(sessionData).toBeTruthy();
       expect(sessionData?.sessionId).toBeTruthy();
       expect(sessionData?.startTime).toBeInstanceOf(Date);
@@ -99,7 +107,7 @@ describe('ClickTrackingService', () => {
 
       expect(sessionData?.sessionId).toBe('existing-session-123');
       expect(sessionData?.clickCount).toBe(5);
-      
+
       newService.destroy();
     });
 
@@ -119,33 +127,35 @@ describe('ClickTrackingService', () => {
 
       expect(sessionData?.sessionId).not.toBe('expired-session-123');
       expect(sessionData?.clickCount).toBe(0);
-      
+
       newService.destroy();
     });
 
     it('should set user ID for session', () => {
       service.setUserId('user-123');
       const sessionData = service.getSessionData();
-      
+
       expect(sessionData?.userId).toBe('user-123');
     });
 
     it('should clear session and create new one', () => {
       const originalSessionId = service.getSessionData()?.sessionId;
-      
+
       service.clearSession();
       const newSessionData = service.getSessionData();
-      
+
       expect(newSessionData?.sessionId).not.toBe(originalSessionId);
       expect(newSessionData?.clickCount).toBe(0);
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('clickTracking_session');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'clickTracking_session'
+      );
     });
   });
 
   describe('Click Tracking', () => {
     it('should track click events', async () => {
       await service.trackClick('link-123', { category: 'test' });
-      
+
       const sessionData = service.getSessionData();
       expect(sessionData?.clickCount).toBe(1);
     });
@@ -155,7 +165,7 @@ describe('ClickTrackingService', () => {
       for (let i = 0; i < 5; i++) {
         await service.trackClick(`link-${i}`);
       }
-      
+
       expect(mockApiPost).toHaveBeenCalledWith('/clicks/batch', {
         clicks: expect.arrayContaining([
           expect.objectContaining({
@@ -176,7 +186,7 @@ describe('ClickTrackingService', () => {
       };
 
       await service.trackClick('link-123', metadata);
-      
+
       // Trigger flush by reaching batch size
       for (let i = 0; i < 4; i++) {
         await service.trackClick(`link-${i}`);
@@ -193,18 +203,23 @@ describe('ClickTrackingService', () => {
     });
 
     it('should not track clicks when tracking is disabled', async () => {
-      const disabledService = new ClickTrackingService({ enableTracking: false });
-      
+      const disabledService = new ClickTrackingService({
+        enableTracking: false,
+      });
+
       await disabledService.trackClick('link-123');
-      
+
       expect(mockApiPost).not.toHaveBeenCalled();
-      
+
       disabledService.destroy();
     });
 
     it('should handle API errors gracefully', async () => {
-      mockApiPost.mockResolvedValue({ success: false, error: { message: 'Server error' } });
-      
+      mockApiPost.mockResolvedValue({
+        success: false,
+        error: { message: 'Server error' },
+      });
+
       // Should not throw error
       await expect(service.trackClick('link-123')).resolves.toBeUndefined();
     });
@@ -213,21 +228,21 @@ describe('ClickTrackingService', () => {
       // Simulate being offline
       (service as any).isOnline = false;
       mockApiPost.mockRejectedValue(new Error('Network error'));
-      
+
       // Track clicks - each will trigger a flush when offline
       for (let i = 0; i < 5; i++) {
         await service.trackClick(`link-${i}`);
       }
-      
+
       expect(mockApiPost).toHaveBeenCalledTimes(5); // Each click triggers flush when offline
-      
+
       // Simulate coming back online and successful API call
       (service as any).isOnline = true;
       mockApiPost.mockResolvedValue({ success: true });
-      
+
       // Track another click to trigger flush of re-queued items
       await service.trackClick('link-new');
-      
+
       expect(mockApiPost).toHaveBeenCalledTimes(6); // Previous calls + retry with re-queued items
     });
   });
@@ -235,7 +250,7 @@ describe('ClickTrackingService', () => {
   describe('Session Analytics', () => {
     it('should calculate session analytics', () => {
       const analytics = service.getSessionAnalytics();
-      
+
       expect(analytics).toMatchObject({
         sessionId: expect.any(String),
         duration: expect.any(Number),
@@ -249,7 +264,7 @@ describe('ClickTrackingService', () => {
       service.clearSession();
       // Manually set session to null to test edge case
       (service as any).sessionData = null;
-      
+
       const analytics = service.getSessionAnalytics();
       expect(analytics).toBeNull();
     });
@@ -261,16 +276,16 @@ describe('ClickTrackingService', () => {
         batchSize: 20,
         flushInterval: 2000,
       });
-      
+
       // Configuration should be updated (tested indirectly through behavior)
       expect(service).toBeTruthy();
     });
 
     it('should destroy service when tracking is disabled', () => {
       const destroySpy = vi.spyOn(service, 'destroy');
-      
+
       service.updateConfig({ enableTracking: false });
-      
+
       expect(destroySpy).toHaveBeenCalled();
     });
   });
@@ -302,14 +317,14 @@ describe('ClickAnalytics', () => {
 
     it('should group clicks by day', () => {
       const grouped = ClickAnalytics.groupClicksByPeriod(mockClicks, 'day');
-      
+
       expect(grouped['2024-1-15']).toBe(2);
       expect(grouped['2024-1-16']).toBe(1);
     });
 
     it('should group clicks by hour', () => {
       const grouped = ClickAnalytics.groupClicksByPeriod(mockClicks, 'hour');
-      
+
       // The dates are in UTC, so we need to check the actual keys
       const keys = Object.keys(grouped);
       expect(keys).toHaveLength(3);
@@ -328,7 +343,7 @@ describe('ClickAnalytics', () => {
       ] as any[];
 
       const topLinks = ClickAnalytics.getTopLinks(mockClicks, 2);
-      
+
       expect(topLinks).toEqual([
         { linkId: 'link1', clicks: 3 },
         { linkId: 'link2', clicks: 1 },
@@ -357,7 +372,7 @@ describe('ClickAnalytics', () => {
       ] as any[];
 
       const metrics = ClickAnalytics.calculateSessionMetrics(mockSessions);
-      
+
       expect(metrics.totalSessions).toBe(3);
       expect(metrics.averageClicksPerSession).toBe(5 / 3);
       expect(metrics.bounceRate).toBeCloseTo(33.33, 2); // 1 out of 3 sessions had 0 clicks
@@ -366,7 +381,7 @@ describe('ClickAnalytics', () => {
 
     it('should handle empty sessions array', () => {
       const metrics = ClickAnalytics.calculateSessionMetrics([]);
-      
+
       expect(metrics).toEqual({
         averageSessionDuration: 0,
         averageClicksPerSession: 0,

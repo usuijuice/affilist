@@ -7,7 +7,11 @@ interface AdvancedFiltersProps {
   className?: string;
 }
 
-export function AdvancedFilters({ filters, onFiltersChange, className = '' }: AdvancedFiltersProps) {
+export function AdvancedFilters({
+  filters,
+  onFiltersChange,
+  className = '',
+}: AdvancedFiltersProps) {
   const [isExpanded, setIsExpanded] = useState(false);
   const [localMinCommission, setLocalMinCommission] = useState(
     filters.commissionRateMin?.toString() || ''
@@ -42,11 +46,11 @@ export function AdvancedFilters({ filters, onFiltersChange, className = '' }: Ad
     onFiltersChange({
       commissionRateMin: undefined,
       commissionRateMax: undefined,
-      featuredOnly: false
+      featuredOnly: false,
     });
   };
 
-  const hasActiveFilters = 
+  const hasActiveFilters =
     filters.commissionRateMin !== undefined ||
     filters.commissionRateMax !== undefined ||
     filters.featuredOnly;
@@ -56,7 +60,9 @@ export function AdvancedFilters({ filters, onFiltersChange, className = '' }: Ad
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Advanced Filters</h3>
+          <h3 className="text-lg font-medium text-gray-900">
+            Advanced Filters
+          </h3>
           <div className="flex items-center space-x-2">
             {hasActiveFilters && (
               <button
@@ -99,7 +105,10 @@ export function AdvancedFilters({ filters, onFiltersChange, className = '' }: Ad
             </label>
             <div className="grid grid-cols-2 gap-3">
               <div>
-                <label htmlFor="min-commission" className="block text-xs text-gray-500 mb-1">
+                <label
+                  htmlFor="min-commission"
+                  className="block text-xs text-gray-500 mb-1"
+                >
                   Minimum
                 </label>
                 <input
@@ -115,7 +124,10 @@ export function AdvancedFilters({ filters, onFiltersChange, className = '' }: Ad
                 />
               </div>
               <div>
-                <label htmlFor="max-commission" className="block text-xs text-gray-500 mb-1">
+                <label
+                  htmlFor="max-commission"
+                  className="block text-xs text-gray-500 mb-1"
+                >
                   Maximum
                 </label>
                 <input
@@ -131,11 +143,13 @@ export function AdvancedFilters({ filters, onFiltersChange, className = '' }: Ad
                 />
               </div>
             </div>
-            {filters.commissionRateMin !== undefined && filters.commissionRateMax !== undefined && (
-              <div className="mt-2 text-xs text-gray-600">
-                Showing {filters.commissionRateMin}% - {filters.commissionRateMax}% commission
-              </div>
-            )}
+            {filters.commissionRateMin !== undefined &&
+              filters.commissionRateMax !== undefined && (
+                <div className="mt-2 text-xs text-gray-600">
+                  Showing {filters.commissionRateMin}% -{' '}
+                  {filters.commissionRateMax}% commission
+                </div>
+              )}
           </div>
 
           {/* Featured Only Toggle */}
@@ -170,7 +184,7 @@ export function AdvancedFilters({ filters, onFiltersChange, className = '' }: Ad
                   )}
                 </div>
               </div>
-              
+
               <div className="flex-1">
                 <div className="text-sm font-medium text-gray-900">
                   Featured Links Only

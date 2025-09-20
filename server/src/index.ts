@@ -5,7 +5,7 @@ import { logger } from './utils/logger.js';
 const startServer = async (): Promise<void> => {
   try {
     const app = createApp();
-    
+
     const server = app.listen(config.port, () => {
       logger.info(`🚀 Server running on port ${config.port}`, {
         environment: config.nodeEnv,
@@ -13,7 +13,7 @@ const startServer = async (): Promise<void> => {
         corsOrigin: config.cors.origin,
       });
     });
-    
+
     // Graceful shutdown handling
     const gracefulShutdown = (signal: string) => {
       logger.info(`Received ${signal}, shutting down gracefully`);
@@ -22,10 +22,9 @@ const startServer = async (): Promise<void> => {
         process.exit(0);
       });
     };
-    
+
     process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
     process.on('SIGINT', () => gracefulShutdown('SIGINT'));
-    
   } catch (error) {
     logger.error('Failed to start server', error);
     process.exit(1);

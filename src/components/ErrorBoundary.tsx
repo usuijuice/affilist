@@ -62,7 +62,8 @@ export class ErrorBoundary extends Component<Props, State> {
             </div>
             <div className="mb-4">
               <p className="text-sm text-gray-600">
-                We're sorry, but something unexpected happened. Please try refreshing the page.
+                We're sorry, but something unexpected happened. Please try
+                refreshing the page.
               </p>
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <details className="mt-4">
@@ -83,7 +84,9 @@ export class ErrorBoundary extends Component<Props, State> {
                 Refresh Page
               </button>
               <button
-                onClick={() => this.setState({ hasError: false, error: undefined })}
+                onClick={() =>
+                  this.setState({ hasError: false, error: undefined })
+                }
                 className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
                 Try Again

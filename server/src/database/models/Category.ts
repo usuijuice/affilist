@@ -1,28 +1,35 @@
 import { db } from '../connection.js';
-import type { 
-  Category, 
-  CreateCategoryInput, 
+import type {
+  Category,
+  CreateCategoryInput,
   UpdateCategoryInput,
   PaginationOptions,
-  PaginatedResult 
+  PaginatedResult,
 } from './types.js';
 
 export class CategoryModel {
-  static async findAll(options: PaginationOptions = {}): Promise<PaginatedResult<Category>> {
-    const { limit = 50, offset = 0, sort_by = 'name', sort_order = 'ASC' } = options;
-    
+  static async findAll(
+    options: PaginationOptions = {}
+  ): Promise<PaginatedResult<Category>> {
+    const {
+      limit = 50,
+      offset = 0,
+      sort_by = 'name',
+      sort_order = 'ASC',
+    } = options;
+
     const countQuery = 'SELECT COUNT(*) as total FROM categories';
     const countResult = await db.query(countQuery);
     const total = parseInt(countResult.rows[0].total);
-    
+
     const query = `
       SELECT * FROM categories 
       ORDER BY ${sort_by} ${sort_order}
       LIMIT $1 OFFSET $2
     `;
-    
+
     const result = await db.query<Category>(query, [limit, offset]);
-    
+
     return {
       data: result.rows,
       total,
@@ -50,7 +57,7 @@ export class CategoryModel {
       VALUES ($1, $2, $3, $4, $5)
       RETURNING *
     `;
-    
+
     const values = [
       input.name,
       input.slug,
@@ -58,12 +65,15 @@ export class CategoryModel {
       input.color || '#3B82F6',
       input.icon || null,
     ];
-    
+
     const result = await db.query<Category>(query, values);
     return result.rows[0];
   }
 
-  static async update(id: string, input: UpdateCategoryInput): Promise<Category | null> {
+  static async update(
+    id: string,
+    input: UpdateCategoryInput
+  ): Promise<Category | null> {
     const fields: string[] = [];
     const values: any[] = [];
     let paramCount = 1;
@@ -111,7 +121,9 @@ export class CategoryModel {
     return (result.rowCount ?? 0) > 0;
   }
 
-  static async getCategoriesWithLinkCount(): Promise<(Category & { link_count: number })[]> {
+  static async getCategoriesWithLinkCount(): Promise<
+    (Category & { link_count: number })[]
+  > {
     const query = `
       SELECT 
         c.*,
@@ -121,7 +133,7 @@ export class CategoryModel {
       GROUP BY c.id
       ORDER BY c.name ASC
     `;
-    
+
     const result = await db.query<Category & { link_count: number }>(query);
     return result.rows;
   }

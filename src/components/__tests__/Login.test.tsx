@@ -45,7 +45,9 @@ describe('Login', () => {
     render(<Login />);
 
     expect(screen.getByText('Admin Login')).toBeInTheDocument();
-    expect(screen.getByText('Sign in to access the admin dashboard')).toBeInTheDocument();
+    expect(
+      screen.getByText('Sign in to access the admin dashboard')
+    ).toBeInTheDocument();
     expect(screen.getByLabelText('Email Address')).toBeInTheDocument();
     expect(screen.getByLabelText('Password')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Sign in' })).toBeInTheDocument();
@@ -87,7 +89,9 @@ describe('Login', () => {
     await user.type(emailInput, 'invalid-email');
     await user.click(submitButton);
 
-    expect(screen.getByText('Please enter a valid email address')).toBeInTheDocument();
+    expect(
+      screen.getByText('Please enter a valid email address')
+    ).toBeInTheDocument();
     expect(mockLogin).not.toHaveBeenCalled();
   });
 
@@ -103,7 +107,9 @@ describe('Login', () => {
     await user.type(passwordInput, '123');
     await user.click(submitButton);
 
-    expect(screen.getByText('Password must be at least 6 characters')).toBeInTheDocument();
+    expect(
+      screen.getByText('Password must be at least 6 characters')
+    ).toBeInTheDocument();
     expect(mockLogin).not.toHaveBeenCalled();
   });
 
@@ -159,7 +165,7 @@ describe('Login', () => {
     const submitButton = screen.getByRole('button', { name: 'Signing in...' });
     expect(submitButton).toBeDisabled();
     expect(screen.getByText('Signing in...')).toBeInTheDocument();
-    
+
     // Check that inputs are disabled during loading
     expect(screen.getByLabelText('Email Address')).toBeDisabled();
     expect(screen.getByLabelText('Password')).toBeDisabled();
@@ -271,7 +277,9 @@ describe('Login', () => {
 
   it('should handle login failure', async () => {
     const user = userEvent.setup();
-    const consoleError = vi.spyOn(console, 'error').mockImplementation(() => {});
+    const consoleError = vi
+      .spyOn(console, 'error')
+      .mockImplementation(() => {});
     mockLogin.mockRejectedValueOnce(new Error('Login failed'));
 
     render(<Login />);
@@ -285,7 +293,10 @@ describe('Login', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(consoleError).toHaveBeenCalledWith('Login failed:', expect.any(Error));
+      expect(consoleError).toHaveBeenCalledWith(
+        'Login failed:',
+        expect.any(Error)
+      );
     });
 
     consoleError.mockRestore();
@@ -293,9 +304,9 @@ describe('Login', () => {
 
   it('should clear error on component unmount', () => {
     const { unmount } = render(<Login />);
-    
+
     unmount();
-    
+
     expect(mockClearError).toHaveBeenCalled();
   });
 });

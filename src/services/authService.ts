@@ -10,16 +10,19 @@ class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<{ token: string; user: AdminUser }>('/auth/login', credentials);
-      
+      const response = await apiClient.post<{ token: string; user: AdminUser }>(
+        '/auth/login',
+        credentials
+      );
+
       if (response.success) {
         // Store token and user data
         this.setToken(response.data.token);
         this.setUser(response.data.user);
-        
+
         // Set token in API client for future requests
         apiClient.setAuthToken(response.data.token);
-        
+
         return {
           token: response.data.token,
           user: response.data.user,
@@ -58,16 +61,18 @@ class AuthService {
    */
   async refreshToken(): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<{ token: string; user: AdminUser }>('/auth/refresh');
-      
+      const response = await apiClient.post<{ token: string; user: AdminUser }>(
+        '/auth/refresh'
+      );
+
       if (response.success) {
         // Update stored token and user data
         this.setToken(response.data.token);
         this.setUser(response.data.user);
-        
+
         // Update token in API client
         apiClient.setAuthToken(response.data.token);
-        
+
         return {
           token: response.data.token,
           user: response.data.user,
@@ -90,7 +95,7 @@ class AuthService {
   async verifyToken(): Promise<AdminUser> {
     try {
       const response = await apiClient.get<{ user: AdminUser }>('/auth/verify');
-      
+
       if (response.success) {
         this.setUser(response.data.user);
         return response.data.user;

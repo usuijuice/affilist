@@ -16,8 +16,15 @@ interface MetricsSummaryProps {
   className?: string;
 }
 
-export function MetricsSummary({ metrics, loading = false, className = '' }: MetricsSummaryProps) {
-  const formatValue = (value: number, format: MetricData['format'] = 'number'): string => {
+export function MetricsSummary({
+  metrics,
+  loading = false,
+  className = '',
+}: MetricsSummaryProps) {
+  const formatValue = (
+    value: number,
+    format: MetricData['format'] = 'number'
+  ): string => {
     switch (format) {
       case 'currency':
         return new Intl.NumberFormat('en-US', {
@@ -26,10 +33,10 @@ export function MetricsSummary({ metrics, loading = false, className = '' }: Met
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
         }).format(value);
-      
+
       case 'percentage':
         return `${value.toFixed(2)}%`;
-      
+
       case 'number':
       default:
         if (value >= 1000000) {
@@ -44,7 +51,9 @@ export function MetricsSummary({ metrics, loading = false, className = '' }: Met
 
   if (loading) {
     return (
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}
+      >
         {Array.from({ length: 4 }, (_, index) => (
           <MetricCardSkeleton key={index} />
         ))}
@@ -53,7 +62,9 @@ export function MetricsSummary({ metrics, loading = false, className = '' }: Met
   }
 
   return (
-    <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}>
+    <div
+      className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 ${className}`}
+    >
       {metrics.map((metric, index) => (
         <MetricCard key={index} metric={metric} />
       ))}
@@ -68,7 +79,10 @@ interface MetricCardProps {
 function MetricCard({ metric }: MetricCardProps) {
   const { value, label, change, trend, format, icon } = metric;
 
-  const formatValue = (value: number, format: MetricData['format'] = 'number'): string => {
+  const formatValue = (
+    value: number,
+    format: MetricData['format'] = 'number'
+  ): string => {
     switch (format) {
       case 'currency':
         return new Intl.NumberFormat('en-US', {
@@ -77,10 +91,10 @@ function MetricCard({ metric }: MetricCardProps) {
           minimumFractionDigits: 0,
           maximumFractionDigits: 2,
         }).format(value);
-      
+
       case 'percentage':
         return `${value.toFixed(2)}%`;
-      
+
       case 'number':
       default:
         if (value >= 1000000) {
@@ -106,7 +120,7 @@ function MetricCard({ metric }: MetricCardProps) {
             <p className="text-sm font-medium text-gray-600">{label}</p>
           </div>
         </div>
-        
+
         {trend && trend.length > 0 && (
           <div className="w-16 h-8">
             <MiniChart data={trend} height={32} />
@@ -119,11 +133,16 @@ function MetricCard({ metric }: MetricCardProps) {
           <p className="text-2xl font-bold text-gray-900">
             {formatValue(value, format)}
           </p>
-          
+
           {change !== undefined && (
             <div className="mt-1">
-              <TrendIndicator 
-                data={trend || [{ date: '', value: 0 }, { date: '', value: change }]} 
+              <TrendIndicator
+                data={
+                  trend || [
+                    { date: '', value: 0 },
+                    { date: '', value: change },
+                  ]
+                }
                 className="text-sm"
               />
             </div>
@@ -165,7 +184,12 @@ interface ClickMetricsProps {
   loading?: boolean;
 }
 
-export function ClickMetrics({ totalClicks, uniqueClicks, clickTrend, loading }: ClickMetricsProps) {
+export function ClickMetrics({
+  totalClicks,
+  uniqueClicks,
+  clickTrend,
+  loading,
+}: ClickMetricsProps) {
   const ctr = totalClicks > 0 ? (uniqueClicks / totalClicks) * 100 : 0;
 
   const metrics: MetricData[] = [
@@ -179,7 +203,7 @@ export function ClickMetrics({ totalClicks, uniqueClicks, clickTrend, loading }:
     {
       value: uniqueClicks,
       label: 'Unique Clicks',
-      trend: clickTrend?.map(d => ({ ...d, value: d.value * 0.7 })), // Approximate unique ratio
+      trend: clickTrend?.map((d) => ({ ...d, value: d.value * 0.7 })), // Approximate unique ratio
       icon: '👥',
       format: 'number',
     },
@@ -201,7 +225,12 @@ interface RevenueMetricsProps {
   loading?: boolean;
 }
 
-export function RevenueMetrics({ totalRevenue, estimatedRevenue, revenueTrend, loading }: RevenueMetricsProps) {
+export function RevenueMetrics({
+  totalRevenue,
+  estimatedRevenue,
+  revenueTrend,
+  loading,
+}: RevenueMetricsProps) {
   const metrics: MetricData[] = [
     {
       value: totalRevenue,
@@ -213,7 +242,7 @@ export function RevenueMetrics({ totalRevenue, estimatedRevenue, revenueTrend, l
     {
       value: estimatedRevenue,
       label: 'Estimated Revenue',
-      trend: revenueTrend?.map(d => ({ ...d, value: d.value * 1.2 })), // Estimated is typically higher
+      trend: revenueTrend?.map((d) => ({ ...d, value: d.value * 1.2 })), // Estimated is typically higher
       icon: '📈',
       format: 'currency',
     },
@@ -229,11 +258,11 @@ interface PerformanceMetricsProps {
   loading?: boolean;
 }
 
-export function PerformanceMetrics({ 
-  conversionRate, 
-  averageOrderValue, 
-  topLinkClicks, 
-  loading 
+export function PerformanceMetrics({
+  conversionRate,
+  averageOrderValue,
+  topLinkClicks,
+  loading,
 }: PerformanceMetricsProps) {
   const metrics: MetricData[] = [
     {
@@ -274,7 +303,11 @@ interface ComparisonMetricsProps {
   loading?: boolean;
 }
 
-export function ComparisonMetrics({ currentPeriod, previousPeriod, loading }: ComparisonMetricsProps) {
+export function ComparisonMetrics({
+  currentPeriod,
+  previousPeriod,
+  loading,
+}: ComparisonMetricsProps) {
   const calculateChange = (current: number, previous: number): number => {
     if (previous === 0) return current > 0 ? 100 : 0;
     return ((current - previous) / previous) * 100;
@@ -298,7 +331,10 @@ export function ComparisonMetrics({ currentPeriod, previousPeriod, loading }: Co
     {
       value: currentPeriod.conversions,
       label: 'Conversions',
-      change: calculateChange(currentPeriod.conversions, previousPeriod.conversions),
+      change: calculateChange(
+        currentPeriod.conversions,
+        previousPeriod.conversions
+      ),
       icon: '🎯',
       format: 'number',
     },

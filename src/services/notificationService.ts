@@ -16,7 +16,8 @@ export interface NotificationOptions {
 }
 
 class NotificationService {
-  private toastHandler: ((notification: NotificationOptions) => void) | null = null;
+  private toastHandler: ((notification: NotificationOptions) => void) | null =
+    null;
 
   /**
    * Set the toast handler (called by ToastProvider)
@@ -28,7 +29,11 @@ class NotificationService {
   /**
    * Show a success notification
    */
-  success(title: string, message?: string, options?: Partial<NotificationOptions>) {
+  success(
+    title: string,
+    message?: string,
+    options?: Partial<NotificationOptions>
+  ) {
     this.show({
       title,
       message,
@@ -40,7 +45,11 @@ class NotificationService {
   /**
    * Show an error notification
    */
-  error(title: string, message?: string, options?: Partial<NotificationOptions>) {
+  error(
+    title: string,
+    message?: string,
+    options?: Partial<NotificationOptions>
+  ) {
     this.show({
       title,
       message,
@@ -53,7 +62,11 @@ class NotificationService {
   /**
    * Show a warning notification
    */
-  warning(title: string, message?: string, options?: Partial<NotificationOptions>) {
+  warning(
+    title: string,
+    message?: string,
+    options?: Partial<NotificationOptions>
+  ) {
     this.show({
       title,
       message,
@@ -65,7 +78,11 @@ class NotificationService {
   /**
    * Show an info notification
    */
-  info(title: string, message?: string, options?: Partial<NotificationOptions>) {
+  info(
+    title: string,
+    message?: string,
+    options?: Partial<NotificationOptions>
+  ) {
     this.show({
       title,
       message,
@@ -104,7 +121,10 @@ class NotificationService {
       this.toastHandler(notification);
     } else {
       // Fallback to console if toast handler not available
-      console.log(`[${notification.type?.toUpperCase() || 'INFO'}] ${notification.title}`, notification.message);
+      console.log(
+        `[${notification.type?.toUpperCase() || 'INFO'}] ${notification.title}`,
+        notification.message
+      );
     }
   }
 

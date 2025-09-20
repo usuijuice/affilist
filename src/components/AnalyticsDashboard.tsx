@@ -1,5 +1,10 @@
 import React, { useState } from 'react';
-import { useAnalytics, useClickAnalytics, useRevenueAnalytics, useLinkPerformance } from '../hooks';
+import {
+  useAnalytics,
+  useClickAnalytics,
+  useRevenueAnalytics,
+  useLinkPerformance,
+} from '../hooks';
 import type { AnalyticsParams } from '../services';
 
 interface AnalyticsDashboardProps {
@@ -11,12 +16,14 @@ interface DateRange {
   endDate: string;
 }
 
-export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) {
+export function AnalyticsDashboard({
+  className = '',
+}: AnalyticsDashboardProps) {
   const [dateRange, setDateRange] = useState<DateRange>(() => {
     const endDate = new Date();
     const startDate = new Date();
     startDate.setDate(endDate.getDate() - 30); // Default to last 30 days
-    
+
     return {
       startDate: startDate.toISOString().split('T')[0],
       endDate: endDate.toISOString().split('T')[0],
@@ -28,15 +35,33 @@ export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) 
     endDate: dateRange.endDate,
   };
 
-  const { analytics, loading: analyticsLoading, error: analyticsError, refetch: refetchAnalytics } = useAnalytics({
+  const {
+    analytics,
+    loading: analyticsLoading,
+    error: analyticsError,
+    refetch: refetchAnalytics,
+  } = useAnalytics({
     params: analyticsParams,
   });
 
-  const { clickAnalytics, loading: clickLoading, refetch: refetchClicks } = useClickAnalytics(analyticsParams);
-  const { revenueAnalytics, loading: revenueLoading, refetch: refetchRevenue } = useRevenueAnalytics(analyticsParams);
-  const { linkPerformance, loading: linksLoading, refetch: refetchLinks } = useLinkPerformance(analyticsParams);
+  const {
+    clickAnalytics,
+    loading: clickLoading,
+    refetch: refetchClicks,
+  } = useClickAnalytics(analyticsParams);
+  const {
+    revenueAnalytics,
+    loading: revenueLoading,
+    refetch: refetchRevenue,
+  } = useRevenueAnalytics(analyticsParams);
+  const {
+    linkPerformance,
+    loading: linksLoading,
+    refetch: refetchLinks,
+  } = useLinkPerformance(analyticsParams);
 
-  const isLoading = analyticsLoading || clickLoading || revenueLoading || linksLoading;
+  const isLoading =
+    analyticsLoading || clickLoading || revenueLoading || linksLoading;
 
   const handleDateRangeChange = (newDateRange: DateRange) => {
     setDateRange(newDateRange);
@@ -75,30 +100,39 @@ export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) 
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Analytics Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900">
+            Analytics Dashboard
+          </h1>
           <p className="mt-1 text-sm text-gray-600">
             Track performance and insights for your affiliate links
           </p>
         </div>
-        
+
         <div className="mt-4 sm:mt-0 flex items-center space-x-4">
           {/* Date Range Picker */}
           <div className="flex items-center space-x-2">
             <input
               type="date"
               value={dateRange.startDate}
-              onChange={(e) => handleDateRangeChange({ ...dateRange, startDate: e.target.value })}
+              onChange={(e) =>
+                handleDateRangeChange({
+                  ...dateRange,
+                  startDate: e.target.value,
+                })
+              }
               className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
             <span className="text-gray-500">to</span>
             <input
               type="date"
               value={dateRange.endDate}
-              onChange={(e) => handleDateRangeChange({ ...dateRange, endDate: e.target.value })}
+              onChange={(e) =>
+                handleDateRangeChange({ ...dateRange, endDate: e.target.value })
+              }
               className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
-          
+
           {/* Refresh Button */}
           <button
             onClick={handleRefresh}
@@ -122,12 +156,22 @@ export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) 
         <div className="bg-red-50 border border-red-200 rounded-md p-4">
           <div className="flex">
             <div className="flex-shrink-0">
-              <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+              <svg
+                className="h-5 w-5 text-red-400"
+                viewBox="0 0 20 20"
+                fill="currentColor"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error loading analytics</h3>
+              <h3 className="text-sm font-medium text-red-800">
+                Error loading analytics
+              </h3>
               <p className="mt-1 text-sm text-red-700">{analyticsError}</p>
             </div>
           </div>
@@ -139,14 +183,20 @@ export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) 
         <MetricCard
           title="Total Clicks"
           value={formatNumber(analytics?.totalClicks || 0)}
-          change={clickAnalytics ? calculateGrowth(clickAnalytics.clicksByDate) : null}
+          change={
+            clickAnalytics ? calculateGrowth(clickAnalytics.clicksByDate) : null
+          }
           icon="👆"
           loading={isLoading}
         />
         <MetricCard
           title="Total Revenue"
           value={formatCurrency(analytics?.totalRevenue || 0)}
-          change={revenueAnalytics ? calculateGrowth(revenueAnalytics.revenueByDate) : null}
+          change={
+            revenueAnalytics
+              ? calculateGrowth(revenueAnalytics.revenueByDate)
+              : null
+          }
           icon="💰"
           loading={isLoading}
         />
@@ -159,7 +209,11 @@ export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) 
         <MetricCard
           title="Unique Clicks"
           value={formatNumber(clickAnalytics?.uniqueClicks || 0)}
-          change={clickAnalytics ? calculateUniqueGrowth(clickAnalytics.clicksByDate) : null}
+          change={
+            clickAnalytics
+              ? calculateUniqueGrowth(clickAnalytics.clicksByDate)
+              : null
+          }
           icon="👥"
           loading={isLoading}
         />
@@ -174,7 +228,7 @@ export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) 
           data={clickAnalytics?.clicksByDate}
           type="line"
         />
-        
+
         {/* Revenue Over Time Chart */}
         <ChartCard
           title="Revenue Over Time"
@@ -193,7 +247,7 @@ export function AnalyticsDashboard({ className = '' }: AnalyticsDashboardProps) 
           loading={linksLoading}
           type="links"
         />
-        
+
         {/* Top Categories */}
         <PerformanceTable
           title="Top Categories"
@@ -240,13 +294,19 @@ function MetricCard({ title, value, change, icon, loading }: MetricCardProps) {
         </div>
         <div className="ml-5 w-0 flex-1">
           <dl>
-            <dt className="text-sm font-medium text-gray-500 truncate">{title}</dt>
+            <dt className="text-sm font-medium text-gray-500 truncate">
+              {title}
+            </dt>
             <dd className="flex items-baseline">
-              <div className="text-2xl font-semibold text-gray-900">{value}</div>
+              <div className="text-2xl font-semibold text-gray-900">
+                {value}
+              </div>
               {change !== null && change !== undefined && (
-                <div className={`ml-2 flex items-baseline text-sm font-semibold ${
-                  change >= 0 ? 'text-green-600' : 'text-red-600'
-                }`}>
+                <div
+                  className={`ml-2 flex items-baseline text-sm font-semibold ${
+                    change >= 0 ? 'text-green-600' : 'text-red-600'
+                  }`}
+                >
                   {change >= 0 ? '↗' : '↘'} {Math.abs(change).toFixed(1)}%
                 </div>
               )}
@@ -300,7 +360,12 @@ interface PerformanceTableProps {
   type: 'links' | 'categories';
 }
 
-function PerformanceTable({ title, data, loading, type }: PerformanceTableProps) {
+function PerformanceTable({
+  title,
+  data,
+  loading,
+  type,
+}: PerformanceTableProps) {
   if (loading) {
     return (
       <div className="bg-white rounded-lg shadow p-6">
@@ -323,14 +388,20 @@ function PerformanceTable({ title, data, loading, type }: PerformanceTableProps)
       <div className="space-y-3">
         {data && data.length > 0 ? (
           data.slice(0, 10).map((item, index) => (
-            <div key={index} className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0">
+            <div
+              key={index}
+              className="flex items-center justify-between py-2 border-b border-gray-100 last:border-b-0"
+            >
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
-                  {type === 'links' ? item.title || `Link ${item.linkId}` : item.categoryName}
+                  {type === 'links'
+                    ? item.title || `Link ${item.linkId}`
+                    : item.categoryName}
                 </p>
                 {type === 'links' && (
                   <p className="text-xs text-gray-500">
-                    CTR: {item.ctr?.toFixed(2)}% | Conv: {item.conversionRate?.toFixed(2)}%
+                    CTR: {item.ctr?.toFixed(2)}% | Conv:{' '}
+                    {item.conversionRate?.toFixed(2)}%
                   </p>
                 )}
               </div>
@@ -358,37 +429,57 @@ function PerformanceTable({ title, data, loading, type }: PerformanceTableProps)
 }
 
 // Helper functions
-function calculateGrowth(data?: Array<{ date: string; clicks?: number; revenue?: number }>): number | null {
+function calculateGrowth(
+  data?: Array<{ date: string; clicks?: number; revenue?: number }>
+): number | null {
   if (!data || data.length < 2) return null;
-  
-  const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const sortedData = [...data].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
   const midpoint = Math.floor(sortedData.length / 2);
-  
+
   const firstHalf = sortedData.slice(0, midpoint);
   const secondHalf = sortedData.slice(midpoint);
-  
-  const firstHalfSum = firstHalf.reduce((sum, item) => sum + (item.clicks || item.revenue || 0), 0);
-  const secondHalfSum = secondHalf.reduce((sum, item) => sum + (item.clicks || item.revenue || 0), 0);
-  
+
+  const firstHalfSum = firstHalf.reduce(
+    (sum, item) => sum + (item.clicks || item.revenue || 0),
+    0
+  );
+  const secondHalfSum = secondHalf.reduce(
+    (sum, item) => sum + (item.clicks || item.revenue || 0),
+    0
+  );
+
   if (firstHalfSum === 0) return secondHalfSum > 0 ? 100 : 0;
-  
+
   return ((secondHalfSum - firstHalfSum) / firstHalfSum) * 100;
 }
 
-function calculateUniqueGrowth(data?: Array<{ date: string; uniqueClicks?: number }>): number | null {
+function calculateUniqueGrowth(
+  data?: Array<{ date: string; uniqueClicks?: number }>
+): number | null {
   if (!data || data.length < 2) return null;
-  
-  const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+
+  const sortedData = [...data].sort(
+    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+  );
   const midpoint = Math.floor(sortedData.length / 2);
-  
+
   const firstHalf = sortedData.slice(0, midpoint);
   const secondHalf = sortedData.slice(midpoint);
-  
-  const firstHalfSum = firstHalf.reduce((sum, item) => sum + (item.uniqueClicks || 0), 0);
-  const secondHalfSum = secondHalf.reduce((sum, item) => sum + (item.uniqueClicks || 0), 0);
-  
+
+  const firstHalfSum = firstHalf.reduce(
+    (sum, item) => sum + (item.uniqueClicks || 0),
+    0
+  );
+  const secondHalfSum = secondHalf.reduce(
+    (sum, item) => sum + (item.uniqueClicks || 0),
+    0
+  );
+
   if (firstHalfSum === 0) return secondHalfSum > 0 ? 100 : 0;
-  
+
   return ((secondHalfSum - firstHalfSum) / firstHalfSum) * 100;
 }
 

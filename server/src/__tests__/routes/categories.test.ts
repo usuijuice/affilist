@@ -46,11 +46,11 @@ describe('Categories API Routes', () => {
 
   describe('GET /api/categories', () => {
     it('should return categories with link counts by default', async () => {
-      vi.mocked(CategoryModel.getCategoriesWithLinkCount).mockResolvedValue([mockCategoryWithCount]);
+      vi.mocked(CategoryModel.getCategoriesWithLinkCount).mockResolvedValue([
+        mockCategoryWithCount,
+      ]);
 
-      const response = await request(app)
-        .get('/api/categories')
-        .expect(200);
+      const response = await request(app).get('/api/categories').expect(200);
 
       expect(response.body).toMatchObject({
         success: true,
@@ -65,7 +65,7 @@ describe('Categories API Routes', () => {
             link_count: mockCategoryWithCount.link_count,
             created_at: expect.any(String),
             updated_at: expect.any(String),
-          })
+          }),
         ]),
         pagination: {
           total: 1,
@@ -100,7 +100,7 @@ describe('Categories API Routes', () => {
             icon: mockCategory.icon,
             created_at: expect.any(String),
             updated_at: expect.any(String),
-          })
+          }),
         ]),
         pagination: {
           total: 1,
@@ -127,7 +127,9 @@ describe('Categories API Routes', () => {
         id: `category-${i}`,
         name: `Category ${i}`,
       }));
-      vi.mocked(CategoryModel.getCategoriesWithLinkCount).mockResolvedValue(categories);
+      vi.mocked(CategoryModel.getCategoriesWithLinkCount).mockResolvedValue(
+        categories
+      );
 
       const response = await request(app)
         .get('/api/categories?limit=10&offset=20')
@@ -180,7 +182,9 @@ describe('Categories API Routes', () => {
       vi.mocked(CategoryModel.findAll).mockResolvedValue(mockPaginatedResult);
 
       await request(app)
-        .get('/api/categories?include_counts=false&sort_by=created_at&sort_order=DESC')
+        .get(
+          '/api/categories?include_counts=false&sort_by=created_at&sort_order=DESC'
+        )
         .expect(200);
 
       expect(CategoryModel.findAll).toHaveBeenCalledWith({
@@ -192,7 +196,9 @@ describe('Categories API Routes', () => {
     });
 
     it('should validate and limit pagination parameters', async () => {
-      vi.mocked(CategoryModel.getCategoriesWithLinkCount).mockResolvedValue([mockCategoryWithCount]);
+      vi.mocked(CategoryModel.getCategoriesWithLinkCount).mockResolvedValue([
+        mockCategoryWithCount,
+      ]);
 
       await request(app)
         .get('/api/categories?limit=200&offset=-10')
@@ -204,14 +210,16 @@ describe('Categories API Routes', () => {
         .expect(200);
 
       expect(response.body.pagination.limit).toBe(100); // Should be capped at 100
-      expect(response.body.pagination.offset).toBe(0);  // Should be minimum 0
+      expect(response.body.pagination.offset).toBe(0); // Should be minimum 0
     });
 
     it('should validate sort parameters without link counts', async () => {
       vi.mocked(CategoryModel.findAll).mockResolvedValue(mockPaginatedResult);
 
       await request(app)
-        .get('/api/categories?include_counts=false&sort_by=invalid_field&sort_order=INVALID')
+        .get(
+          '/api/categories?include_counts=false&sort_by=invalid_field&sort_order=INVALID'
+        )
         .expect(200);
 
       expect(CategoryModel.findAll).toHaveBeenCalledWith({
@@ -332,12 +340,15 @@ describe('Categories API Routes', () => {
       vi.mocked(CategoryModel.findBySlug).mockResolvedValue(mockCategory);
 
       // Test various valid slug formats
-      const validSlugs = ['test-category', 'test_category', 'TestCategory123', 'category-123_test'];
+      const validSlugs = [
+        'test-category',
+        'test_category',
+        'TestCategory123',
+        'category-123_test',
+      ];
 
       for (const slug of validSlugs) {
-        await request(app)
-          .get(`/api/categories/slug/${slug}`)
-          .expect(200);
+        await request(app).get(`/api/categories/slug/${slug}`).expect(200);
 
         expect(CategoryModel.findBySlug).toHaveBeenCalledWith(slug);
       }

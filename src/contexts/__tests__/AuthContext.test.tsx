@@ -25,7 +25,11 @@ function TestComponent() {
       <div data-testid="authenticated">{state.isAuthenticated.toString()}</div>
       <div data-testid="user">{state.user?.name || 'null'}</div>
       <div data-testid="error">{state.error || 'null'}</div>
-      <button onClick={() => login({ email: 'test@example.com', password: 'password' })}>
+      <button
+        onClick={() =>
+          login({ email: 'test@example.com', password: 'password' })
+        }
+      >
         Login
       </button>
       <button onClick={() => logout()}>Logout</button>
@@ -97,7 +101,9 @@ describe('AuthContext', () => {
   });
 
   it('should handle initialization failure', async () => {
-    vi.mocked(authService.initialize).mockRejectedValueOnce(new Error('Init failed'));
+    vi.mocked(authService.initialize).mockRejectedValueOnce(
+      new Error('Init failed')
+    );
 
     // Mock console.warn to avoid test output noise
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -113,7 +119,10 @@ describe('AuthContext', () => {
       expect(screen.getByTestId('authenticated')).toHaveTextContent('false');
     });
 
-    expect(consoleSpy).toHaveBeenCalledWith('Auth initialization failed:', expect.any(Error));
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Auth initialization failed:',
+      expect.any(Error)
+    );
     consoleSpy.mockRestore();
   });
 
@@ -155,7 +164,9 @@ describe('AuthContext', () => {
 
   it('should handle login failure', async () => {
     vi.mocked(authService.initialize).mockResolvedValueOnce(null);
-    vi.mocked(authService.login).mockRejectedValueOnce(new Error('Invalid credentials'));
+    vi.mocked(authService.login).mockRejectedValueOnce(
+      new Error('Invalid credentials')
+    );
 
     render(
       <AuthProvider>
@@ -176,7 +187,9 @@ describe('AuthContext', () => {
     await waitFor(() => {
       expect(screen.getByTestId('loading')).toHaveTextContent('false');
       expect(screen.getByTestId('authenticated')).toHaveTextContent('false');
-      expect(screen.getByTestId('error')).toHaveTextContent('Invalid credentials');
+      expect(screen.getByTestId('error')).toHaveTextContent(
+        'Invalid credentials'
+      );
     });
   });
 
@@ -212,7 +225,9 @@ describe('AuthContext', () => {
   it('should handle logout failure gracefully', async () => {
     vi.mocked(authService.initialize).mockResolvedValueOnce(mockUser);
     vi.mocked(authService.getToken).mockReturnValue('mock-token');
-    vi.mocked(authService.logout).mockRejectedValueOnce(new Error('Logout failed'));
+    vi.mocked(authService.logout).mockRejectedValueOnce(
+      new Error('Logout failed')
+    );
 
     // Mock console.warn to avoid test output noise
     const consoleSpy = vi.spyOn(console, 'warn').mockImplementation(() => {});
@@ -245,7 +260,9 @@ describe('AuthContext', () => {
 
   it('should clear error', async () => {
     vi.mocked(authService.initialize).mockResolvedValueOnce(null);
-    vi.mocked(authService.login).mockRejectedValueOnce(new Error('Login error'));
+    vi.mocked(authService.login).mockRejectedValueOnce(
+      new Error('Login error')
+    );
 
     render(
       <AuthProvider>

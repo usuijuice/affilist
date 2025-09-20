@@ -74,9 +74,12 @@ class PerformanceMonitor {
     const metrics = {
       'DNS Lookup': entry.domainLookupEnd - entry.domainLookupStart,
       'TCP Connection': entry.connectEnd - entry.connectStart,
-      'TLS Handshake': entry.secureConnectionStart > 0 ? entry.connectEnd - entry.secureConnectionStart : 0,
-      'Request': entry.responseStart - entry.requestStart,
-      'Response': entry.responseEnd - entry.responseStart,
+      'TLS Handshake':
+        entry.secureConnectionStart > 0
+          ? entry.connectEnd - entry.secureConnectionStart
+          : 0,
+      Request: entry.responseStart - entry.requestStart,
+      Response: entry.responseEnd - entry.responseStart,
       'DOM Processing': entry.domComplete - (entry as any).domLoading,
       'Load Complete': entry.loadEventEnd - entry.loadEventStart,
       'Total Load Time': entry.loadEventEnd - (entry as any).navigationStart,
@@ -126,7 +129,7 @@ class PerformanceMonitor {
 
     const endTime = performance.now();
     const duration = endTime - metric.startTime;
-    
+
     this.metrics.set(name, {
       ...metric,
       duration,
@@ -139,7 +142,10 @@ class PerformanceMonitor {
 
   private logMetric(name: string, duration: number, _timestamp: number): void {
     // Only log in development or when explicitly enabled
-    if (import.meta.env.DEV || localStorage.getItem('enablePerformanceLogging')) {
+    if (
+      import.meta.env.DEV ||
+      localStorage.getItem('enablePerformanceLogging')
+    ) {
       console.log(`[Performance] ${name}: ${duration.toFixed(2)}ms`);
     }
 
@@ -169,7 +175,7 @@ class PerformanceMonitor {
   getCLS(): Promise<number> {
     return new Promise((resolve) => {
       let clsValue = 0;
-      let clsEntries: PerformanceEntry[] = [];
+      const clsEntries: PerformanceEntry[] = [];
 
       const observer = new PerformanceObserver((list) => {
         const entries = list.getEntries();
@@ -213,7 +219,7 @@ class PerformanceMonitor {
 
   // Cleanup
   destroy(): void {
-    this.observers.forEach(observer => observer.disconnect());
+    this.observers.forEach((observer) => observer.disconnect());
     this.observers = [];
     this.metrics.clear();
   }
@@ -243,8 +249,9 @@ export function withPerformanceMonitoring<P extends object>(
   componentName?: string
 ) {
   return function PerformanceMonitoredComponent(props: P) {
-    const name = componentName || Component.displayName || Component.name || 'Component';
-    
+    const name =
+      componentName || Component.displayName || Component.name || 'Component';
+
     React.useEffect(() => {
       performanceMonitor.startTiming(`${name} Mount`);
       return () => {
@@ -274,10 +281,7 @@ export function measureAsync<T>(
   });
 }
 
-export function measureSync<T>(
-  name: string,
-  syncFn: () => T
-): T {
+export function measureSync<T>(name: string, syncFn: () => T): T {
   performanceMonitor.startTiming(name);
   try {
     return syncFn();
@@ -287,14 +291,18 @@ export function measureSync<T>(
 }
 
 // Performance budget checker
-export function checkPerformanceBudget(budgets: Record<string, number>): boolean {
+export function checkPerformanceBudget(
+  budgets: Record<string, number>
+): boolean {
   const metrics = performanceMonitor.getMetrics();
   let budgetPassed = true;
 
   Object.entries(budgets).forEach(([metricName, budget]) => {
-    const metric = metrics.find(m => m.name === metricName);
+    const metric = metrics.find((m) => m.name === metricName);
     if (metric && metric.duration > budget) {
-      console.warn(`Performance budget exceeded for ${metricName}: ${metric.duration.toFixed(2)}ms > ${budget}ms`);
+      console.warn(
+        `Performance budget exceeded for ${metricName}: ${metric.duration.toFixed(2)}ms > ${budget}ms`
+      );
       budgetPassed = false;
     }
   });

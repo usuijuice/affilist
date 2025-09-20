@@ -1,11 +1,11 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/react';
-import { 
-  MetricsSummary, 
-  ClickMetrics, 
-  RevenueMetrics, 
-  PerformanceMetrics, 
-  ComparisonMetrics 
+import {
+  MetricsSummary,
+  ClickMetrics,
+  RevenueMetrics,
+  PerformanceMetrics,
+  ComparisonMetrics,
 } from '../MetricsSummary';
 
 describe('MetricsSummary', () => {
@@ -18,7 +18,7 @@ describe('MetricsSummary', () => {
       format: 'number' as const,
     },
     {
-      value: 2500.50,
+      value: 2500.5,
       label: 'Total Revenue',
       change: -5.2,
       icon: '💰',
@@ -59,7 +59,11 @@ describe('MetricsSummary', () => {
   it('should format numbers correctly', () => {
     const largeNumberMetrics = [
       { value: 1500000, label: 'Large Number', format: 'number' as const },
-      { value: 2500000.50, label: 'Large Currency', format: 'currency' as const },
+      {
+        value: 2500000.5,
+        label: 'Large Currency',
+        format: 'currency' as const,
+      },
       { value: 99.99, label: 'Percentage', format: 'percentage' as const },
     ];
 
@@ -97,10 +101,10 @@ describe('ClickMetrics', () => {
 
   it('should render click metrics', () => {
     render(
-      <ClickMetrics 
-        totalClicks={1500} 
-        uniqueClicks={1200} 
-        clickTrend={mockClickTrend} 
+      <ClickMetrics
+        totalClicks={1500}
+        uniqueClicks={1200}
+        clickTrend={mockClickTrend}
       />
     );
 
@@ -125,7 +129,9 @@ describe('ClickMetrics', () => {
   });
 
   it('should show loading state', () => {
-    render(<ClickMetrics totalClicks={1500} uniqueClicks={1200} loading={true} />);
+    render(
+      <ClickMetrics totalClicks={1500} uniqueClicks={1200} loading={true} />
+    );
 
     const skeletonCards = document.querySelectorAll('.animate-pulse');
     expect(skeletonCards.length).toBeGreaterThan(0);
@@ -141,10 +147,10 @@ describe('RevenueMetrics', () => {
 
   it('should render revenue metrics', () => {
     render(
-      <RevenueMetrics 
-        totalRevenue={2500.50} 
-        estimatedRevenue={3000.00} 
-        revenueTrend={mockRevenueTrend} 
+      <RevenueMetrics
+        totalRevenue={2500.5}
+        estimatedRevenue={3000.0}
+        revenueTrend={mockRevenueTrend}
       />
     );
 
@@ -158,7 +164,13 @@ describe('RevenueMetrics', () => {
   });
 
   it('should show loading state', () => {
-    render(<RevenueMetrics totalRevenue={2500} estimatedRevenue={3000} loading={true} />);
+    render(
+      <RevenueMetrics
+        totalRevenue={2500}
+        estimatedRevenue={3000}
+        loading={true}
+      />
+    );
 
     const skeletonCards = document.querySelectorAll('.animate-pulse');
     expect(skeletonCards.length).toBeGreaterThan(0);
@@ -168,10 +180,10 @@ describe('RevenueMetrics', () => {
 describe('PerformanceMetrics', () => {
   it('should render performance metrics', () => {
     render(
-      <PerformanceMetrics 
-        conversionRate={5.25} 
-        averageOrderValue={125.50} 
-        topLinkClicks={850} 
+      <PerformanceMetrics
+        conversionRate={5.25}
+        averageOrderValue={125.5}
+        topLinkClicks={850}
       />
     );
 
@@ -190,11 +202,11 @@ describe('PerformanceMetrics', () => {
 
   it('should show loading state', () => {
     render(
-      <PerformanceMetrics 
-        conversionRate={5.25} 
-        averageOrderValue={125.50} 
-        topLinkClicks={850} 
-        loading={true} 
+      <PerformanceMetrics
+        conversionRate={5.25}
+        averageOrderValue={125.5}
+        topLinkClicks={850}
+        loading={true}
       />
     );
 
@@ -218,9 +230,9 @@ describe('ComparisonMetrics', () => {
 
   it('should render comparison metrics with positive changes', () => {
     render(
-      <ComparisonMetrics 
-        currentPeriod={mockCurrentPeriod} 
-        previousPeriod={mockPreviousPeriod} 
+      <ComparisonMetrics
+        currentPeriod={mockCurrentPeriod}
+        previousPeriod={mockPreviousPeriod}
       />
     );
 
@@ -245,9 +257,9 @@ describe('ComparisonMetrics', () => {
     };
 
     render(
-      <ComparisonMetrics 
-        currentPeriod={mockCurrentPeriod} 
-        previousPeriod={zeroPreviousPeriod} 
+      <ComparisonMetrics
+        currentPeriod={mockCurrentPeriod}
+        previousPeriod={zeroPreviousPeriod}
       />
     );
 
@@ -259,10 +271,10 @@ describe('ComparisonMetrics', () => {
 
   it('should show loading state', () => {
     render(
-      <ComparisonMetrics 
-        currentPeriod={mockCurrentPeriod} 
-        previousPeriod={mockPreviousPeriod} 
-        loading={true} 
+      <ComparisonMetrics
+        currentPeriod={mockCurrentPeriod}
+        previousPeriod={mockPreviousPeriod}
+        loading={true}
       />
     );
 
