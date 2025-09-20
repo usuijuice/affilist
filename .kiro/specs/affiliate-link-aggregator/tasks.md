@@ -141,8 +141,8 @@
   - Write database integration tests
   - _Requirements: 4.2, 4.3, 5.1_
 
-- [ ] 11. Build API endpoints for affiliate link operations
-- [ ] 11.1 Create public API endpoints for link retrieval
+- [x] 11. Build API endpoints for affiliate link operations
+- [x] 11.1 Create public API endpoints for link retrieval
   - Implement GET /api/links endpoint with filtering and pagination
   - Build GET /api/categories endpoint for category data
   - Add GET /api/links/:id endpoint for individual link details
@@ -150,7 +150,7 @@
   - Write API endpoint tests with various query parameters
   - _Requirements: 1.1, 1.2, 2.1, 3.1_
 
-- [ ] 11.2 Implement admin API endpoints for link management
+- [x] 11.2 Implement admin API endpoints for link management
   - Create POST /api/admin/links endpoint for link creation
   - Build PUT /api/admin/links/:id endpoint for link updates
   - Implement DELETE /api/admin/links/:id endpoint for link deletion

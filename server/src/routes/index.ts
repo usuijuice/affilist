@@ -1,12 +1,20 @@
 import { Router } from 'express';
 import { healthRouter } from './health.js';
+import { linksRouter } from './links.js';
+import { categoriesRouter } from './categories.js';
+import { adminRouter } from './admin.js';
 
 const router = Router();
 
 // Mount health routes
 router.use('/', healthRouter);
 
-// API routes will be added here
+// Mount API routes
+router.use('/api', linksRouter);
+router.use('/api', categoriesRouter);
+router.use('/api/admin', adminRouter);
+
+// API root endpoint
 router.get('/api', (req, res) => {
   res.json({
     message: 'Affilist API Server',
@@ -14,7 +22,11 @@ router.get('/api', (req, res) => {
     endpoints: {
       health: '/health',
       ready: '/ready',
-      // Additional endpoints will be documented here
+      links: '/api/links',
+      categories: '/api/categories',
+      featured: '/api/links/featured',
+      popular: '/api/links/popular',
+      admin: '/api/admin',
     },
   });
 });
