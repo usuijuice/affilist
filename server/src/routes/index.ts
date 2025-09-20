@@ -3,6 +3,8 @@ import { healthRouter } from './health.js';
 import { linksRouter } from './links.js';
 import { categoriesRouter } from './categories.js';
 import { adminRouter } from './admin.js';
+import { clicksRouter } from './clicks.js';
+import { analyticsRouter } from './analytics.js';
 
 const router = Router();
 
@@ -12,6 +14,8 @@ router.use('/', healthRouter);
 // Mount API routes
 router.use('/api', linksRouter);
 router.use('/api', categoriesRouter);
+router.use('/api', clicksRouter);
+router.use('/api', analyticsRouter);
 router.use('/api/admin', adminRouter);
 
 // API root endpoint
@@ -26,6 +30,9 @@ router.get('/api', (req, res) => {
       categories: '/api/categories',
       featured: '/api/links/featured',
       popular: '/api/links/popular',
+      clicks: '/api/clicks',
+      redirect: '/api/redirect/:linkId',
+      analytics: '/api/admin/analytics',
       admin: '/api/admin',
     },
   });
