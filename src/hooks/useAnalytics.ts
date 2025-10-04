@@ -1,6 +1,11 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { analyticsApi } from '../services';
-import type { AnalyticsParams, ClickAnalytics, RevenueAnalytics, LinkPerformance } from '../services';
+import type {
+  AnalyticsParams,
+  ClickAnalyticsType as ClickAnalytics,
+  RevenueAnalytics,
+  LinkPerformance,
+} from '../services';
 import type { AnalyticsResponse } from '../types';
 
 export interface UseAnalyticsOptions {
@@ -22,9 +27,16 @@ export interface UseAnalyticsReturn {
 /**
  * Custom hook for fetching dashboard analytics
  */
-export function useAnalytics(options: UseAnalyticsOptions = {}): UseAnalyticsReturn {
-  const { autoFetch = true, params: defaultParams, refreshInterval, onError } = options;
-  
+export function useAnalytics(
+  options: UseAnalyticsOptions = {}
+): UseAnalyticsReturn {
+  const {
+    autoFetch = true,
+    params: defaultParams,
+    refreshInterval,
+    onError,
+  } = options;
+
   const [state, setState] = useState({
     analytics: null as AnalyticsResponse | null,
     loading: false,
@@ -36,44 +48,55 @@ export function useAnalytics(options: UseAnalyticsOptions = {}): UseAnalyticsRet
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const clearError = useCallback(() => {
-    setState(prev => ({ ...prev, error: null }));
+    setState((prev) => ({ ...prev, error: null }));
   }, []);
 
-  const fetchAnalytics = useCallback(async (params: AnalyticsParams = {}) => {
-    // Cancel previous request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+  const fetchAnalytics = useCallback(
+    async (params: AnalyticsParams = {}) => {
+      // Cancel previous request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
 
-    abortControllerRef.current = new AbortController();
-    paramsRef.current = { ...paramsRef.current, ...params };
+      abortControllerRef.current = new AbortController();
+      paramsRef.current = { ...paramsRef.current, ...params };
 
-    setState(prev => ({ ...prev, loading: true, error: null }));
+      setState((prev) => ({ ...prev, loading: true, error: null }));
 
-    try {
-      const response = await analyticsApi.getDashboardAnalytics(paramsRef.current);
-      
-      if (response.success) {
-        setState(prev => ({
-          ...prev,
-          analytics: response.data,
-          loading: false,
-        }));
-      } else {
-        const errorMessage = response.error?.message || 'Failed to fetch analytics';
-        setState(prev => ({ ...prev, error: errorMessage, loading: false }));
+      try {
+        const response = await analyticsApi.getDashboardAnalytics(
+          paramsRef.current
+        );
+
+        if (response.success) {
+          setState((prev) => ({
+            ...prev,
+            analytics: response.data,
+            loading: false,
+          }));
+        } else {
+          const errorMessage =
+            response.error?.message || 'Failed to fetch analytics';
+          setState((prev) => ({
+            ...prev,
+            error: errorMessage,
+            loading: false,
+          }));
+          onError?.(errorMessage);
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          return; // Request was cancelled
+        }
+
+        const errorMessage =
+          error instanceof Error ? error.message : 'Unknown error occurred';
+        setState((prev) => ({ ...prev, error: errorMessage, loading: false }));
         onError?.(errorMessage);
       }
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return; // Request was cancelled
-      }
-
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      setState(prev => ({ ...prev, error: errorMessage, loading: false }));
-      onError?.(errorMessage);
-    }
-  }, [onError]);
+    },
+    [onError]
+  );
 
   const refetch = useCallback(async () => {
     await fetchAnalytics(paramsRef.current);
@@ -124,28 +147,29 @@ export function useClickAnalytics(params: AnalyticsParams = {}) {
   });
 
   const fetchClickAnalytics = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
       const response = await analyticsApi.getClickAnalytics(params);
-      
+
       if (response.success) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           clickAnalytics: response.data,
           loading: false,
         }));
       } else {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           error: response.error?.message || 'Failed to fetch click analytics',
           loading: false,
         }));
       }
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
         loading: false,
       }));
     }
@@ -172,28 +196,29 @@ export function useRevenueAnalytics(params: AnalyticsParams = {}) {
   });
 
   const fetchRevenueAnalytics = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
       const response = await analyticsApi.getRevenueAnalytics(params);
-      
+
       if (response.success) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           revenueAnalytics: response.data,
           loading: false,
         }));
       } else {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           error: response.error?.message || 'Failed to fetch revenue analytics',
           loading: false,
         }));
       }
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
         loading: false,
       }));
     }
@@ -220,28 +245,29 @@ export function useLinkPerformance(params: AnalyticsParams = {}) {
   });
 
   const fetchLinkPerformance = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
       const response = await analyticsApi.getLinkPerformance(params);
-      
+
       if (response.success) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           linkPerformance: response.data,
           loading: false,
         }));
       } else {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           error: response.error?.message || 'Failed to fetch link performance',
           loading: false,
         }));
       }
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
         loading: false,
       }));
     }
@@ -270,28 +296,30 @@ export function useRealTimeAnalytics(refreshInterval: number = 30000) {
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const fetchRealTimeAnalytics = useCallback(async () => {
-    setState(prev => ({ ...prev, loading: true, error: null }));
+    setState((prev) => ({ ...prev, loading: true, error: null }));
 
     try {
       const response = await analyticsApi.getRealTimeAnalytics();
-      
+
       if (response.success) {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
           realTimeData: response.data,
           loading: false,
         }));
       } else {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          error: response.error?.message || 'Failed to fetch real-time analytics',
+          error:
+            response.error?.message || 'Failed to fetch real-time analytics',
           loading: false,
         }));
       }
     } catch (error) {
-      setState(prev => ({
+      setState((prev) => ({
         ...prev,
-        error: error instanceof Error ? error.message : 'Unknown error occurred',
+        error:
+          error instanceof Error ? error.message : 'Unknown error occurred',
         loading: false,
       }));
     }

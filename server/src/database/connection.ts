@@ -42,18 +42,21 @@ export class DatabaseConnection {
     return DatabaseConnection.instance;
   }
 
-  public async query<T extends QueryResultRow = any>(text: string, params?: any[]): Promise<QueryResult<T>> {
+  public async query<T extends QueryResultRow = any>(
+    text: string,
+    params?: any[]
+  ): Promise<QueryResult<T>> {
     const start = Date.now();
     try {
       const result = await this.pool.query<T>(text, params);
       const duration = Date.now() - start;
-      
+
       logger.debug('Database query executed', {
         query: text,
         duration: `${duration}ms`,
         rows: result.rowCount,
       });
-      
+
       return result;
     } catch (error) {
       const duration = Date.now() - start;
@@ -70,7 +73,9 @@ export class DatabaseConnection {
     return this.pool.connect();
   }
 
-  public async transaction<T>(callback: (client: PoolClient) => Promise<T>): Promise<T> {
+  public async transaction<T>(
+    callback: (client: PoolClient) => Promise<T>
+  ): Promise<T> {
     const client = await this.getClient();
     try {
       await client.query('BEGIN');

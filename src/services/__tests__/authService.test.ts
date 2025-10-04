@@ -65,14 +65,28 @@ describe('AuthService', () => {
 
   describe('login', () => {
     it('should login successfully and store token and user', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
 
       const result = await authService.login(mockCredentials);
 
-      expect(apiClient.post).toHaveBeenCalledWith('/auth/login', mockCredentials);
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('affiliate_admin_token', mockAuthResponse.token);
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('affiliate_admin_user', JSON.stringify(mockUser));
-      expect(apiClient.setAuthToken).toHaveBeenCalledWith(mockAuthResponse.token);
+      expect(apiClient.post).toHaveBeenCalledWith(
+        '/auth/login',
+        mockCredentials
+      );
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'affiliate_admin_token',
+        mockAuthResponse.token
+      );
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'affiliate_admin_user',
+        JSON.stringify(mockUser)
+      );
+      expect(apiClient.setAuthToken).toHaveBeenCalledWith(
+        mockAuthResponse.token
+      );
       expect(result).toEqual(mockAuthResponse);
     });
 
@@ -80,13 +94,18 @@ describe('AuthService', () => {
       const errorMessage = 'Invalid credentials';
       vi.mocked(apiClient.post).mockRejectedValueOnce(new Error(errorMessage));
 
-      await expect(authService.login(mockCredentials)).rejects.toThrow(errorMessage);
+      await expect(authService.login(mockCredentials)).rejects.toThrow(
+        errorMessage
+      );
       expect(mockLocalStorage.setItem).not.toHaveBeenCalled();
       expect(apiClient.setAuthToken).not.toHaveBeenCalled();
     });
 
     it('should handle localStorage errors gracefully', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
       mockLocalStorage.setItem.mockImplementationOnce(() => {
         throw new Error('Storage quota exceeded');
       });
@@ -94,7 +113,10 @@ describe('AuthService', () => {
       const result = await authService.login(mockCredentials);
 
       expect(result).toEqual(mockAuthResponse);
-      expect(mockConsole.warn).toHaveBeenCalledWith('Failed to store token in localStorage:', expect.any(Error));
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        'Failed to store token in localStorage:',
+        expect.any(Error)
+      );
     });
   });
 
@@ -104,24 +126,40 @@ describe('AuthService', () => {
     });
 
     it('should logout successfully and clear stored data', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce({});
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: {},
+        success: true,
+      });
 
       await authService.logout();
 
       expect(apiClient.post).toHaveBeenCalledWith('/auth/logout');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_token');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_user');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_token'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_user'
+      );
       expect(apiClient.clearAuthToken).toHaveBeenCalled();
     });
 
     it('should clear data even if logout API call fails', async () => {
-      vi.mocked(apiClient.post).mockRejectedValueOnce(new Error('Network error'));
+      vi.mocked(apiClient.post).mockRejectedValueOnce(
+        new Error('Network error')
+      );
 
       await authService.logout();
 
-      expect(mockConsole.warn).toHaveBeenCalledWith('Logout API call failed:', expect.any(Error));
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_token');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_user');
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        'Logout API call failed:',
+        expect.any(Error)
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_token'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_user'
+      );
       expect(apiClient.clearAuthToken).toHaveBeenCalled();
     });
 
@@ -131,53 +169,89 @@ describe('AuthService', () => {
       await authService.logout();
 
       expect(apiClient.post).not.toHaveBeenCalled();
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_token');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_user');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_token'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_user'
+      );
       expect(apiClient.clearAuthToken).toHaveBeenCalled();
     });
   });
 
   describe('refreshToken', () => {
     it('should refresh token successfully', async () => {
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
 
       const result = await authService.refreshToken();
 
       expect(apiClient.post).toHaveBeenCalledWith('/auth/refresh');
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('affiliate_admin_token', mockAuthResponse.token);
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('affiliate_admin_user', JSON.stringify(mockUser));
-      expect(apiClient.setAuthToken).toHaveBeenCalledWith(mockAuthResponse.token);
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'affiliate_admin_token',
+        mockAuthResponse.token
+      );
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'affiliate_admin_user',
+        JSON.stringify(mockUser)
+      );
+      expect(apiClient.setAuthToken).toHaveBeenCalledWith(
+        mockAuthResponse.token
+      );
       expect(result).toEqual(mockAuthResponse);
     });
 
     it('should clear data when refresh fails', async () => {
-      vi.mocked(apiClient.post).mockRejectedValueOnce(new Error('Token expired'));
+      vi.mocked(apiClient.post).mockRejectedValueOnce(
+        new Error('Token expired')
+      );
 
-      await expect(authService.refreshToken()).rejects.toThrow('Token refresh failed');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_token');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_user');
+      await expect(authService.refreshToken()).rejects.toThrow(
+        'Token refresh failed'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_token'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_user'
+      );
       expect(apiClient.clearAuthToken).toHaveBeenCalled();
     });
   });
 
   describe('verifyToken', () => {
     it('should verify token successfully', async () => {
-      const verifyResponse = { user: mockUser };
-      vi.mocked(apiClient.get).mockResolvedValueOnce(verifyResponse);
+      vi.mocked(apiClient.get).mockResolvedValueOnce({
+        data: { user: mockUser },
+        success: true,
+      });
 
       const result = await authService.verifyToken();
 
       expect(apiClient.get).toHaveBeenCalledWith('/auth/verify');
-      expect(mockLocalStorage.setItem).toHaveBeenCalledWith('affiliate_admin_user', JSON.stringify(mockUser));
+      expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
+        'affiliate_admin_user',
+        JSON.stringify(mockUser)
+      );
       expect(result).toEqual(mockUser);
     });
 
     it('should clear data when verification fails', async () => {
-      vi.mocked(apiClient.get).mockRejectedValueOnce(new Error('Invalid token'));
+      vi.mocked(apiClient.get).mockRejectedValueOnce(
+        new Error('Invalid token')
+      );
 
-      await expect(authService.verifyToken()).rejects.toThrow('Token verification failed');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_token');
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('affiliate_admin_user');
+      await expect(authService.verifyToken()).rejects.toThrow(
+        'Token verification failed'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_token'
+      );
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith(
+        'affiliate_admin_user'
+      );
       expect(apiClient.clearAuthToken).toHaveBeenCalled();
     });
   });
@@ -189,7 +263,9 @@ describe('AuthService', () => {
 
       const result = authService.getToken();
 
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('affiliate_admin_token');
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith(
+        'affiliate_admin_token'
+      );
       expect(result).toBe(token);
     });
 
@@ -209,7 +285,10 @@ describe('AuthService', () => {
       const result = authService.getToken();
 
       expect(result).toBeNull();
-      expect(mockConsole.warn).toHaveBeenCalledWith('Failed to get token from localStorage:', expect.any(Error));
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        'Failed to get token from localStorage:',
+        expect.any(Error)
+      );
     });
   });
 
@@ -219,7 +298,9 @@ describe('AuthService', () => {
 
       const result = authService.getUser();
 
-      expect(mockLocalStorage.getItem).toHaveBeenCalledWith('affiliate_admin_user');
+      expect(mockLocalStorage.getItem).toHaveBeenCalledWith(
+        'affiliate_admin_user'
+      );
       // Compare without the date object since JSON.parse converts dates to strings
       expect(result).toEqual({
         ...mockUser,
@@ -241,7 +322,10 @@ describe('AuthService', () => {
       const result = authService.getUser();
 
       expect(result).toBeNull();
-      expect(mockConsole.warn).toHaveBeenCalledWith('Failed to get user from localStorage:', expect.any(Error));
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        'Failed to get user from localStorage:',
+        expect.any(Error)
+      );
     });
   });
 
@@ -314,7 +398,10 @@ describe('AuthService', () => {
       const result = authService.isTokenExpired();
 
       expect(result).toBe(true);
-      expect(mockConsole.warn).toHaveBeenCalledWith('Failed to decode token:', expect.any(Error));
+      expect(mockConsole.warn).toHaveBeenCalledWith(
+        'Failed to decode token:',
+        expect.any(Error)
+      );
     });
   });
 
@@ -331,12 +418,15 @@ describe('AuthService', () => {
     it('should refresh token when expired and return user', async () => {
       const expiredPayload = { exp: Math.floor(Date.now() / 1000) - 3600 };
       const expiredToken = `header.${btoa(JSON.stringify(expiredPayload))}.signature`;
-      
+
       mockLocalStorage.getItem
         .mockReturnValueOnce(expiredToken)
         .mockReturnValueOnce(JSON.stringify(mockUser));
-      
-      vi.mocked(apiClient.post).mockResolvedValueOnce(mockAuthResponse);
+
+      vi.mocked(apiClient.post).mockResolvedValueOnce({
+        data: { token: mockAuthResponse.token, user: mockAuthResponse.user },
+        success: true,
+      });
 
       const result = await authService.initialize();
 
@@ -348,14 +438,17 @@ describe('AuthService', () => {
     it('should verify token when not expired and return user', async () => {
       const validPayload = { exp: Math.floor(Date.now() / 1000) + 3600 };
       const validToken = `header.${btoa(JSON.stringify(validPayload))}.signature`;
-      
+
       mockLocalStorage.getItem
         .mockReturnValueOnce(validToken)
         .mockReturnValueOnce(JSON.stringify(mockUser))
         .mockReturnValueOnce(validToken)
         .mockReturnValueOnce(JSON.stringify(mockUser));
-      
-      vi.mocked(apiClient.get).mockResolvedValueOnce({ user: mockUser });
+
+      vi.mocked(apiClient.get).mockResolvedValueOnce({
+        data: { user: mockUser },
+        success: true,
+      });
 
       const result = await authService.initialize();
 
@@ -367,12 +460,14 @@ describe('AuthService', () => {
     it('should return null when refresh fails', async () => {
       const expiredPayload = { exp: Math.floor(Date.now() / 1000) - 3600 };
       const expiredToken = `header.${btoa(JSON.stringify(expiredPayload))}.signature`;
-      
+
       mockLocalStorage.getItem
         .mockReturnValueOnce(expiredToken)
         .mockReturnValueOnce(JSON.stringify(mockUser));
-      
-      vi.mocked(apiClient.post).mockRejectedValueOnce(new Error('Refresh failed'));
+
+      vi.mocked(apiClient.post).mockRejectedValueOnce(
+        new Error('Refresh failed')
+      );
 
       const result = await authService.initialize();
 
@@ -382,14 +477,16 @@ describe('AuthService', () => {
     it('should return null when verification fails', async () => {
       const validPayload = { exp: Math.floor(Date.now() / 1000) + 3600 };
       const validToken = `header.${btoa(JSON.stringify(validPayload))}.signature`;
-      
+
       mockLocalStorage.getItem
         .mockReturnValueOnce(validToken)
         .mockReturnValueOnce(JSON.stringify(mockUser))
         .mockReturnValueOnce(validToken)
         .mockReturnValueOnce(JSON.stringify(mockUser));
-      
-      vi.mocked(apiClient.get).mockRejectedValueOnce(new Error('Verification failed'));
+
+      vi.mocked(apiClient.get).mockRejectedValueOnce(
+        new Error('Verification failed')
+      );
 
       const result = await authService.initialize();
 

@@ -14,9 +14,7 @@ describe('Health Routes', () => {
 
   describe('GET /health', () => {
     it('should return health check information', async () => {
-      const response = await request(app)
-        .get('/health')
-        .expect(200);
+      const response = await request(app).get('/health').expect(200);
 
       expect(response.body).toMatchObject({
         status: 'OK',
@@ -24,7 +22,7 @@ describe('Health Routes', () => {
         uptime: expect.any(Number),
         version: expect.any(String),
       });
-      
+
       expect(typeof response.body.timestamp).toBe('string');
       expect(new Date(response.body.timestamp)).toBeInstanceOf(Date);
     });
@@ -41,26 +39,22 @@ describe('Health Routes', () => {
 
   describe('GET /ready', () => {
     it('should return readiness check information', async () => {
-      const response = await request(app)
-        .get('/ready')
-        .expect(200);
+      const response = await request(app).get('/ready').expect(200);
 
       expect(response.body).toMatchObject({
         status: 'READY',
         services: {
-          database: 'pending',
+          database: 'healthy',
           server: 'healthy',
         },
       });
-      
+
       expect(typeof response.body.timestamp).toBe('string');
       expect(new Date(response.body.timestamp)).toBeInstanceOf(Date);
     });
 
     it('should include all required service checks', async () => {
-      const response = await request(app)
-        .get('/ready')
-        .expect(200);
+      const response = await request(app).get('/ready').expect(200);
 
       expect(response.body.services).toHaveProperty('database');
       expect(response.body.services).toHaveProperty('server');

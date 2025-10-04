@@ -6,7 +6,11 @@ interface HighlightedTextProps {
   className?: string;
 }
 
-export function HighlightedText({ text, searchQuery, className = '' }: HighlightedTextProps) {
+export function HighlightedText({
+  text,
+  searchQuery,
+  className = '',
+}: HighlightedTextProps) {
   const highlightedText = highlightSearchText(text, searchQuery);
 
   return (

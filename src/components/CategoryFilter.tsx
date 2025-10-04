@@ -12,15 +12,15 @@ export function CategoryFilter({
   categories,
   selectedCategories,
   onCategoryChange,
-  className = ''
+  className = '',
 }: CategoryFilterProps) {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleCategoryToggle = (categoryId: string) => {
     const isSelected = selectedCategories.includes(categoryId);
-    
+
     if (isSelected) {
-      onCategoryChange(selectedCategories.filter(id => id !== categoryId));
+      onCategoryChange(selectedCategories.filter((id) => id !== categoryId));
     } else {
       onCategoryChange([...selectedCategories, categoryId]);
     }
@@ -30,7 +30,7 @@ export function CategoryFilter({
     if (selectedCategories.length === categories.length) {
       onCategoryChange([]);
     } else {
-      onCategoryChange(categories.map(cat => cat.id));
+      onCategoryChange(categories.map((cat) => cat.id));
     }
   };
 
@@ -50,7 +50,9 @@ export function CategoryFilter({
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="md:hidden p-1 text-gray-500 hover:text-gray-700"
-            aria-label={isExpanded ? 'Collapse categories' : 'Expand categories'}
+            aria-label={
+              isExpanded ? 'Collapse categories' : 'Expand categories'
+            }
           >
             <svg
               className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -67,7 +69,7 @@ export function CategoryFilter({
             </svg>
           </button>
         </div>
-        
+
         {/* Selected count and controls */}
         {someSelected && (
           <div className="mt-2 flex items-center justify-between text-sm">
@@ -101,8 +103,8 @@ export function CategoryFilter({
                   allSelected
                     ? 'bg-blue-600 border-blue-600'
                     : someSelected
-                    ? 'bg-blue-100 border-blue-600'
-                    : 'border-gray-300 group-hover:border-gray-400'
+                      ? 'bg-blue-100 border-blue-600'
+                      : 'border-gray-300 group-hover:border-gray-400'
                 }`}
               >
                 {allSelected && (
@@ -131,7 +133,7 @@ export function CategoryFilter({
           {/* Individual categories */}
           {categories.map((category) => {
             const isSelected = selectedCategories.includes(category.id);
-            
+
             return (
               <label
                 key={category.id}
@@ -166,7 +168,7 @@ export function CategoryFilter({
                     )}
                   </div>
                 </div>
-                
+
                 <div className="flex items-center space-x-2 flex-1 min-w-0">
                   {/* Category color indicator */}
                   <div
@@ -174,12 +176,12 @@ export function CategoryFilter({
                     style={{ backgroundColor: category.color }}
                     aria-hidden="true"
                   />
-                  
+
                   {/* Category name */}
                   <span className="text-sm text-gray-900 truncate">
                     {category.name}
                   </span>
-                  
+
                   {/* Link count */}
                   <span className="text-xs text-gray-500 flex-shrink-0">
                     ({category.linkCount})

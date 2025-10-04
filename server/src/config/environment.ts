@@ -6,7 +6,7 @@ dotenv.config();
 export const config = {
   port: parseInt(process.env.PORT || '3001', 10),
   nodeEnv: process.env.NODE_ENV || 'development',
-  
+
   // Database configuration
   database: {
     url: process.env.DATABASE_URL || '',
@@ -16,18 +16,18 @@ export const config = {
     user: process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || '',
   },
-  
+
   // JWT configuration
   jwt: {
     secret: process.env.JWT_SECRET || 'fallback-secret-key',
     expiresIn: process.env.JWT_EXPIRES_IN || '7d',
   },
-  
+
   // CORS configuration
   cors: {
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
   },
-  
+
   // Rate limiting
   rateLimit: {
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || '900000', 10), // 15 minutes

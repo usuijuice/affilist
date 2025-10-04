@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import { AnalyticsDashboard } from '../AnalyticsDashboard';
 
 // Mock the hooks
@@ -10,12 +10,17 @@ vi.mock('../../hooks', () => ({
   useLinkPerformance: vi.fn(),
 }));
 
-import { useAnalytics, useClickAnalytics, useRevenueAnalytics, useLinkPerformance } from '../../hooks';
+import {
+  useAnalytics,
+  useClickAnalytics,
+  useRevenueAnalytics,
+  useLinkPerformance,
+} from '../../hooks';
 
 describe('AnalyticsDashboard', () => {
   const mockAnalyticsData = {
     totalClicks: 1500,
-    totalRevenue: 2500.50,
+    totalRevenue: 2500.5,
     topLinks: [
       { link: { id: '1', title: 'Test Link 1' }, clicks: 100, revenue: 150 },
       { link: { id: '2', title: 'Test Link 2' }, clicks: 80, revenue: 120 },
@@ -44,8 +49,8 @@ describe('AnalyticsDashboard', () => {
   };
 
   const mockRevenueAnalytics = {
-    totalRevenue: 2500.50,
-    estimatedRevenue: 3000.00,
+    totalRevenue: 2500.5,
+    estimatedRevenue: 3000.0,
     revenueByDate: [
       { date: '2024-01-01', revenue: 100 },
       { date: '2024-01-02', revenue: 150 },
@@ -79,7 +84,7 @@ describe('AnalyticsDashboard', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     (useAnalytics as any).mockReturnValue({
       analytics: mockAnalyticsData,
       loading: false,
@@ -110,12 +115,16 @@ describe('AnalyticsDashboard', () => {
     render(<AnalyticsDashboard />);
 
     expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
-    expect(screen.getByText('Track performance and insights for your affiliate links')).toBeInTheDocument();
-    
+    expect(
+      screen.getByText(
+        'Track performance and insights for your affiliate links'
+      )
+    ).toBeInTheDocument();
+
     // Check metric cards
     expect(screen.getByText('Total Clicks')).toBeInTheDocument();
     expect(screen.getByText('1.5K')).toBeInTheDocument(); // Formatted number
-    
+
     expect(screen.getByText('Total Revenue')).toBeInTheDocument();
     expect(screen.getByText(/\$2,50[01]/)).toBeInTheDocument(); // Formatted currency
   });
@@ -187,7 +196,7 @@ describe('AnalyticsDashboard', () => {
     const largeNumberData = {
       ...mockAnalyticsData,
       totalClicks: 1500000, // 1.5M
-      totalRevenue: 2500000.50, // 2.5M
+      totalRevenue: 2500000.5, // 2.5M
     };
 
     (useAnalytics as any).mockReturnValue({
@@ -208,7 +217,9 @@ describe('AnalyticsDashboard', () => {
 
     expect(screen.getByText('Clicks Over Time')).toBeInTheDocument();
     expect(screen.getByText('Revenue Over Time')).toBeInTheDocument();
-    expect(screen.getAllByText('Chart visualization would go here')).toHaveLength(2);
+    expect(
+      screen.getAllByText('Chart visualization would go here')
+    ).toHaveLength(2);
   });
 
   it('should show performance tables', () => {
@@ -250,8 +261,10 @@ describe('AnalyticsDashboard', () => {
   });
 
   it('should apply custom className', () => {
-    const { container } = render(<AnalyticsDashboard className="custom-class" />);
-    
+    const { container } = render(
+      <AnalyticsDashboard className="custom-class" />
+    );
+
     expect(container.firstChild).toHaveClass('custom-class');
   });
 });

@@ -2,7 +2,11 @@ import { renderHook, act } from '@testing-library/react';
 import { ReactNode } from 'react';
 import { AppProvider } from '../../contexts/AppContext';
 import { useAppState } from '../useAppState';
-import { createMockAffiliateLink, createMockCategory } from '../../test/factories';
+import {
+  createMockAffiliateLink,
+  createMockCategory,
+} from '../../test/factories';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 // Test wrapper component
 const createWrapper = () => {

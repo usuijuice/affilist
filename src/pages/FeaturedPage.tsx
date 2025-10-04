@@ -7,10 +7,11 @@ export function FeaturedPage() {
             Featured Affiliate Links
           </h1>
           <p className="text-lg text-gray-600">
-            Discover our hand-picked selection of top-performing affiliate opportunities.
+            Discover our hand-picked selection of top-performing affiliate
+            opportunities.
           </p>
         </div>
-        
+
         <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-semibold text-gray-600 mb-4">

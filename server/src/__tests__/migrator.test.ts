@@ -20,6 +20,9 @@ describe('Database Migrator', () => {
 
   describe('Migration Status', () => {
     it('should return empty status when no migrations exist', async () => {
+      // Clear any existing migrations first
+      await db.query('DELETE FROM migrations');
+
       const status = await migrator.status();
       expect(Array.isArray(status)).toBe(true);
       expect(status).toHaveLength(0);
@@ -27,7 +30,7 @@ describe('Database Migrator', () => {
 
     it('should create migrations table when checking status', async () => {
       await migrator.status();
-      
+
       // Check if migrations table exists
       const result = await db.query(`
         SELECT EXISTS (
@@ -35,7 +38,7 @@ describe('Database Migrator', () => {
           WHERE table_name = 'migrations'
         );
       `);
-      
+
       expect(result.rows[0].exists).toBe(true);
     });
   });
@@ -43,23 +46,23 @@ describe('Database Migrator', () => {
   describe('Migration Table Management', () => {
     it('should create migrations table with correct structure', async () => {
       await migrator.status(); // This creates the table
-      
+
       const result = await db.query(`
         SELECT column_name, data_type 
         FROM information_schema.columns 
         WHERE table_name = 'migrations'
         ORDER BY ordinal_position;
       `);
-      
-      const columns = result.rows.map(row => ({
+
+      const columns = result.rows.map((row) => ({
         name: row.column_name,
-        type: row.data_type
+        type: row.data_type,
       }));
-      
+
       expect(columns).toEqual([
         { name: 'id', type: 'character varying' },
         { name: 'filename', type: 'character varying' },
-        { name: 'executed_at', type: 'timestamp with time zone' }
+        { name: 'executed_at', type: 'timestamp with time zone' },
       ]);
     });
   });
@@ -68,7 +71,7 @@ describe('Database Migrator', () => {
     it('should handle missing migrations directory gracefully', async () => {
       // Create a migrator with invalid path
       const invalidMigrator = new DatabaseMigrator();
-      
+
       // Mock the migrations path to a non-existent directory
       // This test verifies error handling without actually breaking the file system
       await expect(async () => {

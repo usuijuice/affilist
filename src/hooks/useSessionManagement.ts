@@ -8,37 +8,39 @@ interface UseSessionManagementOptions {
    * Default: 5 minutes
    */
   checkInterval?: number;
-  
+
   /**
    * How long before token expiry to attempt refresh (in milliseconds)
    * Default: 5 minutes
    */
   refreshThreshold?: number;
-  
+
   /**
    * Whether to show warnings before session expires
    * Default: true
    */
   showWarnings?: boolean;
-  
+
   /**
    * How long before expiry to show warning (in milliseconds)
    * Default: 10 minutes
    */
   warningThreshold?: number;
-  
+
   /**
    * Callback when session is about to expire
    */
   onSessionWarning?: (timeLeft: number) => void;
-  
+
   /**
    * Callback when session expires
    */
   onSessionExpired?: () => void;
 }
 
-export function useSessionManagement(options: UseSessionManagementOptions = {}) {
+export function useSessionManagement(
+  options: UseSessionManagementOptions = {}
+) {
   const {
     checkInterval = 5 * 60 * 1000, // 5 minutes
     refreshThreshold = 5 * 60 * 1000, // 5 minutes
@@ -108,7 +110,11 @@ export function useSessionManagement(options: UseSessionManagementOptions = {}) 
     }
 
     // Check if we should show a warning
-    if (showWarnings && timeUntilExpiry <= warningThreshold && !warningShownRef.current) {
+    if (
+      showWarnings &&
+      timeUntilExpiry <= warningThreshold &&
+      !warningShownRef.current
+    ) {
       warningShownRef.current = true;
       if (onSessionWarning) {
         onSessionWarning(timeUntilExpiry);
@@ -140,7 +146,7 @@ export function useSessionManagement(options: UseSessionManagementOptions = {}) 
   const getTimeUntilExpiry = useCallback((): number | null => {
     const expirationTime = getTokenExpirationTime();
     if (!expirationTime) return null;
-    
+
     return Math.max(0, expirationTime - Date.now());
   }, [getTokenExpirationTime]);
 
@@ -149,7 +155,7 @@ export function useSessionManagement(options: UseSessionManagementOptions = {}) 
     if (state.isAuthenticated) {
       // Check immediately
       checkTokenValidity();
-      
+
       // Set up interval
       intervalRef.current = setInterval(checkTokenValidity, checkInterval);
     } else {
@@ -181,44 +187,55 @@ export function useSessionManagement(options: UseSessionManagementOptions = {}) 
       }
     };
 
-    const events = ['mousedown', 'mousemove', 'keypress', 'scroll', 'touchstart'];
-    
+    const events = [
+      'mousedown',
+      'mousemove',
+      'keypress',
+      'scroll',
+      'touchstart',
+    ];
+
     // Throttle activity detection to avoid excessive API calls
     let activityTimeout: NodeJS.Timeout | null = null;
     const throttledActivityHandler = () => {
       if (activityTimeout) return;
-      
+
       activityTimeout = setTimeout(() => {
         handleUserActivity();
         activityTimeout = null;
       }, 30000); // Check at most once every 30 seconds
     };
 
-    events.forEach(event => {
+    events.forEach((event) => {
       document.addEventListener(event, throttledActivityHandler, true);
     });
 
     return () => {
-      events.forEach(event => {
+      events.forEach((event) => {
         document.removeEventListener(event, throttledActivityHandler, true);
       });
       if (activityTimeout) {
         clearTimeout(activityTimeout);
       }
     };
-  }, [state.isAuthenticated, getTimeUntilExpiry, refreshThreshold, extendSession]);
+  }, [
+    state.isAuthenticated,
+    getTimeUntilExpiry,
+    refreshThreshold,
+    extendSession,
+  ]);
 
   return {
     /**
      * Manually extend the session
      */
     extendSession,
-    
+
     /**
      * Get time until token expires (in milliseconds)
      */
     getTimeUntilExpiry,
-    
+
     /**
      * Check if token is close to expiry
      */
@@ -226,7 +243,7 @@ export function useSessionManagement(options: UseSessionManagementOptions = {}) 
       const timeLeft = getTimeUntilExpiry();
       return timeLeft !== null && timeLeft <= warningThreshold;
     },
-    
+
     /**
      * Force a token validity check
      */

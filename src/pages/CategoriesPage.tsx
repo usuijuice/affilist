@@ -7,10 +7,11 @@ export function CategoriesPage() {
             All Categories
           </h1>
           <p className="text-lg text-gray-600">
-            Browse affiliate links by category to find exactly what you're looking for.
+            Browse affiliate links by category to find exactly what you're
+            looking for.
           </p>
         </div>
-        
+
         <div className="border-4 border-dashed border-gray-200 rounded-lg h-96 flex items-center justify-center">
           <div className="text-center">
             <h2 className="text-2xl font-semibold text-gray-600 mb-4">

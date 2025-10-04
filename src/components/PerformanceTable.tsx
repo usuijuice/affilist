@@ -10,7 +10,12 @@ interface PerformanceTableProps {
   className?: string;
 }
 
-type SortField = 'clicks' | 'uniqueClicks' | 'conversionRate' | 'revenue' | 'ctr';
+type SortField =
+  | 'clicks'
+  | 'uniqueClicks'
+  | 'conversionRate'
+  | 'revenue'
+  | 'ctr';
 type SortDirection = 'asc' | 'desc';
 
 export function PerformanceTable({
@@ -39,16 +44,17 @@ export function PerformanceTable({
 
     // Apply text filter
     if (filterText) {
-      filtered = data.filter(item =>
-        item.title.toLowerCase().includes(filterText.toLowerCase()) ||
-        item.linkId.toLowerCase().includes(filterText.toLowerCase())
+      filtered = data.filter(
+        (item) =>
+          item.title.toLowerCase().includes(filterText.toLowerCase()) ||
+          item.linkId.toLowerCase().includes(filterText.toLowerCase())
       );
     }
 
     // Apply sorting
     filtered.sort((a, b) => {
-      let aValue = a[sortField];
-      let bValue = b[sortField];
+      const aValue = a[sortField];
+      const bValue = b[sortField];
 
       if (sortDirection === 'asc') {
         return aValue > bValue ? 1 : -1;
@@ -60,34 +66,15 @@ export function PerformanceTable({
     return filtered.slice(0, maxRows);
   }, [data, filterText, sortField, sortDirection, maxRows]);
 
-  const formatNumber = (num: number): string => {
-    if (num >= 1000000) {
-      return `${(num / 1000000).toFixed(1)}M`;
-    }
-    if (num >= 1000) {
-      return `${(num / 1000).toFixed(1)}K`;
-    }
-    return num.toLocaleString();
-  };
-
-  const formatCurrency = (amount: number): string => {
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 2,
-    }).format(amount);
-  };
-
-  const formatPercentage = (value: number): string => {
-    return `${value.toFixed(2)}%`;
-  };
-
   const getSortIcon = (field: SortField) => {
     if (sortField !== field) {
       return <span className="text-gray-400">↕️</span>;
     }
-    return sortDirection === 'asc' ? <span className="text-blue-600">↑</span> : <span className="text-blue-600">↓</span>;
+    return sortDirection === 'asc' ? (
+      <span className="text-blue-600">↑</span>
+    ) : (
+      <span className="text-blue-600">↓</span>
+    );
   };
 
   if (loading) {
@@ -95,16 +82,16 @@ export function PerformanceTable({
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}>
+    <div
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}
+    >
       {/* Header */}
       <div className="px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-semibold text-gray-900">{title}</h3>
-          <div className="text-sm text-gray-500">
-            {data.length} total items
-          </div>
+          <div className="text-sm text-gray-500">{data.length} total items</div>
         </div>
-        
+
         {/* Filters */}
         {showFilters && (
           <div className="mt-4">
@@ -127,7 +114,7 @@ export function PerformanceTable({
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Link
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('clicks')}
               >
@@ -136,7 +123,7 @@ export function PerformanceTable({
                   {getSortIcon('clicks')}
                 </div>
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('uniqueClicks')}
               >
@@ -145,7 +132,7 @@ export function PerformanceTable({
                   {getSortIcon('uniqueClicks')}
                 </div>
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('ctr')}
               >
@@ -154,7 +141,7 @@ export function PerformanceTable({
                   {getSortIcon('ctr')}
                 </div>
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('conversionRate')}
               >
@@ -163,7 +150,7 @@ export function PerformanceTable({
                   {getSortIcon('conversionRate')}
                 </div>
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('revenue')}
               >
@@ -177,7 +164,11 @@ export function PerformanceTable({
           <tbody className="bg-white divide-y divide-gray-200">
             {filteredAndSortedData.length > 0 ? (
               filteredAndSortedData.map((item, index) => (
-                <PerformanceRow key={item.linkId} item={item} rank={index + 1} />
+                <PerformanceRow
+                  key={item.linkId}
+                  item={item}
+                  rank={index + 1}
+                />
               ))
             ) : (
               <tr>
@@ -202,7 +193,8 @@ export function PerformanceTable({
       {filteredAndSortedData.length > 0 && data.length > maxRows && (
         <div className="px-6 py-3 bg-gray-50 border-t border-gray-200 text-center">
           <p className="text-sm text-gray-600">
-            Showing top {Math.min(maxRows, filteredAndSortedData.length)} of {data.length} links
+            Showing top {Math.min(maxRows, filteredAndSortedData.length)} of{' '}
+            {data.length} links
           </p>
         </div>
       )}
@@ -241,10 +233,16 @@ function PerformanceRow({ item, rank }: PerformanceRowProps) {
 
   const getRankBadge = (rank: number) => {
     if (rank <= 3) {
-      const colors = ['bg-yellow-100 text-yellow-800', 'bg-gray-100 text-gray-800', 'bg-orange-100 text-orange-800'];
+      const colors = [
+        'bg-yellow-100 text-yellow-800',
+        'bg-gray-100 text-gray-800',
+        'bg-orange-100 text-orange-800',
+      ];
       const icons = ['🥇', '🥈', '🥉'];
       return (
-        <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${colors[rank - 1]}`}>
+        <span
+          className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${colors[rank - 1]}`}
+        >
           {icons[rank - 1]} #{rank}
         </span>
       );
@@ -260,9 +258,7 @@ function PerformanceRow({ item, rank }: PerformanceRowProps) {
     <tr className="hover:bg-gray-50">
       <td className="px-6 py-4 whitespace-nowrap">
         <div className="flex items-center">
-          <div className="flex-shrink-0 mr-3">
-            {getRankBadge(rank)}
-          </div>
+          <div className="flex-shrink-0 mr-3">{getRankBadge(rank)}</div>
           <div className="min-w-0 flex-1">
             <div className="text-sm font-medium text-gray-900 truncate">
               {item.title}
@@ -283,18 +279,29 @@ function PerformanceRow({ item, rank }: PerformanceRowProps) {
         <div className="font-semibold">{formatPercentage(item.ctr)}</div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        <div className="font-semibold">{formatPercentage(item.conversionRate)}</div>
+        <div className="font-semibold">
+          {formatPercentage(item.conversionRate)}
+        </div>
       </td>
       <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-        <div className="font-semibold text-green-600">{formatCurrency(item.revenue)}</div>
+        <div className="font-semibold text-green-600">
+          {formatCurrency(item.revenue)}
+        </div>
       </td>
     </tr>
   );
 }
 
-function PerformanceTableSkeleton({ title, className }: { title: string; className: string }) {
+function PerformanceTableSkeleton({
+  className,
+}: {
+  title: string;
+  className: string;
+}) {
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 animate-pulse ${className}`}>
+    <div
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 animate-pulse ${className}`}
+    >
       <div className="px-6 py-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
           <div className="h-6 bg-gray-200 rounded w-32"></div>
@@ -349,15 +356,20 @@ interface CategoryPerformanceTableProps {
   className?: string;
 }
 
-export function CategoryPerformanceTable({ data, loading, className }: CategoryPerformanceTableProps) {
-  const [sortField, setSortField] = useState<keyof CategoryPerformanceData>('clicks');
+export function CategoryPerformanceTable({
+  data,
+  loading,
+  className,
+}: CategoryPerformanceTableProps) {
+  const [sortField, setSortField] =
+    useState<keyof CategoryPerformanceData>('clicks');
   const [sortDirection, setSortDirection] = useState<SortDirection>('desc');
 
   const sortedData = React.useMemo(() => {
     return [...data].sort((a, b) => {
       const aValue = a[sortField];
       const bValue = b[sortField];
-      
+
       if (sortDirection === 'asc') {
         return aValue > bValue ? 1 : -1;
       } else {
@@ -376,13 +388,22 @@ export function CategoryPerformanceTable({ data, loading, className }: CategoryP
   };
 
   if (loading) {
-    return <PerformanceTableSkeleton title="Category Performance" className={className} />;
+    return (
+      <PerformanceTableSkeleton
+        title="Category Performance"
+        className={className || ''}
+      />
+    );
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}>
+    <div
+      className={`bg-white rounded-lg shadow-sm border border-gray-200 ${className}`}
+    >
       <div className="px-6 py-4 border-b border-gray-200">
-        <h3 className="text-lg font-semibold text-gray-900">Category Performance</h3>
+        <h3 className="text-lg font-semibold text-gray-900">
+          Category Performance
+        </h3>
       </div>
 
       <div className="overflow-x-auto">
@@ -392,19 +413,19 @@ export function CategoryPerformanceTable({ data, loading, className }: CategoryP
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Category
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('clicks')}
               >
                 Clicks
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('revenue')}
               >
                 Revenue
               </th>
-              <th 
+              <th
                 className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer hover:bg-gray-100"
                 onClick={() => handleSort('linkCount')}
               >
@@ -413,7 +434,7 @@ export function CategoryPerformanceTable({ data, loading, className }: CategoryP
             </tr>
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
-            {sortedData.map((category, index) => (
+            {sortedData.map((category) => (
               <tr key={category.categoryId} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm font-medium text-gray-900">

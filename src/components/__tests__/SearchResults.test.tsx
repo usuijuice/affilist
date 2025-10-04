@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { SearchResults } from '../SearchResults';
 import { createMockAffiliateLink } from '../../test/factories';
 
@@ -9,7 +9,7 @@ vi.mock('../AffiliateLinkCard', () => ({
     <div data-testid={`link-card-${link.id}`}>
       {link.title} - {searchQuery}
     </div>
-  )
+  ),
 }));
 
 describe('SearchResults', () => {
@@ -17,7 +17,7 @@ describe('SearchResults', () => {
   const mockLinks = [
     createMockAffiliateLink({ id: '1', title: 'Link 1' }),
     createMockAffiliateLink({ id: '2', title: 'Link 2' }),
-    createMockAffiliateLink({ id: '3', title: 'Link 3' })
+    createMockAffiliateLink({ id: '3', title: 'Link 3' }),
   ];
 
   beforeEach(() => {
@@ -76,7 +76,11 @@ describe('SearchResults', () => {
     );
 
     expect(screen.getByText('No results found')).toBeInTheDocument();
-    expect(screen.getByText(/We couldn't find any affiliate links matching "nonexistent"/)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        /We couldn't find any affiliate links matching "nonexistent"/
+      )
+    ).toBeInTheDocument();
   });
 
   it('shows helpful suggestions in empty state', () => {
@@ -91,17 +95,17 @@ describe('SearchResults', () => {
     expect(screen.getByText('Try:')).toBeInTheDocument();
     expect(screen.getByText('• Checking your spelling')).toBeInTheDocument();
     expect(screen.getByText('• Using different keywords')).toBeInTheDocument();
-    expect(screen.getByText('• Searching for more general terms')).toBeInTheDocument();
-    expect(screen.getByText('• Browsing categories instead')).toBeInTheDocument();
+    expect(
+      screen.getByText('• Searching for more general terms')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('• Browsing categories instead')
+    ).toBeInTheDocument();
   });
 
   it('does not show empty state when no search query', () => {
     render(
-      <SearchResults
-        links={[]}
-        searchQuery=""
-        onLinkClick={mockOnLinkClick}
-      />
+      <SearchResults links={[]} searchQuery="" onLinkClick={mockOnLinkClick} />
     );
 
     expect(screen.queryByText('No results found')).not.toBeInTheDocument();
@@ -129,11 +133,19 @@ describe('SearchResults', () => {
     );
 
     const grid = screen.getByTestId('link-card-1').parentElement;
-    expect(grid).toHaveClass('grid', 'grid-cols-1', 'md:grid-cols-2', 'lg:grid-cols-3', 'gap-6');
+    expect(grid).toHaveClass(
+      'grid',
+      'grid-cols-1',
+      'md:grid-cols-2',
+      'lg:grid-cols-3',
+      'gap-6'
+    );
   });
 
   it('handles single result correctly', () => {
-    const singleLink = [createMockAffiliateLink({ id: '1', title: 'Single Link' })];
+    const singleLink = [
+      createMockAffiliateLink({ id: '1', title: 'Single Link' }),
+    ];
 
     render(
       <SearchResults

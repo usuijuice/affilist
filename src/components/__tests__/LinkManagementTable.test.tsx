@@ -1,5 +1,4 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach } from 'vitest';
 import { LinkManagementTable } from '../LinkManagementTable';
@@ -12,7 +11,14 @@ const mockLinks: AffiliateLink[] = [
     description: 'Test description 1',
     url: 'https://example1.com',
     affiliateUrl: 'https://affiliate1.example.com',
-    category: { id: '1', name: 'Web Development', slug: 'web-dev', description: '', color: '#3B82F6', linkCount: 1 },
+    category: {
+      id: '1',
+      name: 'Web Development',
+      slug: 'web-dev',
+      description: '',
+      color: '#3B82F6',
+      linkCount: 1,
+    },
     tags: ['web', 'development', 'javascript'],
     imageUrl: 'https://example1.com/logo.png',
     commissionRate: 5.5,
@@ -28,7 +34,14 @@ const mockLinks: AffiliateLink[] = [
     description: 'Test description 2',
     url: 'https://example2.com',
     affiliateUrl: 'https://affiliate2.example.com',
-    category: { id: '2', name: 'Design Tools', slug: 'design', description: '', color: '#EF4444', linkCount: 1 },
+    category: {
+      id: '2',
+      name: 'Design Tools',
+      slug: 'design',
+      description: '',
+      color: '#EF4444',
+      linkCount: 1,
+    },
     tags: ['design', 'ui'],
     featured: false,
     clickCount: 50,
@@ -42,7 +55,14 @@ const mockLinks: AffiliateLink[] = [
     description: 'Test description 3',
     url: 'https://example3.com',
     affiliateUrl: 'https://affiliate3.example.com',
-    category: { id: '1', name: 'Web Development', slug: 'web-dev', description: '', color: '#3B82F6', linkCount: 2 },
+    category: {
+      id: '1',
+      name: 'Web Development',
+      slug: 'web-dev',
+      description: '',
+      color: '#3B82F6',
+      linkCount: 2,
+    },
     tags: ['web', 'backend'],
     featured: true,
     clickCount: 200,
@@ -108,12 +128,14 @@ describe('LinkManagementTable', () => {
     );
 
     expect(screen.getByText('No links found')).toBeInTheDocument();
-    expect(screen.getByText('Get started by creating a new affiliate link.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Get started by creating a new affiliate link.')
+    ).toBeInTheDocument();
   });
 
   it('filters links by search query', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -133,7 +155,7 @@ describe('LinkManagementTable', () => {
 
   it('filters links by status', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -153,7 +175,7 @@ describe('LinkManagementTable', () => {
 
   it('filters links by category', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -173,7 +195,7 @@ describe('LinkManagementTable', () => {
 
   it('sorts links by different fields', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -198,7 +220,7 @@ describe('LinkManagementTable', () => {
 
   it('handles link selection', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -210,7 +232,7 @@ describe('LinkManagementTable', () => {
     // Select individual link
     const checkboxes = screen.getAllByRole('checkbox');
     const firstLinkCheckbox = checkboxes[1]; // Skip the "select all" checkbox
-    
+
     await user.click(firstLinkCheckbox);
 
     // Should show bulk actions
@@ -220,7 +242,7 @@ describe('LinkManagementTable', () => {
 
   it('handles select all functionality', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -239,7 +261,7 @@ describe('LinkManagementTable', () => {
 
   it('calls onEdit when edit button is clicked', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -256,7 +278,7 @@ describe('LinkManagementTable', () => {
 
   it('shows delete confirmation modal', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -270,12 +292,16 @@ describe('LinkManagementTable', () => {
 
     // Should show confirmation modal
     expect(screen.getByText('Delete Link')).toBeInTheDocument();
-    expect(screen.getByText('Are you sure you want to delete this affiliate link? This action cannot be undone.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Are you sure you want to delete this affiliate link? This action cannot be undone.'
+      )
+    ).toBeInTheDocument();
   });
 
   it('calls onDelete when delete is confirmed', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -296,7 +322,7 @@ describe('LinkManagementTable', () => {
 
   it('cancels delete confirmation', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -318,7 +344,7 @@ describe('LinkManagementTable', () => {
 
   it('handles bulk delete', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -338,7 +364,11 @@ describe('LinkManagementTable', () => {
 
     // Should show bulk delete confirmation
     expect(screen.getByText('Delete Multiple Links')).toBeInTheDocument();
-    expect(screen.getByText('Are you sure you want to delete 2 selected links? This action cannot be undone.')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Are you sure you want to delete 2 selected links? This action cannot be undone.'
+      )
+    ).toBeInTheDocument();
 
     // Confirm bulk delete
     const confirmButton = screen.getByRole('button', { name: 'Delete' });
@@ -385,8 +415,10 @@ describe('LinkManagementTable', () => {
     );
 
     const images = screen.getAllByRole('img');
-    const linkImage = images.find(img => img.getAttribute('alt') === 'Test Link 1');
-    
+    const linkImage = images.find(
+      (img) => img.getAttribute('alt') === 'Test Link 1'
+    );
+
     if (linkImage) {
       // Simulate image load error
       fireEvent.error(linkImage);
@@ -396,7 +428,7 @@ describe('LinkManagementTable', () => {
 
   it('shows appropriate empty state message when filtered', async () => {
     const user = userEvent.setup();
-    
+
     render(
       <LinkManagementTable
         links={mockLinks}
@@ -410,7 +442,9 @@ describe('LinkManagementTable', () => {
     await user.type(searchInput, 'nonexistent');
 
     expect(screen.getByText('No links found')).toBeInTheDocument();
-    expect(screen.getByText('Try adjusting your search or filters.')).toBeInTheDocument();
+    expect(
+      screen.getByText('Try adjusting your search or filters.')
+    ).toBeInTheDocument();
   });
 
   it('formats dates correctly', () => {
@@ -423,7 +457,9 @@ describe('LinkManagementTable', () => {
     );
 
     // Check that dates are formatted (exact format may vary by locale)
-    const dateElements = screen.getAllByText(/Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec/);
+    const dateElements = screen.getAllByText(
+      /Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec/
+    );
     expect(dateElements.length).toBeGreaterThan(0);
   });
 

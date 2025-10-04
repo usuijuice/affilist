@@ -5,7 +5,7 @@ import { ClickEventModel } from '../../database/models/ClickEvent.js';
 import { AffiliateLinkModel } from '../../database/models/AffiliateLink.js';
 import { AdminUserModel } from '../../database/models/AdminUser.js';
 import jwt from 'jsonwebtoken';
-import type { Express } from 'express';
+import type { Application } from 'express';
 import type { AffiliateLink, AdminUser } from '../../database/models/types.js';
 
 // Mock the database models
@@ -30,7 +30,7 @@ vi.mock('../../middleware/auth.js', () => ({
 }));
 
 describe('Analytics Routes', () => {
-  let app: Express;
+  let app: Application;
   let authToken: string;
   const testLinkId = '123e4567-e89b-12d3-a456-426614174000';
 
@@ -65,7 +65,11 @@ describe('Analytics Routes', () => {
 
   const mockTopLinks = [
     { link_id: testLinkId, clicks: 100, title: 'Test Link' },
-    { link_id: '456e7890-e89b-12d3-a456-426614174001', clicks: 75, title: 'Another Link' },
+    {
+      link_id: '456e7890-e89b-12d3-a456-426614174001',
+      clicks: 75,
+      title: 'Another Link',
+    },
   ];
 
   const mockAdminUser: AdminUser = {
@@ -101,11 +105,19 @@ describe('Analytics Routes', () => {
   describe('GET /api/admin/analytics', () => {
     it('should return analytics dashboard data', async () => {
       vi.mocked(ClickEventModel.getTotalClicks).mockResolvedValue(500);
-      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(mockClicksByDate);
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
+      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(
+        mockClicksByDate
+      );
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
       vi.mocked(ClickEventModel.getUniqueSessionsCount).mockResolvedValue(250);
-      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(mockClicksByHour);
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(
+        mockClicksByHour
+      );
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
 
       const response = await request(app)
         .get('/api/admin/analytics')
@@ -146,11 +158,19 @@ describe('Analytics Routes', () => {
 
     it('should handle custom date range', async () => {
       vi.mocked(ClickEventModel.getTotalClicks).mockResolvedValue(100);
-      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(mockClicksByDate);
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
+      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(
+        mockClicksByDate
+      );
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
       vi.mocked(ClickEventModel.getUniqueSessionsCount).mockResolvedValue(50);
-      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(mockClicksByHour);
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(
+        mockClicksByHour
+      );
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
 
       const startDate = '2024-01-01T00:00:00Z';
       const endDate = '2024-01-31T23:59:59Z';
@@ -169,11 +189,19 @@ describe('Analytics Routes', () => {
 
     it('should handle days parameter', async () => {
       vi.mocked(ClickEventModel.getTotalClicks).mockResolvedValue(100);
-      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(mockClicksByDate);
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
+      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(
+        mockClicksByDate
+      );
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
       vi.mocked(ClickEventModel.getUniqueSessionsCount).mockResolvedValue(50);
-      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(mockClicksByHour);
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(
+        mockClicksByHour
+      );
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
 
       await request(app)
         .get('/api/admin/analytics?days=7')
@@ -185,11 +213,19 @@ describe('Analytics Routes', () => {
 
     it('should filter by link_id', async () => {
       vi.mocked(ClickEventModel.getTotalClicks).mockResolvedValue(100);
-      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(mockClicksByDate);
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
+      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(
+        mockClicksByDate
+      );
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
       vi.mocked(ClickEventModel.getUniqueSessionsCount).mockResolvedValue(50);
-      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(mockClicksByHour);
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(
+        mockClicksByHour
+      );
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
 
       await request(app)
         .get(`/api/admin/analytics?link_id=${testLinkId}`)
@@ -232,15 +268,21 @@ describe('Analytics Routes', () => {
 
   describe('GET /api/admin/analytics/export', () => {
     it('should export analytics data as JSON', async () => {
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
-      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(mockClicksByDate);
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
+      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(
+        mockClicksByDate
+      );
 
       const response = await request(app)
         .get('/api/admin/analytics/export?format=json')
         .set('Authorization', `Bearer ${authToken}`)
         .expect(200);
 
-      expect(response.headers['content-type']).toBe('application/json; charset=utf-8');
+      expect(response.headers['content-type']).toBe(
+        'application/json; charset=utf-8'
+      );
       expect(response.headers['content-disposition']).toContain('attachment');
       expect(response.body).toMatchObject({
         generated_at: expect.any(String),
@@ -254,8 +296,12 @@ describe('Analytics Routes', () => {
     });
 
     it('should export analytics data as CSV', async () => {
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
-      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(mockClicksByDate);
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
+      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(
+        mockClicksByDate
+      );
 
       const response = await request(app)
         .get('/api/admin/analytics/export?format=csv')
@@ -278,10 +324,16 @@ describe('Analytics Routes', () => {
 
   describe('GET /api/admin/analytics/links/:linkId', () => {
     it('should return analytics for specific link', async () => {
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
       vi.mocked(ClickEventModel.getTotalClicks).mockResolvedValue(100);
-      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(mockClicksByDate);
-      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(mockClicksByHour);
+      vi.mocked(ClickEventModel.getClicksByDateRange).mockResolvedValue(
+        mockClicksByDate
+      );
+      vi.mocked(ClickEventModel.getClicksByHour).mockResolvedValue(
+        mockClicksByHour
+      );
       vi.mocked(ClickEventModel.getUniqueSessionsCount).mockResolvedValue(50);
 
       const response = await request(app)
@@ -356,11 +408,15 @@ describe('Analytics Routes', () => {
 
   describe('GET /api/admin/analytics/performance', () => {
     it('should return performance metrics and trends', async () => {
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
       vi.mocked(ClickEventModel.getClicksByDateRange)
         .mockResolvedValueOnce(mockClicksByDate) // Current period
         .mockResolvedValueOnce([{ date: '2023-12-01', clicks: 5 }]); // Previous period
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
 
       const response = await request(app)
         .get('/api/admin/analytics/performance')
@@ -435,11 +491,15 @@ describe('Analytics Routes', () => {
         { link_id: '3', clicks: 5, title: 'Low Performer' }, // Low
       ];
 
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mixedTopLinks);
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mixedTopLinks
+      );
       vi.mocked(ClickEventModel.getClicksByDateRange)
         .mockResolvedValueOnce([{ date: '2024-01-01', clicks: 205 }]) // Current
         .mockResolvedValueOnce([{ date: '2023-12-01', clicks: 100 }]); // Previous
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
 
       const response = await request(app)
         .get('/api/admin/analytics/performance')
@@ -447,7 +507,7 @@ describe('Analytics Routes', () => {
         .expect(200);
 
       const { performance_categories } = response.body.data;
-      
+
       expect(performance_categories.high_performers.count).toBe(1);
       expect(performance_categories.high_performers.total_clicks).toBe(150);
       expect(performance_categories.medium_performers.count).toBe(1);
@@ -457,11 +517,15 @@ describe('Analytics Routes', () => {
     });
 
     it('should calculate trends correctly', async () => {
-      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(mockTopLinks);
+      vi.mocked(ClickEventModel.getTopLinksByClicks).mockResolvedValue(
+        mockTopLinks
+      );
       vi.mocked(ClickEventModel.getClicksByDateRange)
         .mockResolvedValueOnce([{ date: '2024-01-01', clicks: 100 }]) // Current: 100
         .mockResolvedValueOnce([{ date: '2023-12-01', clicks: 50 }]); // Previous: 50
-      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(mockAffiliateLink);
+      vi.mocked(AffiliateLinkModel.findById).mockResolvedValue(
+        mockAffiliateLink
+      );
 
       const response = await request(app)
         .get('/api/admin/analytics/performance')
@@ -469,7 +533,7 @@ describe('Analytics Routes', () => {
         .expect(200);
 
       const { overview } = response.body.data;
-      
+
       expect(overview.current_period_clicks).toBe(100);
       expect(overview.previous_period_clicks).toBe(50);
       expect(overview.clicks_trend_percentage).toBe(100); // 100% increase

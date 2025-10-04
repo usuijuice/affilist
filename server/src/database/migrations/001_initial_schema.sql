@@ -64,8 +64,17 @@ CREATE INDEX idx_affiliate_links_created_at ON affiliate_links(created_at);
 CREATE INDEX idx_affiliate_links_click_count ON affiliate_links(click_count);
 
 -- Full-text search index for affiliate links
+-- Note: We'll create this index after creating the function to make it immutable
+CREATE OR REPLACE FUNCTION affiliate_links_search_vector(title text, description text, tags text[])
+RETURNS tsvector
+LANGUAGE sql
+IMMUTABLE
+AS $$
+    SELECT to_tsvector('english', title || ' ' || description || ' ' || array_to_string(tags, ' '));
+$$;
+
 CREATE INDEX idx_affiliate_links_search ON affiliate_links USING gin(
-    to_tsvector('english', title || ' ' || description || ' ' || array_to_string(tags, ' '))
+    affiliate_links_search_vector(title, description, tags)
 );
 
 -- Indexes for click_events

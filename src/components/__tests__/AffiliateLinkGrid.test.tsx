@@ -1,13 +1,15 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { vi } from 'vitest';
+import { render, screen, fireEvent } from '@testing-library/react';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { AffiliateLinkGrid } from '../AffiliateLinkGrid';
-import { createMockAffiliateLinks, createMockAffiliateLink } from '../../test/factories';
+import {
+  createMockAffiliateLinks,
+  createMockAffiliateLink,
+} from '../../test/factories';
 
 // Mock the AffiliateLinkCard component
 vi.mock('../AffiliateLinkCard', () => ({
   AffiliateLinkCard: ({ link, onLinkClick, featured }: any) => (
-    <div 
+    <div
       data-testid={`affiliate-card-${link.id}`}
       onClick={() => onLinkClick(link.id)}
       className={featured ? 'featured' : ''}
@@ -15,7 +17,7 @@ vi.mock('../AffiliateLinkCard', () => ({
       <h3>{link.title}</h3>
       <p>{link.description}</p>
     </div>
-  )
+  ),
 }));
 
 describe('AffiliateLinkGrid', () => {
@@ -43,7 +45,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('renders loading more state when loading with existing links', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -55,8 +57,10 @@ describe('AffiliateLinkGrid', () => {
       );
 
       // Should render existing links
-      expect(screen.getByTestId(`affiliate-card-${links[0].id}`)).toBeInTheDocument();
-      
+      expect(
+        screen.getByTestId(`affiliate-card-${links[0].id}`)
+      ).toBeInTheDocument();
+
       // Should render additional skeleton cards
       const skeletons = screen.getAllByText('', { selector: '.animate-pulse' });
       expect(skeletons.length).toBeGreaterThan(0);
@@ -64,7 +68,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('shows loading indicator when loading more without hasMore', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -89,13 +93,17 @@ describe('AffiliateLinkGrid', () => {
       );
 
       expect(screen.getByText('No affiliate links found')).toBeInTheDocument();
-      expect(screen.getByText('Try adjusting your search criteria or browse different categories.')).toBeInTheDocument();
+      expect(
+        screen.getByText(
+          'Try adjusting your search criteria or browse different categories.'
+        )
+      ).toBeInTheDocument();
       expect(screen.getByText('🔍')).toBeInTheDocument();
     });
 
     it('renders custom empty message', () => {
       const customMessage = 'No results for your search query.';
-      
+
       render(
         <AffiliateLinkGrid
           links={[]}
@@ -112,7 +120,7 @@ describe('AffiliateLinkGrid', () => {
   describe('Link Rendering', () => {
     it('renders affiliate link cards correctly', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -121,15 +129,17 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      links.forEach(link => {
-        expect(screen.getByTestId(`affiliate-card-${link.id}`)).toBeInTheDocument();
+      links.forEach((link) => {
+        expect(
+          screen.getByTestId(`affiliate-card-${link.id}`)
+        ).toBeInTheDocument();
         expect(screen.getByText(link.title)).toBeInTheDocument();
       });
     });
 
     it('handles link clicks correctly', () => {
       const links = createMockAffiliateLinks(2);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -145,7 +155,7 @@ describe('AffiliateLinkGrid', () => {
     it('passes featured prop correctly to cards', () => {
       const featuredLink = createMockAffiliateLink({ featured: true });
       const regularLink = createMockAffiliateLink({ featured: false });
-      
+
       render(
         <AffiliateLinkGrid
           links={[featuredLink, regularLink]}
@@ -154,15 +164,19 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      expect(screen.getByTestId(`affiliate-card-${featuredLink.id}`)).toHaveClass('featured');
-      expect(screen.getByTestId(`affiliate-card-${regularLink.id}`)).not.toHaveClass('featured');
+      expect(
+        screen.getByTestId(`affiliate-card-${featuredLink.id}`)
+      ).toHaveClass('featured');
+      expect(
+        screen.getByTestId(`affiliate-card-${regularLink.id}`)
+      ).not.toHaveClass('featured');
     });
   });
 
   describe('Pagination', () => {
     it('renders load more button when hasMore is true', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -178,7 +192,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('does not render load more button when hasMore is false', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -194,7 +208,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('does not render load more button when onLoadMore is not provided', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -209,7 +223,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('handles load more button click', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -226,7 +240,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('shows loading skeletons when loading with existing links', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -238,8 +252,10 @@ describe('AffiliateLinkGrid', () => {
       );
 
       // Should show existing links
-      links.forEach(link => {
-        expect(screen.getByTestId(`affiliate-card-${link.id}`)).toBeInTheDocument();
+      links.forEach((link) => {
+        expect(
+          screen.getByTestId(`affiliate-card-${link.id}`)
+        ).toBeInTheDocument();
       });
 
       // Should show skeleton loading cards
@@ -251,7 +267,7 @@ describe('AffiliateLinkGrid', () => {
   describe('Responsive Grid', () => {
     it('applies correct grid classes', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -260,7 +276,9 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      const gridContainer = screen.getByTestId(`affiliate-card-${links[0].id}`).parentElement;
+      const gridContainer = screen.getByTestId(
+        `affiliate-card-${links[0].id}`
+      ).parentElement;
       expect(gridContainer).toHaveClass(
         'grid',
         'grid-cols-1',
@@ -274,7 +292,7 @@ describe('AffiliateLinkGrid', () => {
     it('applies custom className', () => {
       const links = createMockAffiliateLinks(1);
       const customClass = 'custom-grid-class';
-      
+
       const { container } = render(
         <AffiliateLinkGrid
           links={links}
@@ -291,7 +309,7 @@ describe('AffiliateLinkGrid', () => {
   describe('Accessibility', () => {
     it('has proper button attributes for load more', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -309,7 +327,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('provides proper loading state feedback', () => {
       const links = createMockAffiliateLinks(3);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -322,7 +340,7 @@ describe('AffiliateLinkGrid', () => {
 
       // Click load more to test the loading button state
       fireEvent.click(screen.getByText('Load More'));
-      
+
       // Re-render with loading state
       render(
         <AffiliateLinkGrid
@@ -355,7 +373,7 @@ describe('AffiliateLinkGrid', () => {
 
     it('handles single link correctly', () => {
       const link = createMockAffiliateLink();
-      
+
       render(
         <AffiliateLinkGrid
           links={[link]}
@@ -364,13 +382,17 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      expect(screen.getByTestId(`affiliate-card-${link.id}`)).toBeInTheDocument();
-      expect(screen.queryByText('No affiliate links found')).not.toBeInTheDocument();
+      expect(
+        screen.getByTestId(`affiliate-card-${link.id}`)
+      ).toBeInTheDocument();
+      expect(
+        screen.queryByText('No affiliate links found')
+      ).not.toBeInTheDocument();
     });
 
     it('handles large number of links', () => {
       const links = createMockAffiliateLinks(50);
-      
+
       render(
         <AffiliateLinkGrid
           links={links}
@@ -380,14 +402,16 @@ describe('AffiliateLinkGrid', () => {
       );
 
       // Should render all links
-      links.forEach(link => {
-        expect(screen.getByTestId(`affiliate-card-${link.id}`)).toBeInTheDocument();
+      links.forEach((link) => {
+        expect(
+          screen.getByTestId(`affiliate-card-${link.id}`)
+        ).toBeInTheDocument();
       });
     });
 
     it('maintains state during loading transitions', async () => {
       const initialLinks = createMockAffiliateLinks(3);
-      
+
       const { rerender } = render(
         <AffiliateLinkGrid
           links={initialLinks}
@@ -415,9 +439,11 @@ describe('AffiliateLinkGrid', () => {
       // Should show loading skeletons and keep existing links
       const skeletons = screen.getAllByText('', { selector: '.animate-pulse' });
       expect(skeletons.length).toBeGreaterThan(0);
-      
-      initialLinks.forEach(link => {
-        expect(screen.getByTestId(`affiliate-card-${link.id}`)).toBeInTheDocument();
+
+      initialLinks.forEach((link) => {
+        expect(
+          screen.getByTestId(`affiliate-card-${link.id}`)
+        ).toBeInTheDocument();
       });
     });
   });

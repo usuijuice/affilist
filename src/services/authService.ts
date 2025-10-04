@@ -10,16 +10,27 @@ class AuthService {
    */
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<AuthResponse>('/auth/login', credentials);
-      
-      // Store token and user data
-      this.setToken(response.token);
-      this.setUser(response.user);
-      
-      // Set token in API client for future requests
-      apiClient.setAuthToken(response.token);
-      
-      return response;
+      const response = await apiClient.post<{ token: string; user: AdminUser }>(
+        '/auth/login',
+        credentials
+      );
+
+      if (response.success) {
+        // Store token and user data
+        this.setToken(response.data.token);
+        this.setUser(response.data.user);
+
+        // Set token in API client for future requests
+        apiClient.setAuthToken(response.data.token);
+
+        return {
+          token: response.data.token,
+          user: response.data.user,
+          expiresAt: this.getTokenExpiration(response.data.token),
+        };
+      } else {
+        throw new Error(response.error?.message || 'Login failed');
+      }
     } catch (error) {
       throw new Error(error instanceof Error ? error.message : 'Login failed');
     }
@@ -51,16 +62,26 @@ class AuthService {
    */
   async refreshToken(): Promise<AuthResponse> {
     try {
-      const response = await apiClient.post<AuthResponse>('/auth/refresh');
-      
-      // Update stored token and user data
-      this.setToken(response.token);
-      this.setUser(response.user);
-      
-      // Update token in API client
-      apiClient.setAuthToken(response.token);
-      
-      return response;
+      const response = await apiClient.post<{ token: string; user: AdminUser }>(
+        '/auth/refresh'
+      );
+
+      if (response.success) {
+        // Update stored token and user data
+        this.setToken(response.data.token);
+        this.setUser(response.data.user);
+
+        // Update token in API client
+        apiClient.setAuthToken(response.data.token);
+
+        return {
+          token: response.data.token,
+          user: response.data.user,
+          expiresAt: this.getTokenExpiration(response.data.token),
+        };
+      } else {
+        throw new Error(response.error?.message || 'Token refresh failed');
+      }
     } catch (error) {
       // If refresh fails, clear stored data
       this.clearToken();
@@ -76,8 +97,13 @@ class AuthService {
   async verifyToken(): Promise<AdminUser> {
     try {
       const response = await apiClient.get<{ user: AdminUser }>('/auth/verify');
-      this.setUser(response.user);
-      return response.user;
+
+      if (response.success) {
+        this.setUser(response.data.user);
+        return response.data.user;
+      } else {
+        throw new Error(response.error?.message || 'Token verification failed');
+      }
     } catch (error) {
       // If verification fails, clear stored data
       this.clearToken();
@@ -137,6 +163,24 @@ class AuthService {
       console.warn('Failed to decode token:', error);
       return true;
     }
+  }
+
+  /**
+   * Get token expiration date
+   */
+  private getTokenExpiration(token: string): Date {
+    try {
+      // Decode JWT token to get expiration
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      if (payload.exp) {
+        return new Date(payload.exp * 1000); // Convert from seconds to milliseconds
+      }
+    } catch (error) {
+      console.warn('Failed to decode token expiration:', error);
+    }
+
+    // Fallback: assume token expires in 7 days (default JWT expiration)
+    return new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
   }
 
   /**

@@ -1,4 +1,4 @@
-import { Request, Response, NextFunction } from 'express';
+import type { Request, Response, NextFunction } from 'express';
 import jwt from 'jsonwebtoken';
 import { config } from '../config/environment.js';
 import { AdminUserModel } from '../database/models/AdminUser.js';
@@ -33,21 +33,21 @@ export const authenticateToken = async (
     if (!token) {
       res.status(401).json({
         success: false,
-        error: 'Access token required'
+        error: 'Access token required',
       });
       return;
     }
 
     // Verify JWT token
     const decoded = jwt.verify(token, config.jwt.secret) as JWTPayload;
-    
+
     // Get user from database to ensure they still exist and are active
     const user = await AdminUserModel.findById(decoded.userId);
-    
+
     if (!user) {
       res.status(401).json({
         success: false,
-        error: 'Invalid token - user not found'
+        error: 'Invalid token - user not found',
       });
       return;
     }
@@ -59,15 +59,15 @@ export const authenticateToken = async (
     if (error instanceof jwt.JsonWebTokenError) {
       res.status(401).json({
         success: false,
-        error: 'Invalid token'
+        error: 'Invalid token',
       });
       return;
     }
-    
+
     if (error instanceof jwt.TokenExpiredError) {
       res.status(401).json({
         success: false,
-        error: 'Token expired'
+        error: 'Token expired',
       });
       return;
     }
@@ -75,7 +75,7 @@ export const authenticateToken = async (
     // Other errors
     res.status(500).json({
       success: false,
-      error: 'Authentication error'
+      error: 'Authentication error',
     });
   }
 };
@@ -85,7 +85,7 @@ export const requireRole = (roles: ('admin' | 'editor')[]) => {
     if (!req.user) {
       res.status(401).json({
         success: false,
-        error: 'Authentication required'
+        error: 'Authentication required',
       });
       return;
     }
@@ -93,7 +93,7 @@ export const requireRole = (roles: ('admin' | 'editor')[]) => {
     if (!roles.includes(req.user.role)) {
       res.status(403).json({
         success: false,
-        error: 'Insufficient permissions'
+        error: 'Insufficient permissions',
       });
       return;
     }

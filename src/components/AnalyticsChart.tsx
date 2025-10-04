@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import { useMemo } from 'react';
 
 interface DataPoint {
   date: string;
@@ -30,11 +30,13 @@ export function AnalyticsChart({
       return { chartData: [], maxValue: 0, minValue: 0, xScale: 0, yScale: 0 };
     }
 
-    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-    const values = sortedData.map(d => d.value);
+    const sortedData = [...data].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+    const values = sortedData.map((d) => d.value);
     const maxVal = Math.max(...values);
     const minVal = Math.min(...values);
-    
+
     // Add some padding to the max value for better visualization
     const paddedMax = maxVal + (maxVal - minVal) * 0.1;
     const paddedMin = Math.max(0, minVal - (maxVal - minVal) * 0.1);
@@ -68,7 +70,10 @@ export function AnalyticsChart({
 
   if (!chartData || chartData.length === 0) {
     return (
-      <div className={`flex items-center justify-center bg-gray-50 rounded-lg ${className}`} style={{ height }}>
+      <div
+        className={`flex items-center justify-center bg-gray-50 rounded-lg ${className}`}
+        style={{ height }}
+      >
         <div className="text-center">
           <div className="text-2xl mb-2">📊</div>
           <p className="text-gray-500 text-sm">No data available</p>
@@ -87,17 +92,17 @@ export function AnalyticsChart({
     });
 
     if (type === 'area') {
-      const pathData = points.map((point, index) => 
-        index === 0 ? `M ${point}` : `L ${point}`
-      ).join(' ');
-      
+      const pathData = points
+        .map((point, index) => (index === 0 ? `M ${point}` : `L ${point}`))
+        .join(' ');
+
       // Close the area path
       const lastX = (chartData.length - 1) * xScale;
       return `${pathData} L ${lastX},${height - 40} L 0,${height - 40} Z`;
     } else {
-      return points.map((point, index) => 
-        index === 0 ? `M ${point}` : `L ${point}`
-      ).join(' ');
+      return points
+        .map((point, index) => (index === 0 ? `M ${point}` : `L ${point}`))
+        .join(' ');
     }
   };
 
@@ -105,7 +110,7 @@ export function AnalyticsChart({
     if (type !== 'bar') return null;
 
     const barWidth = Math.max(8, xScale * 0.6);
-    
+
     return chartData.map((point, index) => {
       const x = index * xScale - barWidth / 2;
       const barHeight = (point.value - minValue) * yScale;
@@ -131,7 +136,7 @@ export function AnalyticsChart({
 
     const gridLines = [];
     const numLines = 5;
-    
+
     // Horizontal grid lines
     for (let i = 0; i <= numLines; i++) {
       const y = (height - 40) * (i / numLines);
@@ -155,11 +160,11 @@ export function AnalyticsChart({
   const generateYAxisLabels = () => {
     const labels = [];
     const numLabels = 5;
-    
+
     for (let i = 0; i <= numLabels; i++) {
       const value = maxValue - (maxValue - minValue) * (i / numLabels);
       const y = (height - 40) * (i / numLabels) + 5;
-      
+
       labels.push(
         <text
           key={`y-${i}`}
@@ -181,11 +186,11 @@ export function AnalyticsChart({
     const labels = [];
     const maxLabels = Math.min(6, chartData.length);
     const step = Math.ceil(chartData.length / maxLabels);
-    
+
     for (let i = 0; i < chartData.length; i += step) {
       const x = i * xScale;
       const point = chartData[i];
-      
+
       labels.push(
         <text
           key={`x-${i}`}
@@ -213,10 +218,10 @@ export function AnalyticsChart({
       >
         {/* Grid lines */}
         {generateGridLines()}
-        
+
         {/* Y-axis labels */}
         {generateYAxisLabels()}
-        
+
         {/* Chart content */}
         {type === 'bar' ? (
           generateBars()
@@ -231,28 +236,29 @@ export function AnalyticsChart({
             strokeLinejoin="round"
           />
         )}
-        
+
         {/* Data points for line/area charts */}
-        {(type === 'line' || type === 'area') && chartData.map((point, index) => {
-          const x = index * xScale;
-          const y = height - 40 - (point.value - minValue) * yScale;
-          
-          return (
-            <circle
-              key={index}
-              cx={x}
-              cy={y}
-              r={3}
-              fill={color}
-              className="hover:r-4 transition-all cursor-pointer"
-            />
-          );
-        })}
-        
+        {(type === 'line' || type === 'area') &&
+          chartData.map((point, index) => {
+            const x = index * xScale;
+            const y = height - 40 - (point.value - minValue) * yScale;
+
+            return (
+              <circle
+                key={index}
+                cx={x}
+                cy={y}
+                r={3}
+                fill={color}
+                className="hover:r-4 transition-all cursor-pointer"
+              />
+            );
+          })}
+
         {/* X-axis labels */}
         {generateXAxisLabels()}
       </svg>
-      
+
       {/* Tooltip placeholder */}
       {showTooltip && (
         <div className="absolute top-2 right-2 text-xs text-gray-500">
@@ -271,19 +277,23 @@ interface TrendIndicatorProps {
 
 export function TrendIndicator({ data, className = '' }: TrendIndicatorProps) {
   const trend = useMemo(() => {
-    if (!data || data.length < 2) return { direction: 'neutral', percentage: 0 };
-    
-    const sortedData = [...data].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
+    if (!data || data.length < 2)
+      return { direction: 'neutral', percentage: 0 };
+
+    const sortedData = [...data].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
     const firstValue = sortedData[0].value;
     const lastValue = sortedData[sortedData.length - 1].value;
-    
+
     if (firstValue === 0) {
       return { direction: lastValue > 0 ? 'up' : 'neutral', percentage: 0 };
     }
-    
+
     const percentage = ((lastValue - firstValue) / firstValue) * 100;
-    const direction = percentage > 0 ? 'up' : percentage < 0 ? 'down' : 'neutral';
-    
+    const direction =
+      percentage > 0 ? 'up' : percentage < 0 ? 'down' : 'neutral';
+
     return { direction, percentage: Math.abs(percentage) };
   }, [data]);
 
@@ -326,12 +336,16 @@ interface MiniChartProps {
   height?: number;
 }
 
-export function MiniChart({ data, color = '#3B82F6', height = 40 }: MiniChartProps) {
+export function MiniChart({
+  data,
+  color = '#3B82F6',
+  height = 40,
+}: MiniChartProps) {
   if (!data || data.length === 0) {
     return <div className="w-full bg-gray-100 rounded" style={{ height }} />;
   }
 
-  const values = data.map(d => d.value);
+  const values = data.map((d) => d.value);
   const maxValue = Math.max(...values);
   const minValue = Math.min(...values);
   const range = maxValue - minValue || 1;
@@ -342,9 +356,9 @@ export function MiniChart({ data, color = '#3B82F6', height = 40 }: MiniChartPro
     return `${x},${y}`;
   });
 
-  const pathData = points.map((point, index) => 
-    index === 0 ? `M ${point}` : `L ${point}`
-  ).join(' ');
+  const pathData = points
+    .map((point, index) => (index === 0 ? `M ${point}` : `L ${point}`))
+    .join(' ');
 
   return (
     <svg width="100%" height={height} className="overflow-visible">

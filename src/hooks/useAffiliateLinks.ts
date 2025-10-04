@@ -3,6 +3,7 @@ import { affiliateLinksApi } from '../services';
 import type { GetLinksParams } from '../services';
 import type { AffiliateLink, FilterState } from '../types';
 import { useAppState } from './useAppState';
+import { getErrorMessage } from '../utils/apiErrorHandler';
 
 export interface UseAffiliateLinksOptions {
   autoFetch?: boolean;
@@ -27,10 +28,17 @@ export interface UseAffiliateLinksReturn {
 /**
  * Custom hook for fetching and managing affiliate links
  */
-export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAffiliateLinksReturn {
+export function useAffiliateLinks(
+  options: UseAffiliateLinksOptions = {}
+): UseAffiliateLinksReturn {
   const { autoFetch = true, params: defaultParams, onError } = options;
-  const { setAffiliateLinks, setLoading, setError, clearError: clearGlobalError } = useAppState();
-  
+  const {
+    setAffiliateLinks,
+    setLoading,
+    setError,
+    clearError: clearGlobalError,
+  } = useAppState();
+
   const [localState, setLocalState] = useState({
     links: [] as AffiliateLink[],
     loading: false,
@@ -44,72 +52,97 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const clearError = useCallback(() => {
-    setLocalState(prev => ({ ...prev, error: null }));
+    setLocalState((prev) => ({ ...prev, error: null }));
     clearGlobalError();
   }, [clearGlobalError]);
 
-  const fetchLinks = useCallback(async (params: GetLinksParams = {}) => {
-    // Cancel previous request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
+  const fetchLinks = useCallback(
+    async (params: GetLinksParams = {}) => {
+      // Cancel previous request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
 
-    abortControllerRef.current = new AbortController();
-    paramsRef.current = { ...paramsRef.current, ...params };
+      abortControllerRef.current = new AbortController();
+      paramsRef.current = { ...paramsRef.current, ...params };
 
-    setLocalState(prev => ({ ...prev, loading: true, error: null }));
-    setLoading(true);
-    clearError();
+      setLocalState((prev) => ({ ...prev, loading: true, error: null }));
+      setLoading(true);
+      clearError();
 
-    try {
-      const response = await affiliateLinksApi.getLinks(paramsRef.current);
-      
-      if (response && response.success) {
-        const newLinks = params.page && params.page > 1 
-          ? [...localState.links, ...response.data.links]
-          : response.data.links;
+      try {
+        const response = await affiliateLinksApi.getLinks(paramsRef.current);
 
-        setLocalState(prev => ({
+        if (response && response.success) {
+          const newLinks =
+            params.page && params.page > 1
+              ? [...localState.links, ...response.data.links]
+              : response.data.links;
+
+          setLocalState((prev) => ({
+            ...prev,
+            links: newLinks,
+            hasMore: response.data.hasMore,
+            total: response.data.total,
+            page: response.data.page,
+            loading: false,
+          }));
+
+          // Update global state
+          setAffiliateLinks(newLinks);
+          setLoading(false);
+        } else {
+          const errorMessage = getErrorMessage(
+            response,
+            'Failed to fetch affiliate links'
+          );
+          setLocalState((prev) => ({
+            ...prev,
+            error: errorMessage,
+            loading: false,
+          }));
+          setError(errorMessage);
+          onError?.(errorMessage);
+        }
+      } catch (error) {
+        if (error instanceof Error && error.name === 'AbortError') {
+          return; // Request was cancelled
+        }
+
+        const errorMessage = getErrorMessage(
+          error,
+          'Failed to fetch affiliate links'
+        );
+        setLocalState((prev) => ({
           ...prev,
-          links: newLinks,
-          hasMore: response.data.hasMore,
-          total: response.data.total,
-          page: response.data.page,
+          error: errorMessage,
           loading: false,
         }));
-
-        // Update global state
-        setAffiliateLinks(newLinks);
-        setLoading(false);
-      } else {
-        const errorMessage = response?.error?.message || 'Failed to fetch affiliate links';
-        setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
         setError(errorMessage);
+        setLoading(false);
         onError?.(errorMessage);
       }
-    } catch (error) {
-      if (error instanceof Error && error.name === 'AbortError') {
-        return; // Request was cancelled
-      }
-
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
-      setError(errorMessage);
-      setLoading(false);
-      onError?.(errorMessage);
-    }
-  }, [localState.links, setAffiliateLinks, setLoading, setError, clearError, onError]);
+    },
+    [
+      localState.links,
+      setAffiliateLinks,
+      setLoading,
+      setError,
+      clearError,
+      onError,
+    ]
+  );
 
   const fetchAllLinks = useCallback(async () => {
-    setLocalState(prev => ({ ...prev, loading: true, error: null }));
+    setLocalState((prev) => ({ ...prev, loading: true, error: null }));
     setLoading(true);
     clearError();
 
     try {
       const response = await affiliateLinksApi.getAllLinks();
-      
+
       if (response && response.success) {
-        setLocalState(prev => ({
+        setLocalState((prev) => ({
           ...prev,
           links: response.data,
           hasMore: false,
@@ -122,14 +155,24 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
         setAffiliateLinks(response.data);
         setLoading(false);
       } else {
-        const errorMessage = response?.error?.message || 'Failed to fetch all affiliate links';
-        setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
+        const errorMessage =
+          response?.error?.message || 'Failed to fetch all affiliate links';
+        setLocalState((prev) => ({
+          ...prev,
+          error: errorMessage,
+          loading: false,
+        }));
         setError(errorMessage);
         onError?.(errorMessage);
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
-      setLocalState(prev => ({ ...prev, error: errorMessage, loading: false }));
+      const errorMessage =
+        error instanceof Error ? error.message : 'Unknown error occurred';
+      setLocalState((prev) => ({
+        ...prev,
+        error: errorMessage,
+        loading: false,
+      }));
       setError(errorMessage);
       setLoading(false);
       onError?.(errorMessage);
@@ -181,12 +224,15 @@ export function useAffiliateLinks(options: UseAffiliateLinksOptions = {}): UseAf
 /**
  * Hook for searching affiliate links with debouncing
  */
-export function useAffiliateLinksSearch(filters: FilterState, debounceMs: number = 300) {
+export function useAffiliateLinksSearch(
+  filters: FilterState,
+  debounceMs: number = 300
+) {
   const [searchResults, setSearchResults] = useState<AffiliateLink[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const [searchError, setSearchError] = useState<string | null>(null);
-  
-  const searchTimeoutRef = useRef<NodeJS.Timeout>();
+
+  const searchTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
   const search = useCallback(async (searchFilters: FilterState) => {
@@ -207,8 +253,11 @@ export function useAffiliateLinksSearch(filters: FilterState, debounceMs: number
     setSearchError(null);
 
     try {
-      const response = await affiliateLinksApi.searchLinks(searchFilters.searchQuery, searchFilters);
-      
+      const response = await affiliateLinksApi.searchLinks(
+        searchFilters.searchQuery,
+        searchFilters
+      );
+
       if (response && response.success) {
         setSearchResults(response.data);
       } else {
@@ -219,7 +268,7 @@ export function useAffiliateLinksSearch(filters: FilterState, debounceMs: number
       if (error instanceof Error && error.name === 'AbortError') {
         return; // Request was cancelled
       }
-      
+
       setSearchError(error instanceof Error ? error.message : 'Search failed');
       setSearchResults([]);
     } finally {
@@ -240,6 +289,7 @@ export function useAffiliateLinksSearch(filters: FilterState, debounceMs: number
     return () => {
       if (searchTimeoutRef.current) {
         clearTimeout(searchTimeoutRef.current);
+        searchTimeoutRef.current = null;
       }
     };
   }, [filters, debounceMs, search]);

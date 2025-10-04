@@ -1,4 +1,3 @@
-
 import { AffiliateLinkCard } from './AffiliateLinkCard';
 import type { AffiliateLink } from '../types';
 
@@ -18,32 +17,32 @@ function AffiliateLinkSkeleton() {
     <div className="bg-white rounded-lg shadow-md border border-gray-200 overflow-hidden animate-pulse">
       {/* Image skeleton */}
       <div className="h-48 bg-gray-200"></div>
-      
+
       {/* Content skeleton */}
       <div className="p-4">
         {/* Category badge skeleton */}
         <div className="mb-2">
           <div className="h-6 w-24 bg-gray-200 rounded-full"></div>
         </div>
-        
+
         {/* Title skeleton */}
         <div className="mb-2">
           <div className="h-6 bg-gray-200 rounded w-3/4"></div>
         </div>
-        
+
         {/* Description skeleton */}
         <div className="mb-3 space-y-2">
           <div className="h-4 bg-gray-200 rounded"></div>
           <div className="h-4 bg-gray-200 rounded w-5/6"></div>
         </div>
-        
+
         {/* Tags skeleton */}
         <div className="mb-3 flex gap-1">
           <div className="h-6 w-16 bg-gray-200 rounded"></div>
           <div className="h-6 w-20 bg-gray-200 rounded"></div>
           <div className="h-6 w-12 bg-gray-200 rounded"></div>
         </div>
-        
+
         {/* Footer skeleton */}
         <div className="flex items-center justify-between pt-2 border-t border-gray-100">
           <div className="flex items-center space-x-3">
@@ -62,14 +61,22 @@ function EmptyState({ message }: { message: string }) {
   return (
     <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
       <div className="text-6xl mb-4 opacity-50">🔍</div>
-      <h3 className="text-xl font-semibold text-gray-900 mb-2">No affiliate links found</h3>
+      <h3 className="text-xl font-semibold text-gray-900 mb-2">
+        No affiliate links found
+      </h3>
       <p className="text-gray-600 text-center max-w-md">{message}</p>
     </div>
   );
 }
 
 // Load more button component
-function LoadMoreButton({ onLoadMore, loading }: { onLoadMore: () => void; loading: boolean }) {
+function LoadMoreButton({
+  onLoadMore,
+  loading,
+}: {
+  onLoadMore: () => void;
+  loading: boolean;
+}) {
   return (
     <div className="col-span-full flex justify-center py-8">
       <button
@@ -101,13 +108,15 @@ export function AffiliateLinkGrid({
   onLinkClick,
   onLoadMore,
   hasMore = false,
-  emptyMessage = "Try adjusting your search criteria or browse different categories.",
-  className = ""
+  emptyMessage = 'Try adjusting your search criteria or browse different categories.',
+  className = '',
 }: AffiliateLinkGridProps) {
   // Show skeleton loading state
   if (loading && links.length === 0) {
     return (
-      <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${className}`}>
+      <div
+        className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 ${className}`}
+      >
         {Array.from({ length: 8 }, (_, index) => (
           <AffiliateLinkSkeleton key={`skeleton-${index}`} />
         ))}
@@ -136,7 +145,7 @@ export function AffiliateLinkGrid({
             featured={link.featured}
           />
         ))}
-        
+
         {/* Show skeleton cards while loading more */}
         {loading && links.length > 0 && (
           <>
@@ -151,7 +160,7 @@ export function AffiliateLinkGrid({
       {!loading && hasMore && onLoadMore && (
         <LoadMoreButton onLoadMore={onLoadMore} loading={loading} />
       )}
-      
+
       {/* Loading more indicator */}
       {loading && links.length > 0 && !hasMore && (
         <div className="flex justify-center py-8">

@@ -16,7 +16,7 @@ async function runMigrations() {
         await migrator.migrate();
         logger.info('Migrations completed successfully');
         break;
-        
+
       case 'status':
         logger.info('Checking migration status...');
         const migrations = await migrator.status();
@@ -24,30 +24,34 @@ async function runMigrations() {
           logger.info('No migrations have been executed');
         } else {
           logger.info(`Executed migrations (${migrations.length}):`);
-          migrations.forEach(migration => {
+          migrations.forEach((migration) => {
             logger.info(`  - ${migration.filename} (${migration.executed_at})`);
           });
         }
         break;
-        
+
       case 'rollback':
         const steps = arg ? parseInt(arg, 10) : 1;
         if (isNaN(steps) || steps < 1) {
-          logger.error('Invalid rollback steps. Please provide a positive number.');
+          logger.error(
+            'Invalid rollback steps. Please provide a positive number.'
+          );
           process.exit(1);
         }
         logger.info(`Rolling back ${steps} migration(s)...`);
         await migrator.rollback(steps);
         logger.info('Rollback completed');
         break;
-        
+
       default:
         logger.info('Database Migration Tool');
         logger.info('');
         logger.info('Usage:');
         logger.info('  npm run migrate up        - Run all pending migrations');
         logger.info('  npm run migrate status    - Show migration status');
-        logger.info('  npm run migrate rollback [steps] - Rollback migrations (default: 1)');
+        logger.info(
+          '  npm run migrate rollback [steps] - Rollback migrations (default: 1)'
+        );
         logger.info('');
         logger.info('Examples:');
         logger.info('  npm run migrate up');

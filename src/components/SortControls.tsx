@@ -6,35 +6,43 @@ interface SortControlsProps {
   className?: string;
 }
 
-const sortOptions: Array<{ value: SortOption; label: string; description: string }> = [
+const sortOptions: Array<{
+  value: SortOption;
+  label: string;
+  description: string;
+}> = [
   {
     value: 'popularity',
     label: 'Most Popular',
-    description: 'Sort by click count'
+    description: 'Sort by click count',
   },
   {
     value: 'newest',
     label: 'Newest',
-    description: 'Recently added'
+    description: 'Recently added',
   },
   {
     value: 'commission',
     label: 'Highest Commission',
-    description: 'Best earning potential'
+    description: 'Best earning potential',
   },
   {
     value: 'alphabetical',
     label: 'A-Z',
-    description: 'Alphabetical order'
-  }
+    description: 'Alphabetical order',
+  },
 ];
 
-export function SortControls({ sortBy, onSortChange, className = '' }: SortControlsProps) {
+export function SortControls({
+  sortBy,
+  onSortChange,
+  className = '',
+}: SortControlsProps) {
   return (
     <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
       <div className="p-4">
         <h3 className="text-lg font-medium text-gray-900 mb-3">Sort By</h3>
-        
+
         <div className="space-y-2">
           {sortOptions.map((option) => (
             <label
@@ -62,7 +70,7 @@ export function SortControls({ sortBy, onSortChange, className = '' }: SortContr
                   )}
                 </div>
               </div>
-              
+
               <div className="flex-1 min-w-0">
                 <div className="text-sm font-medium text-gray-900">
                   {option.label}

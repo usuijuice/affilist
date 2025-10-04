@@ -1,4 +1,3 @@
-import React from 'react';
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import { AdminLayout } from '../AdminLayout';
@@ -124,7 +123,10 @@ describe('AdminLayout', () => {
 
     await waitFor(() => {
       expect(mockLogout).toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalledWith('Logout failed:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Logout failed:',
+        expect.any(Error)
+      );
     });
 
     consoleSpy.mockRestore();

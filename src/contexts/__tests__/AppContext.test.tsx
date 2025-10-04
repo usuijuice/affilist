@@ -1,6 +1,6 @@
 import { renderHook, act } from '@testing-library/react';
 import { ReactNode } from 'react';
-import { vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppProvider, useAppContext } from '../AppContext';
 import { SortOption } from '../../types';
 
@@ -76,7 +76,10 @@ describe('AppContext', () => {
     const searchQuery = 'test search';
 
     act(() => {
-      result.current.dispatch({ type: 'SET_SEARCH_QUERY', payload: searchQuery });
+      result.current.dispatch({
+        type: 'SET_SEARCH_QUERY',
+        payload: searchQuery,
+      });
     });
 
     expect(result.current.state.filters.searchQuery).toBe(searchQuery);
@@ -104,7 +107,10 @@ describe('AppContext', () => {
     const categories = ['cat1', 'cat2'];
 
     act(() => {
-      result.current.dispatch({ type: 'SET_CATEGORY_FILTER', payload: categories });
+      result.current.dispatch({
+        type: 'SET_CATEGORY_FILTER',
+        payload: categories,
+      });
     });
 
     expect(result.current.state.filters.categories).toEqual(categories);
@@ -147,7 +153,10 @@ describe('AppContext', () => {
     act(() => {
       result.current.dispatch({ type: 'SET_SEARCH_QUERY', payload: 'test' });
       result.current.dispatch({ type: 'SET_FEATURED_FILTER', payload: true });
-      result.current.dispatch({ type: 'SET_CATEGORY_FILTER', payload: ['cat1'] });
+      result.current.dispatch({
+        type: 'SET_CATEGORY_FILTER',
+        payload: ['cat1'],
+      });
     });
 
     // Reset filters

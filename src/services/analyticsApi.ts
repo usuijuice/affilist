@@ -59,9 +59,11 @@ export class AnalyticsApi {
   /**
    * Get comprehensive analytics dashboard data (admin only)
    */
-  async getDashboardAnalytics(params: AnalyticsParams = {}): Promise<ApiResponse<AnalyticsResponse>> {
+  async getDashboardAnalytics(
+    params: AnalyticsParams = {}
+  ): Promise<ApiResponse<AnalyticsResponse>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params.startDate) searchParams.set('startDate', params.startDate);
     if (params.endDate) searchParams.set('endDate', params.endDate);
     if (params.categoryId) searchParams.set('categoryId', params.categoryId);
@@ -74,9 +76,11 @@ export class AnalyticsApi {
   /**
    * Get click analytics (admin only)
    */
-  async getClickAnalytics(params: AnalyticsParams = {}): Promise<ApiResponse<ClickAnalytics>> {
+  async getClickAnalytics(
+    params: AnalyticsParams = {}
+  ): Promise<ApiResponse<ClickAnalytics>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params.startDate) searchParams.set('startDate', params.startDate);
     if (params.endDate) searchParams.set('endDate', params.endDate);
     if (params.categoryId) searchParams.set('categoryId', params.categoryId);
@@ -88,9 +92,11 @@ export class AnalyticsApi {
   /**
    * Get revenue analytics (admin only)
    */
-  async getRevenueAnalytics(params: AnalyticsParams = {}): Promise<ApiResponse<RevenueAnalytics>> {
+  async getRevenueAnalytics(
+    params: AnalyticsParams = {}
+  ): Promise<ApiResponse<RevenueAnalytics>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params.startDate) searchParams.set('startDate', params.startDate);
     if (params.endDate) searchParams.set('endDate', params.endDate);
     if (params.categoryId) searchParams.set('categoryId', params.categoryId);
@@ -102,9 +108,11 @@ export class AnalyticsApi {
   /**
    * Get link performance metrics (admin only)
    */
-  async getLinkPerformance(params: AnalyticsParams = {}): Promise<ApiResponse<LinkPerformance[]>> {
+  async getLinkPerformance(
+    params: AnalyticsParams = {}
+  ): Promise<ApiResponse<LinkPerformance[]>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params.startDate) searchParams.set('startDate', params.startDate);
     if (params.endDate) searchParams.set('endDate', params.endDate);
     if (params.categoryId) searchParams.set('categoryId', params.categoryId);
@@ -116,9 +124,12 @@ export class AnalyticsApi {
   /**
    * Get analytics for a specific link (admin only)
    */
-  async getLinkAnalytics(linkId: string, params: Omit<AnalyticsParams, 'linkId'> = {}): Promise<ApiResponse<LinkPerformance>> {
+  async getLinkAnalytics(
+    linkId: string,
+    params: Omit<AnalyticsParams, 'linkId'> = {}
+  ): Promise<ApiResponse<LinkPerformance>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params.startDate) searchParams.set('startDate', params.startDate);
     if (params.endDate) searchParams.set('endDate', params.endDate);
 
@@ -129,9 +140,11 @@ export class AnalyticsApi {
   /**
    * Export analytics data as CSV (admin only)
    */
-  async exportAnalytics(params: AnalyticsParams & { format?: 'csv' | 'json' } = {}): Promise<ApiResponse<Blob>> {
+  async exportAnalytics(
+    params: AnalyticsParams & { format?: 'csv' | 'json' } = {}
+  ): Promise<ApiResponse<Blob>> {
     const searchParams = new URLSearchParams();
-    
+
     if (params.startDate) searchParams.set('startDate', params.startDate);
     if (params.endDate) searchParams.set('endDate', params.endDate);
     if (params.categoryId) searchParams.set('categoryId', params.categoryId);
@@ -144,16 +157,18 @@ export class AnalyticsApi {
   /**
    * Get real-time analytics summary (admin only)
    */
-  async getRealTimeAnalytics(): Promise<ApiResponse<{
-    activeUsers: number;
-    clicksToday: number;
-    revenueToday: number;
-    topLinksToday: Array<{
-      linkId: string;
-      title: string;
-      clicks: number;
-    }>;
-  }>> {
+  async getRealTimeAnalytics(): Promise<
+    ApiResponse<{
+      activeUsers: number;
+      clicksToday: number;
+      revenueToday: number;
+      topLinksToday: Array<{
+        linkId: string;
+        title: string;
+        clicks: number;
+      }>;
+    }>
+  > {
     return apiClient.get('/admin/analytics/realtime', { cache: false });
   }
 }

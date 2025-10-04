@@ -17,7 +17,11 @@ vi.mock('react-router-dom', async () => {
   return {
     ...actual,
     Navigate: ({ to, state }: { to: string; state?: any }) => (
-      <div data-testid="navigate" data-to={to} data-state={JSON.stringify(state)}>
+      <div
+        data-testid="navigate"
+        data-to={to}
+        data-state={JSON.stringify(state)}
+      >
         Navigate to {to}
       </div>
     ),
@@ -50,11 +54,12 @@ describe('ProtectedRoute', () => {
     vi.clearAllMocks();
   });
 
-  const renderWithRouter = (component: React.ReactElement, initialEntries = ['/']) => {
+  const renderWithRouter = (
+    component: React.ReactElement,
+    initialEntries = ['/']
+  ) => {
     return render(
-      <MemoryRouter initialEntries={initialEntries}>
-        {component}
-      </MemoryRouter>
+      <MemoryRouter initialEntries={initialEntries}>{component}</MemoryRouter>
     );
   };
 
@@ -93,7 +98,10 @@ describe('ProtectedRoute', () => {
 
     const navigate = screen.getByTestId('navigate');
     expect(navigate).toHaveAttribute('data-to', '/admin/login');
-    expect(navigate).toHaveAttribute('data-state', JSON.stringify({ from: '/admin/dashboard' }));
+    expect(navigate).toHaveAttribute(
+      'data-state',
+      JSON.stringify({ from: '/admin/dashboard' })
+    );
     expect(screen.queryByText('Protected Content')).not.toBeInTheDocument();
   });
 
@@ -177,7 +185,9 @@ describe('ProtectedRoute', () => {
     );
 
     expect(screen.getByText('Access Denied')).toBeInTheDocument();
-    expect(screen.getByText("You don't have permission to access this page.")).toBeInTheDocument();
+    expect(
+      screen.getByText("You don't have permission to access this page.")
+    ).toBeInTheDocument();
     expect(screen.getByText('Required role:')).toBeInTheDocument();
     expect(screen.getByText('admin')).toBeInTheDocument();
     expect(screen.getByText('Your role:')).toBeInTheDocument();
@@ -265,7 +275,8 @@ describe('usePermissions', () => {
 
   // Test component that uses usePermissions
   function TestComponent() {
-    const { user, isAuthenticated, hasRole, hasAnyRole, canAccess } = usePermissions();
+    const { user, isAuthenticated, hasRole, hasAnyRole, canAccess } =
+      usePermissions();
 
     return (
       <div>
@@ -273,8 +284,12 @@ describe('usePermissions', () => {
         <div data-testid="authenticated">{isAuthenticated.toString()}</div>
         <div data-testid="has-admin">{hasRole('admin').toString()}</div>
         <div data-testid="has-editor">{hasRole('editor').toString()}</div>
-        <div data-testid="has-any-role">{hasAnyRole(['admin', 'editor']).toString()}</div>
-        <div data-testid="can-access-admin">{canAccess('admin').toString()}</div>
+        <div data-testid="has-any-role">
+          {hasAnyRole(['admin', 'editor']).toString()}
+        </div>
+        <div data-testid="can-access-admin">
+          {canAccess('admin').toString()}
+        </div>
         <div data-testid="can-access-any">{canAccess().toString()}</div>
       </div>
     );

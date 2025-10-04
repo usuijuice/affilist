@@ -1,6 +1,7 @@
 import React from 'react';
 import type { AffiliateLink } from '../types';
 import { HighlightedText } from './HighlightedText';
+import { LazyImage } from './LazyImage';
 import { useClickTracking } from '../hooks/useClickTracking';
 
 interface AffiliateLinkCardProps {
@@ -10,12 +11,17 @@ interface AffiliateLinkCardProps {
   searchQuery?: string;
 }
 
-export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQuery = '' }: AffiliateLinkCardProps) {
+export function AffiliateLinkCard({
+  link,
+  onLinkClick,
+  featured = false,
+  searchQuery = '',
+}: AffiliateLinkCardProps) {
   const { trackClick } = useClickTracking();
 
   const handleClick = async (e: React.MouseEvent) => {
     e.preventDefault();
-    
+
     // Track the click with metadata
     await trackClick(link.id, {
       title: link.title,
@@ -27,10 +33,10 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
       clickSource: 'card',
       timestamp: new Date().toISOString(),
     });
-    
+
     // Call the parent's click handler
     onLinkClick(link.id);
-    
+
     // Open the affiliate URL in a new tab
     window.open(link.affiliateUrl, '_blank', 'noopener,noreferrer');
   };
@@ -77,27 +83,29 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
       {/* Image */}
       <div className="relative h-48 bg-gray-100 overflow-hidden">
         {link.imageUrl ? (
-          <img
+          <LazyImage
             src={link.imageUrl}
             alt={link.title}
-            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
-            loading="lazy"
-            onError={(e) => {
-              // Fallback to placeholder if image fails to load
-              const target = e.target as HTMLImageElement;
-              target.style.display = 'none';
-              target.nextElementSibling?.classList.remove('hidden');
-            }}
+            className="w-full h-full group-hover:scale-105 transition-transform duration-200"
+            placeholder={`data:image/svg+xml;base64,${btoa(`
+              <svg width="400" height="300" xmlns="http://www.w3.org/2000/svg">
+                <rect width="100%" height="100%" fill="#f3f4f6"/>
+                <text x="50%" y="50%" text-anchor="middle" dy=".3em" fill="#9ca3af" font-size="16">
+                  ${link.category.name}
+                </text>
+              </svg>
+            `)}`}
           />
-        ) : null}
-        
-        {/* Fallback placeholder */}
-        <div className={`${link.imageUrl ? 'hidden' : ''} w-full h-full flex items-center justify-center bg-gray-200`}>
-          <div className="text-center">
-            <div className="text-4xl mb-2">{link.category.icon || '🔗'}</div>
-            <div className="text-gray-500 text-sm font-medium">{link.category.name}</div>
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gray-200">
+            <div className="text-center">
+              <div className="text-4xl mb-2">{link.category.icon || '🔗'}</div>
+              <div className="text-gray-500 text-sm font-medium">
+                {link.category.name}
+              </div>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* Content */}
@@ -124,7 +132,10 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
         {/* Description */}
         <p className="text-gray-600 text-sm mb-3 line-clamp-3">
           {searchQuery ? (
-            <HighlightedText text={link.description} searchQuery={searchQuery} />
+            <HighlightedText
+              text={link.description}
+              searchQuery={searchQuery}
+            />
           ) : (
             link.description
           )}
@@ -165,7 +176,7 @@ export function AffiliateLinkCard({ link, onLinkClick, featured = false, searchQ
             )}
             <span>{formatClickCount(link.clickCount)}</span>
           </div>
-          
+
           {/* External link indicator */}
           <div className="flex items-center text-blue-500">
             <span className="text-xs mr-1">Visit</span>

@@ -1,6 +1,9 @@
-import { describe, it, expect, vi } from 'vitest';
+import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/react';
-import { PerformanceTable, CategoryPerformanceTable } from '../PerformanceTable';
+import {
+  PerformanceTable,
+  CategoryPerformanceTable,
+} from '../PerformanceTable';
 
 describe('PerformanceTable', () => {
   const mockData = [
@@ -10,7 +13,7 @@ describe('PerformanceTable', () => {
       clicks: 1500,
       uniqueClicks: 1200,
       conversionRate: 5.5,
-      revenue: 2500.50,
+      revenue: 2500.5,
       ctr: 3.2,
     },
     {
@@ -19,7 +22,7 @@ describe('PerformanceTable', () => {
       clicks: 800,
       uniqueClicks: 650,
       conversionRate: 4.2,
-      revenue: 1200.00,
+      revenue: 1200.0,
       ctr: 2.8,
     },
     {
@@ -66,7 +69,9 @@ describe('PerformanceTable', () => {
   it('should handle empty data', () => {
     render(<PerformanceTable data={[]} />);
 
-    expect(screen.getByText('No performance data available')).toBeInTheDocument();
+    expect(
+      screen.getByText('No performance data available')
+    ).toBeInTheDocument();
   });
 
   it('should sort by clicks when header is clicked', () => {
@@ -96,8 +101,12 @@ describe('PerformanceTable', () => {
     const searchInput = screen.getByPlaceholderText('Search links...');
     fireEvent.change(searchInput, { target: { value: 'Non-existent Link' } });
 
-    expect(screen.getByText('No performance data available')).toBeInTheDocument();
-    expect(screen.getByText('Try adjusting your search criteria')).toBeInTheDocument();
+    expect(
+      screen.getByText('No performance data available')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Try adjusting your search criteria')
+    ).toBeInTheDocument();
   });
 
   it('should limit rows to maxRows prop', () => {
@@ -114,15 +123,17 @@ describe('PerformanceTable', () => {
   it('should hide filters when showFilters is false', () => {
     render(<PerformanceTable data={mockData} showFilters={false} />);
 
-    expect(screen.queryByPlaceholderText('Search links...')).not.toBeInTheDocument();
+    expect(
+      screen.queryByPlaceholderText('Search links...')
+    ).not.toBeInTheDocument();
   });
 
   it('should apply custom title and className', () => {
     const { container } = render(
-      <PerformanceTable 
-        data={mockData} 
-        title="Custom Title" 
-        className="custom-class" 
+      <PerformanceTable
+        data={mockData}
+        title="Custom Title"
+        className="custom-class"
       />
     );
 
@@ -146,7 +157,7 @@ describe('PerformanceTable', () => {
         clicks: 1500000,
         uniqueClicks: 1200000,
         conversionRate: 5.5,
-        revenue: 2500000.50,
+        revenue: 2500000.5,
         ctr: 3.2,
       },
     ];
@@ -166,7 +177,7 @@ describe('CategoryPerformanceTable', () => {
       categoryName: 'Technology',
       clicks: 5000,
       uniqueClicks: 4000,
-      revenue: 7500.00,
+      revenue: 7500.0,
       linkCount: 25,
     },
     {
@@ -174,7 +185,7 @@ describe('CategoryPerformanceTable', () => {
       categoryName: 'Design',
       clicks: 3500,
       uniqueClicks: 2800,
-      revenue: 5200.50,
+      revenue: 5200.5,
       linkCount: 18,
     },
     {
@@ -231,7 +242,10 @@ describe('CategoryPerformanceTable', () => {
 
   it('should apply custom className', () => {
     const { container } = render(
-      <CategoryPerformanceTable data={mockCategoryData} className="custom-category-table" />
+      <CategoryPerformanceTable
+        data={mockCategoryData}
+        className="custom-category-table"
+      />
     );
 
     expect(container.firstChild).toHaveClass('custom-category-table');

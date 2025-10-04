@@ -1,20 +1,25 @@
 import { db } from '../connection.js';
-import type { 
-  AffiliateLink, 
-  CreateAffiliateLinkInput, 
+import type {
+  AffiliateLink,
+  CreateAffiliateLinkInput,
   UpdateAffiliateLinkInput,
   AffiliateLinkFilters,
   PaginationOptions,
-  PaginatedResult 
+  PaginatedResult,
 } from './types.js';
 
 export class AffiliateLinkModel {
   static async findAll(
-    filters: AffiliateLinkFilters = {}, 
+    filters: AffiliateLinkFilters = {},
     options: PaginationOptions = {}
   ): Promise<PaginatedResult<AffiliateLink>> {
-    const { limit = 20, offset = 0, sort_by = 'created_at', sort_order = 'DESC' } = options;
-    
+    const {
+      limit = 20,
+      offset = 0,
+      sort_by = 'created_at',
+      sort_order = 'DESC',
+    } = options;
+
     const whereConditions: string[] = [];
     const queryParams: any[] = [];
     let paramCount = 1;
@@ -24,17 +29,17 @@ export class AffiliateLinkModel {
       whereConditions.push(`al.category_id = $${paramCount++}`);
       queryParams.push(filters.category_id);
     }
-    
+
     if (filters.status) {
       whereConditions.push(`al.status = $${paramCount++}`);
       queryParams.push(filters.status);
     }
-    
+
     if (filters.featured !== undefined) {
       whereConditions.push(`al.featured = $${paramCount++}`);
       queryParams.push(filters.featured);
     }
-    
+
     if (filters.search) {
       whereConditions.push(`
         to_tsvector('english', al.title || ' ' || al.description || ' ' || array_to_string(al.tags, ' '))
@@ -42,15 +47,16 @@ export class AffiliateLinkModel {
       `);
       queryParams.push(filters.search);
     }
-    
+
     if (filters.tags && filters.tags.length > 0) {
       whereConditions.push(`al.tags && $${paramCount++}`);
       queryParams.push(filters.tags);
     }
 
-    const whereClause = whereConditions.length > 0 
-      ? `WHERE ${whereConditions.join(' AND ')}`
-      : '';
+    const whereClause =
+      whereConditions.length > 0
+        ? `WHERE ${whereConditions.join(' AND ')}`
+        : '';
 
     // Count query
     const countQuery = `
@@ -69,10 +75,10 @@ export class AffiliateLinkModel {
       ORDER BY al.${sort_by} ${sort_order}
       LIMIT $${paramCount++} OFFSET $${paramCount++}
     `;
-    
+
     queryParams.push(limit, offset);
     const result = await db.query<AffiliateLink>(query, queryParams);
-    
+
     return {
       data: result.rows,
       total,
@@ -88,7 +94,9 @@ export class AffiliateLinkModel {
     return result.rows[0] || null;
   }
 
-  static async findWithCategory(id: string): Promise<(AffiliateLink & { category: any }) | null> {
+  static async findWithCategory(
+    id: string
+  ): Promise<(AffiliateLink & { category: any }) | null> {
     const query = `
       SELECT 
         al.*,
@@ -103,8 +111,10 @@ export class AffiliateLinkModel {
       JOIN categories c ON al.category_id = c.id
       WHERE al.id = $1
     `;
-    
-    const result = await db.query<AffiliateLink & { category: any }>(query, [id]);
+
+    const result = await db.query<AffiliateLink & { category: any }>(query, [
+      id,
+    ]);
     return result.rows[0] || null;
   }
 
@@ -117,7 +127,7 @@ export class AffiliateLinkModel {
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)
       RETURNING *
     `;
-    
+
     const values = [
       input.title,
       input.description,
@@ -130,12 +140,15 @@ export class AffiliateLinkModel {
       input.featured || false,
       input.status || 'active',
     ];
-    
+
     const result = await db.query<AffiliateLink>(query, values);
     return result.rows[0];
   }
 
-  static async update(id: string, input: UpdateAffiliateLinkInput): Promise<AffiliateLink | null> {
+  static async update(
+    id: string,
+    input: UpdateAffiliateLinkInput
+  ): Promise<AffiliateLink | null> {
     const fields: string[] = [];
     const values: any[] = [];
     let paramCount = 1;
@@ -204,7 +217,8 @@ export class AffiliateLinkModel {
   }
 
   static async incrementClickCount(id: string): Promise<void> {
-    const query = 'UPDATE affiliate_links SET click_count = click_count + 1 WHERE id = $1';
+    const query =
+      'UPDATE affiliate_links SET click_count = click_count + 1 WHERE id = $1';
     await db.query(query, [id]);
   }
 
@@ -215,7 +229,7 @@ export class AffiliateLinkModel {
       ORDER BY click_count DESC, created_at DESC
       LIMIT $1
     `;
-    
+
     const result = await db.query<AffiliateLink>(query, [limit]);
     return result.rows;
   }
@@ -227,7 +241,7 @@ export class AffiliateLinkModel {
       ORDER BY click_count DESC, created_at DESC
       LIMIT $1
     `;
-    
+
     const result = await db.query<AffiliateLink>(query, [limit]);
     return result.rows;
   }

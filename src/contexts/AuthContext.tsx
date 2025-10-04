@@ -101,9 +101,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const initializeAuth = async () => {
       try {
         dispatch({ type: 'SET_LOADING', payload: true });
-        
+
         const user = await authService.initialize();
-        
+
         if (user) {
           const token = authService.getToken();
           dispatch({
@@ -126,9 +126,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
   const login = async (credentials: LoginCredentials): Promise<void> => {
     try {
       dispatch({ type: 'AUTH_START' });
-      
+
       const authResponse = await authService.login(credentials);
-      
+
       dispatch({
         type: 'AUTH_SUCCESS',
         payload: {
@@ -137,7 +137,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         },
       });
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : 'Login failed';
+      const errorMessage =
+        error instanceof Error ? error.message : 'Login failed';
       dispatch({ type: 'AUTH_ERROR', payload: errorMessage });
       throw error; // Re-throw for component handling
     }
@@ -168,9 +169,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
   };
 
   return (
-    <AuthContext.Provider value={contextValue}>
-      {children}
-    </AuthContext.Provider>
+    <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>
   );
 }
 

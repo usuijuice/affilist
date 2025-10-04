@@ -2,6 +2,8 @@
  * Base API client with error handling, retry logic, and caching
  */
 
+import { config } from '../config/environment';
+
 export interface ApiError {
   message: string;
   status?: number;
@@ -37,7 +39,7 @@ class ApiClient {
   private readonly DEFAULT_TIMEOUT = 10000; // 10 seconds
   private readonly DEFAULT_RETRIES = 3;
 
-  constructor(baseUrl: string = '/api') {
+  constructor(baseUrl: string = config.apiBaseUrl) {
     this.baseUrl = baseUrl;
     this.defaultHeaders = {
       'Content-Type': 'application/json',
@@ -77,7 +79,11 @@ class ApiClient {
   /**
    * Cache data with TTL
    */
-  private setCachedData<T>(key: string, data: T, ttl: number = this.DEFAULT_CACHE_TTL) {
+  private setCachedData<T>(
+    key: string,
+    data: T,
+    ttl: number = this.DEFAULT_CACHE_TTL
+  ) {
     this.cache.set(key, {
       data,
       timestamp: Date.now(),
@@ -98,7 +104,7 @@ class ApiClient {
    * Sleep for retry delay
    */
   private sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms));
+    return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   /**
@@ -130,7 +136,9 @@ class ApiClient {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
-        const error = new Error(errorData.message || `HTTP ${response.status}: ${response.statusText}`) as any;
+        const error = new Error(
+          errorData.message || `HTTP ${response.status}: ${response.statusText}`
+        ) as any;
         error.status = response.status;
         throw error;
       }
@@ -152,8 +160,12 @@ class ApiClient {
         data: null as any,
         success: false,
         error: {
-          message: error instanceof Error ? error.message : 'Unknown error occurred',
-          status: error instanceof Error && 'status' in error ? (error as any).status : undefined,
+          message:
+            error instanceof Error ? error.message : 'Unknown error occurred',
+          status:
+            error instanceof Error && 'status' in error
+              ? (error as any).status
+              : undefined,
         },
       };
     }
@@ -179,7 +191,10 @@ class ApiClient {
   /**
    * Make API request with caching and error handling
    */
-  async request<T>(endpoint: string, config: RequestConfig = {}): Promise<ApiResponse<T>> {
+  async request<T>(
+    endpoint: string,
+    config: RequestConfig = {}
+  ): Promise<ApiResponse<T>> {
     const url = `${this.baseUrl}${endpoint}`;
     const cacheKey = this.createCacheKey(url, config);
 
@@ -197,7 +212,11 @@ class ApiClient {
     const response = await this.makeRequest<T>(url, config);
 
     // Cache successful GET responses
-    if (response.success && (config.method || 'GET') === 'GET' && config.cache !== false) {
+    if (
+      response.success &&
+      (config.method || 'GET') === 'GET' &&
+      config.cache !== false
+    ) {
       this.setCachedData(cacheKey, response.data);
     }
 
@@ -207,28 +226,42 @@ class ApiClient {
   /**
    * GET request
    */
-  async get<T>(endpoint: string, config: Omit<RequestConfig, 'method' | 'body'> = {}): Promise<ApiResponse<T>> {
+  async get<T>(
+    endpoint: string,
+    config: Omit<RequestConfig, 'method' | 'body'> = {}
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'GET' });
   }
 
   /**
    * POST request
    */
-  async post<T>(endpoint: string, data?: any, config: Omit<RequestConfig, 'method' | 'body'> = {}): Promise<ApiResponse<T>> {
+  async post<T>(
+    endpoint: string,
+    data?: any,
+    config: Omit<RequestConfig, 'method' | 'body'> = {}
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'POST', body: data });
   }
 
   /**
    * PUT request
    */
-  async put<T>(endpoint: string, data?: any, config: Omit<RequestConfig, 'method' | 'body'> = {}): Promise<ApiResponse<T>> {
+  async put<T>(
+    endpoint: string,
+    data?: any,
+    config: Omit<RequestConfig, 'method' | 'body'> = {}
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'PUT', body: data });
   }
 
   /**
    * DELETE request
    */
-  async delete<T>(endpoint: string, config: Omit<RequestConfig, 'method' | 'body'> = {}): Promise<ApiResponse<T>> {
+  async delete<T>(
+    endpoint: string,
+    config: Omit<RequestConfig, 'method' | 'body'> = {}
+  ): Promise<ApiResponse<T>> {
     return this.request<T>(endpoint, { ...config, method: 'DELETE' });
   }
 

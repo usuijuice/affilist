@@ -1,5 +1,4 @@
-import React from 'react';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { vi, describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { LinkForm } from '../LinkForm';
@@ -55,7 +54,7 @@ describe('LinkForm', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    
+
     // Mock successful categories API response
     vi.mocked(categoriesApi.getAllCategories).mockResolvedValue({
       success: true,
@@ -71,16 +70,13 @@ describe('LinkForm', () => {
   });
 
   it('renders form fields correctly', async () => {
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     // Wait for categories to load
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: /category/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('combobox', { name: /category/i })
+      ).toBeInTheDocument();
     });
 
     // Check all required fields are present
@@ -94,17 +90,14 @@ describe('LinkForm', () => {
     expect(screen.getByLabelText(/featured link/i)).toBeInTheDocument();
 
     // Check buttons
-    expect(screen.getByRole('button', { name: /create link/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /create link/i })
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /cancel/i })).toBeInTheDocument();
   });
 
   it('loads categories on mount', async () => {
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     await waitFor(() => {
       expect(categoriesApi.getAllCategories).toHaveBeenCalledTimes(1);
@@ -113,10 +106,14 @@ describe('LinkForm', () => {
     // Check categories are loaded in select
     const categorySelect = screen.getByRole('combobox', { name: /category/i });
     expect(categorySelect).toHaveDisplayValue('');
-    
+
     // Check options are present
-    expect(screen.getByRole('option', { name: 'Web Development' })).toBeInTheDocument();
-    expect(screen.getByRole('option', { name: 'Design Tools' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'Web Development' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('option', { name: 'Design Tools' })
+    ).toBeInTheDocument();
   });
 
   it('populates form when editing existing link', async () => {
@@ -134,30 +131,35 @@ describe('LinkForm', () => {
 
     // Check all fields are populated
     expect(screen.getByDisplayValue('Test Link')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('Test description for affiliate link')).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue('Test description for affiliate link')
+    ).toBeInTheDocument();
     expect(screen.getByDisplayValue('https://example.com')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('https://affiliate.example.com/ref=123')).toBeInTheDocument();
-    expect(screen.getByDisplayValue('https://example.com/logo.png')).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue('https://affiliate.example.com/ref=123')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue('https://example.com/logo.png')
+    ).toBeInTheDocument();
     expect(screen.getByDisplayValue('5.5')).toBeInTheDocument();
-    expect(screen.getByRole('checkbox', { name: /featured link/i })).toBeChecked();
+    expect(
+      screen.getByRole('checkbox', { name: /featured link/i })
+    ).toBeChecked();
 
     // Check tags are displayed
     expect(screen.getByText('web')).toBeInTheDocument();
     expect(screen.getByText('development')).toBeInTheDocument();
 
     // Check button text changes for editing
-    expect(screen.getByRole('button', { name: /update link/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /update link/i })
+    ).toBeInTheDocument();
   });
 
   it('validates required fields', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     // Try to submit empty form
     const submitButton = screen.getByRole('button', { name: /create link/i });
@@ -178,27 +180,27 @@ describe('LinkForm', () => {
 
   it('validates URL formats', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     // Wait for categories to load
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: /category/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('combobox', { name: /category/i })
+      ).toBeInTheDocument();
     });
 
     // Fill required fields with valid data first, then invalid URLs
     await user.type(screen.getByLabelText(/title/i), 'Test Title');
-    await user.type(screen.getByLabelText(/description/i), 'Test description that is long enough');
-    
+    await user.type(
+      screen.getByLabelText(/description/i),
+      'Test description that is long enough'
+    );
+
     // Select category
     const categorySelect = screen.getByLabelText(/category/i);
     await user.selectOptions(categorySelect, '1');
-    
+
     // Enter invalid URLs
     const urlInput = screen.getByLabelText(/original url/i);
     const affiliateUrlInput = screen.getByLabelText(/affiliate url/i);
@@ -215,20 +217,19 @@ describe('LinkForm', () => {
     // Check URL validation errors
     await waitFor(() => {
       expect(screen.getByText('Please enter a valid URL')).toBeInTheDocument();
-      expect(screen.getByText('Please enter a valid affiliate URL')).toBeInTheDocument();
-      expect(screen.getByText('Please enter a valid image URL')).toBeInTheDocument();
+      expect(
+        screen.getByText('Please enter a valid affiliate URL')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('Please enter a valid image URL')
+      ).toBeInTheDocument();
     });
   });
 
   it('validates field lengths', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     // Enter text that's too short/long
     const titleInput = screen.getByLabelText(/title/i);
@@ -241,55 +242,62 @@ describe('LinkForm', () => {
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Title must be at least 3 characters')).toBeInTheDocument();
-      expect(screen.getByText('Description must be at least 10 characters')).toBeInTheDocument();
+      expect(
+        screen.getByText('Title must be at least 3 characters')
+      ).toBeInTheDocument();
+      expect(
+        screen.getByText('Description must be at least 10 characters')
+      ).toBeInTheDocument();
     });
   });
 
   it('validates commission rate', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     // Wait for categories to load
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: /category/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('combobox', { name: /category/i })
+      ).toBeInTheDocument();
     });
 
     // Fill required fields with valid data first
     await user.type(screen.getByLabelText(/title/i), 'Test Title');
-    await user.type(screen.getByLabelText(/description/i), 'Test description that is long enough');
-    await user.type(screen.getByLabelText(/original url/i), 'https://example.com');
-    await user.type(screen.getByLabelText(/affiliate url/i), 'https://affiliate.example.com');
+    await user.type(
+      screen.getByLabelText(/description/i),
+      'Test description that is long enough'
+    );
+    await user.type(
+      screen.getByLabelText(/original url/i),
+      'https://example.com'
+    );
+    await user.type(
+      screen.getByLabelText(/affiliate url/i),
+      'https://affiliate.example.com'
+    );
     await user.selectOptions(screen.getByLabelText(/category/i), '1');
 
     const commissionInput = screen.getByLabelText(/commission rate/i);
-    
+
     // Test invalid commission rate
     await user.type(commissionInput, '150'); // Too high
-    
+
     const submitButton = screen.getByRole('button', { name: /create link/i });
     await user.click(submitButton);
 
     await waitFor(() => {
-      expect(screen.getByText('Commission rate must be between 0 and 100')).toBeInTheDocument();
+      expect(
+        screen.getByText('Commission rate must be between 0 and 100')
+      ).toBeInTheDocument();
     });
   });
 
   it('handles tag management', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     const tagInput = screen.getByPlaceholderText('Add a tag');
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -316,13 +324,8 @@ describe('LinkForm', () => {
 
   it('prevents duplicate tags', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     const tagInput = screen.getByPlaceholderText('Add a tag');
     const addButton = screen.getByRole('button', { name: 'Add' });
@@ -342,24 +345,30 @@ describe('LinkForm', () => {
 
   it('submits form with valid data', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     // Wait for categories to load
     await waitFor(() => {
-      expect(screen.getByRole('combobox', { name: /category/i })).toBeInTheDocument();
+      expect(
+        screen.getByRole('combobox', { name: /category/i })
+      ).toBeInTheDocument();
     });
 
     // Fill out form
     await user.type(screen.getByLabelText(/title/i), 'Test Affiliate Link');
-    await user.type(screen.getByLabelText(/description/i), 'This is a test affiliate link description');
-    await user.type(screen.getByLabelText(/original url/i), 'https://example.com');
-    await user.type(screen.getByLabelText(/affiliate url/i), 'https://affiliate.example.com/ref=123');
+    await user.type(
+      screen.getByLabelText(/description/i),
+      'This is a test affiliate link description'
+    );
+    await user.type(
+      screen.getByLabelText(/original url/i),
+      'https://example.com'
+    );
+    await user.type(
+      screen.getByLabelText(/affiliate url/i),
+      'https://affiliate.example.com/ref=123'
+    );
     await user.selectOptions(screen.getByLabelText(/category/i), '1');
     await user.type(screen.getByLabelText(/commission rate/i), '5.5');
     await user.click(screen.getByLabelText(/featured link/i));
@@ -389,13 +398,8 @@ describe('LinkForm', () => {
 
   it('calls onCancel when cancel button is clicked', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     const cancelButton = screen.getByRole('button', { name: /cancel/i });
     await user.click(cancelButton);
@@ -422,17 +426,17 @@ describe('LinkForm', () => {
 
   it('saves and loads draft data', async () => {
     const user = userEvent.setup();
-    
+
     // First render - enter some data
     const { unmount } = render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
+      <LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />
     );
 
     await user.type(screen.getByLabelText(/title/i), 'Draft Title');
-    await user.type(screen.getByLabelText(/description/i), 'Draft description content');
+    await user.type(
+      screen.getByLabelText(/description/i),
+      'Draft description content'
+    );
 
     // Wait for draft to be saved
     await waitFor(() => {
@@ -442,29 +446,21 @@ describe('LinkForm', () => {
     unmount();
 
     // Second render - should load draft
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     await waitFor(() => {
       expect(screen.getByDisplayValue('Draft Title')).toBeInTheDocument();
-      expect(screen.getByDisplayValue('Draft description content')).toBeInTheDocument();
+      expect(
+        screen.getByDisplayValue('Draft description content')
+      ).toBeInTheDocument();
       expect(screen.getByText('Draft saved automatically')).toBeInTheDocument();
     });
   });
 
   it('clears draft when clear button is clicked', async () => {
     const user = userEvent.setup();
-    
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     // Enter some data to create draft
     await user.type(screen.getByLabelText(/title/i), 'Draft Title');
@@ -478,25 +474,27 @@ describe('LinkForm', () => {
     await user.click(clearButton);
 
     // Draft should be cleared
-    expect(screen.queryByText('Draft saved automatically')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('Draft saved automatically')
+    ).not.toBeInTheDocument();
     expect(screen.getByLabelText(/title/i)).toHaveValue('');
   });
 
   it('handles API errors gracefully', async () => {
     // Mock API failure
-    vi.mocked(categoriesApi.getAllCategories).mockRejectedValue(new Error('API Error'));
+    vi.mocked(categoriesApi.getAllCategories).mockRejectedValue(
+      new Error('API Error')
+    );
 
     const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => {});
 
-    render(
-      <LinkForm
-        onSubmit={mockOnSubmit}
-        onCancel={mockOnCancel}
-      />
-    );
+    render(<LinkForm onSubmit={mockOnSubmit} onCancel={mockOnCancel} />);
 
     await waitFor(() => {
-      expect(consoleSpy).toHaveBeenCalledWith('Failed to load categories:', expect.any(Error));
+      expect(consoleSpy).toHaveBeenCalledWith(
+        'Failed to load categories:',
+        expect.any(Error)
+      );
     });
 
     consoleSpy.mockRestore();

@@ -3,7 +3,11 @@ import { ReactNode } from 'react';
 import { AppProvider } from '../../contexts/AppContext';
 import { useAppState } from '../useAppState';
 import { useFilteredLinks } from '../useFilteredLinks';
-import { createMockAffiliateLink, createMockCategory } from '../../test/factories';
+import {
+  createMockAffiliateLink,
+  createMockCategory,
+} from '../../test/factories';
+import { beforeEach, describe, expect, it } from 'vitest';
 
 // Test wrapper component
 const createWrapper = () => {
@@ -112,7 +116,11 @@ describe('useFilteredLinks', () => {
     });
 
     expect(result.current.filteredLinks.links).toHaveLength(2);
-    expect(result.current.filteredLinks.links.every(link => link.category.id === 'cat1')).toBe(true);
+    expect(
+      result.current.filteredLinks.links.every(
+        (link) => link.category.id === 'cat1'
+      )
+    ).toBe(true);
   });
 
   it('should filter by commission rate', () => {
@@ -131,9 +139,11 @@ describe('useFilteredLinks', () => {
     });
 
     expect(result.current.filteredLinks.links).toHaveLength(2);
-    expect(result.current.filteredLinks.links.every(link => 
-      link.commissionRate! >= 10 && link.commissionRate! <= 20
-    )).toBe(true);
+    expect(
+      result.current.filteredLinks.links.every(
+        (link) => link.commissionRate! >= 10 && link.commissionRate! <= 20
+      )
+    ).toBe(true);
   });
 
   it('should filter by featured status', () => {
@@ -152,7 +162,9 @@ describe('useFilteredLinks', () => {
     });
 
     expect(result.current.filteredLinks.links).toHaveLength(2);
-    expect(result.current.filteredLinks.links.every(link => link.featured)).toBe(true);
+    expect(
+      result.current.filteredLinks.links.every((link) => link.featured)
+    ).toBe(true);
   });
 
   it('should sort by popularity (default)', () => {
@@ -171,8 +183,8 @@ describe('useFilteredLinks', () => {
 
     const links = result.current.filteredLinks.links;
     expect(links[0].clickCount).toBe(100); // React Tutorial
-    expect(links[1].clickCount).toBe(75);  // Angular Course
-    expect(links[2].clickCount).toBe(50);  // Vue.js Guide
+    expect(links[1].clickCount).toBe(75); // Angular Course
+    expect(links[2].clickCount).toBe(50); // Vue.js Guide
   });
 
   it('should sort by newest', () => {
@@ -192,7 +204,7 @@ describe('useFilteredLinks', () => {
 
     const links = result.current.filteredLinks.links;
     expect(links[0].title).toBe('Angular Course'); // 2024-01-03
-    expect(links[1].title).toBe('Vue.js Guide');   // 2024-01-02
+    expect(links[1].title).toBe('Vue.js Guide'); // 2024-01-02
     expect(links[2].title).toBe('React Tutorial'); // 2024-01-01
   });
 
@@ -214,7 +226,7 @@ describe('useFilteredLinks', () => {
     const links = result.current.filteredLinks.links;
     expect(links[0].commissionRate).toBe(15); // Vue.js Guide
     expect(links[1].commissionRate).toBe(10); // React Tutorial
-    expect(links[2].commissionRate).toBe(8);  // Angular Course
+    expect(links[2].commissionRate).toBe(8); // Angular Course
   });
 
   it('should sort alphabetically', () => {
@@ -255,9 +267,11 @@ describe('useFilteredLinks', () => {
     });
 
     expect(result.current.filteredLinks.links).toHaveLength(2);
-    expect(result.current.filteredLinks.links.every(link => 
-      link.category.id === 'cat1' && link.featured
-    )).toBe(true);
+    expect(
+      result.current.filteredLinks.links.every(
+        (link) => link.category.id === 'cat1' && link.featured
+      )
+    ).toBe(true);
   });
 
   it('should provide correct statistics', () => {

@@ -1,9 +1,11 @@
 import { renderHook, act, waitFor } from '@testing-library/react';
 import { ReactNode } from 'react';
-import { vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { AppProvider } from '../../contexts/AppContext';
-import { useAffiliateLinks, useAffiliateLinksSearch } from '../useAffiliateLinks';
-import { affiliateLinksApi } from '../../services';
+import {
+  useAffiliateLinks,
+  useAffiliateLinksSearch,
+} from '../useAffiliateLinks';
 import { createMockAffiliateLink } from '../../test/factories';
 
 // Mock the API
@@ -71,9 +73,12 @@ describe('useAffiliateLinks', () => {
   });
 
   it('should not fetch links on mount when autoFetch is false', async () => {
-    const { result } = renderHook(() => useAffiliateLinks({ autoFetch: false }), {
-      wrapper: createWrapper(),
-    });
+    const { result } = renderHook(
+      () => useAffiliateLinks({ autoFetch: false }),
+      {
+        wrapper: createWrapper(),
+      }
+    );
 
     expect(result.current.loading).toBe(false);
     expect(mockAffiliateLinksApi.getLinks).not.toHaveBeenCalled();
@@ -98,7 +103,9 @@ describe('useAffiliateLinks', () => {
   });
 
   it('should fetch more links for pagination', async () => {
-    const initialLinks = [createMockAffiliateLink({ id: '1', title: 'Link 1' })];
+    const initialLinks = [
+      createMockAffiliateLink({ id: '1', title: 'Link 1' }),
+    ];
     const moreLinks = [createMockAffiliateLink({ id: '2', title: 'Link 2' })];
 
     // Initial fetch
@@ -154,9 +161,12 @@ describe('useAffiliateLinks', () => {
       data: allLinks,
     });
 
-    const { result } = renderHook(() => useAffiliateLinks({ autoFetch: false }), {
-      wrapper: createWrapper(),
-    });
+    const { result } = renderHook(
+      () => useAffiliateLinks({ autoFetch: false }),
+      {
+        wrapper: createWrapper(),
+      }
+    );
 
     await act(async () => {
       await result.current.fetchAllLinks();
@@ -168,7 +178,9 @@ describe('useAffiliateLinks', () => {
   });
 
   it('should refetch links', async () => {
-    const initialLinks = [createMockAffiliateLink({ id: '1', title: 'Link 1' })];
+    const initialLinks = [
+      createMockAffiliateLink({ id: '1', title: 'Link 1' }),
+    ];
     const updatedLinks = [
       createMockAffiliateLink({ id: '1', title: 'Updated Link 1' }),
       createMockAffiliateLink({ id: '2', title: 'Link 2' }),
@@ -237,7 +249,7 @@ describe('useAffiliateLinks', () => {
 
   it('should call onError callback when error occurs', async () => {
     const onError = vi.fn();
-    
+
     mockAffiliateLinksApi.getLinks.mockResolvedValueOnce({
       success: false,
       error: { message: 'API Error' },
@@ -293,7 +305,10 @@ describe('useAffiliateLinksSearch', () => {
     });
 
     await waitFor(() => {
-      expect(mockAffiliateLinksApi.searchLinks).toHaveBeenCalledWith('react', filters);
+      expect(mockAffiliateLinksApi.searchLinks).toHaveBeenCalledWith(
+        'react',
+        filters
+      );
     });
 
     await waitFor(() => {
@@ -389,7 +404,10 @@ describe('useAffiliateLinksSearch', () => {
     // Only the second search should be called
     await waitFor(() => {
       expect(mockAffiliateLinksApi.searchLinks).toHaveBeenCalledTimes(1);
-      expect(mockAffiliateLinksApi.searchLinks).toHaveBeenCalledWith('vue', filters2);
+      expect(mockAffiliateLinksApi.searchLinks).toHaveBeenCalledWith(
+        'vue',
+        filters2
+      );
     });
   });
 });

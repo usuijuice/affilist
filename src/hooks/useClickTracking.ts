@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { clickTrackingService, ClickAnalytics } from '../services/clickTrackingService';
+import {
+  clickTrackingService,
+  ClickAnalytics,
+} from '../services/clickTrackingService';
 import type { ClickTrackingConfig, SessionData } from '../types';
 
 export interface UseClickTrackingOptions {
@@ -21,13 +24,15 @@ export interface UseClickTrackingReturn {
 /**
  * Custom hook for click tracking functionality
  */
-export function useClickTracking(options: UseClickTrackingOptions = {}): UseClickTrackingReturn {
+export function useClickTracking(
+  options: UseClickTrackingOptions = {}
+): UseClickTrackingReturn {
   const { config, onError, enableDebug = false } = options;
-  
+
   const [sessionData, setSessionData] = useState<SessionData | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [isTracking, setIsTracking] = useState(true);
-  
+
   const configRef = useRef(config);
   const onErrorRef = useRef(onError);
 
@@ -42,7 +47,7 @@ export function useClickTracking(options: UseClickTrackingOptions = {}): UseClic
     if (config) {
       clickTrackingService.updateConfig(config);
     }
-    
+
     // Get initial session data
     setSessionData(clickTrackingService.getSessionData());
     setIsTracking(config?.enableTracking !== false);
@@ -60,47 +65,54 @@ export function useClickTracking(options: UseClickTrackingOptions = {}): UseClic
   /**
    * Track a click event
    */
-  const trackClick = useCallback(async (linkId: string, metadata?: Record<string, any>) => {
-    try {
-      setError(null);
-      
-      if (enableDebug) {
-        console.log('Tracking click:', { linkId, metadata });
+  const trackClick = useCallback(
+    async (linkId: string, metadata?: Record<string, any>) => {
+      try {
+        setError(null);
+
+        if (enableDebug) {
+          console.log('Tracking click:', { linkId, metadata });
+        }
+
+        await clickTrackingService.trackClick(linkId, metadata);
+
+        // Update session data after tracking
+        setSessionData(clickTrackingService.getSessionData());
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to track click';
+        setError(errorMessage);
+        onErrorRef.current?.(errorMessage);
+
+        if (enableDebug) {
+          console.error('Click tracking error:', err);
+        }
       }
-      
-      await clickTrackingService.trackClick(linkId, metadata);
-      
-      // Update session data after tracking
-      setSessionData(clickTrackingService.getSessionData());
-      
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to track click';
-      setError(errorMessage);
-      onErrorRef.current?.(errorMessage);
-      
-      if (enableDebug) {
-        console.error('Click tracking error:', err);
-      }
-    }
-  }, [enableDebug]);
+    },
+    [enableDebug]
+  );
 
   /**
    * Set user ID for the current session
    */
-  const setUserId = useCallback((userId: string) => {
-    try {
-      clickTrackingService.setUserId(userId);
-      setSessionData(clickTrackingService.getSessionData());
-      
-      if (enableDebug) {
-        console.log('User ID set:', userId);
+  const setUserId = useCallback(
+    (userId: string) => {
+      try {
+        clickTrackingService.setUserId(userId);
+        setSessionData(clickTrackingService.getSessionData());
+
+        if (enableDebug) {
+          console.log('User ID set:', userId);
+        }
+      } catch (err) {
+        const errorMessage =
+          err instanceof Error ? err.message : 'Failed to set user ID';
+        setError(errorMessage);
+        onErrorRef.current?.(errorMessage);
       }
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to set user ID';
-      setError(errorMessage);
-      onErrorRef.current?.(errorMessage);
-    }
-  }, [enableDebug]);
+    },
+    [enableDebug]
+  );
 
   /**
    * Clear current session and start fresh
@@ -110,12 +122,13 @@ export function useClickTracking(options: UseClickTrackingOptions = {}): UseClic
       clickTrackingService.clearSession();
       setSessionData(clickTrackingService.getSessionData());
       setError(null);
-      
+
       if (enableDebug) {
         console.log('Session cleared');
       }
     } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to clear session';
+      const errorMessage =
+        err instanceof Error ? err.message : 'Failed to clear session';
       setError(errorMessage);
       onErrorRef.current?.(errorMessage);
     }
@@ -153,9 +166,12 @@ export function useClickAnalytics() {
 /**
  * Hook for tracking page views and user behavior
  */
-export function usePageTracking(pageName: string, metadata?: Record<string, any>) {
+export function usePageTracking(
+  pageName: string,
+  metadata?: Record<string, any>
+) {
   const { trackClick } = useClickTracking();
-  
+
   useEffect(() => {
     // Track page view as a special click event
     trackClick(`page:${pageName}`, {
@@ -172,40 +188,52 @@ export function usePageTracking(pageName: string, metadata?: Record<string, any>
  */
 export function useInteractionTracking() {
   const { trackClick } = useClickTracking();
-  
-  const trackInteraction = useCallback((
-    interactionType: string,
-    elementId?: string,
-    metadata?: Record<string, any>
-  ) => {
-    trackClick(`interaction:${interactionType}`, {
-      type: 'interaction',
-      interactionType,
-      elementId,
-      timestamp: new Date().toISOString(),
-      ...metadata,
-    });
-  }, [trackClick]);
 
-  const trackSearch = useCallback((query: string, resultsCount: number) => {
-    trackInteraction('search', 'search-input', {
-      query,
-      resultsCount,
-    });
-  }, [trackInteraction]);
+  const trackInteraction = useCallback(
+    (
+      interactionType: string,
+      elementId?: string,
+      metadata?: Record<string, any>
+    ) => {
+      trackClick(`interaction:${interactionType}`, {
+        type: 'interaction',
+        interactionType,
+        elementId,
+        timestamp: new Date().toISOString(),
+        ...metadata,
+      });
+    },
+    [trackClick]
+  );
 
-  const trackFilter = useCallback((filterType: string, filterValue: any) => {
-    trackInteraction('filter', `filter-${filterType}`, {
-      filterType,
-      filterValue,
-    });
-  }, [trackInteraction]);
+  const trackSearch = useCallback(
+    (query: string, resultsCount: number) => {
+      trackInteraction('search', 'search-input', {
+        query,
+        resultsCount,
+      });
+    },
+    [trackInteraction]
+  );
 
-  const trackSort = useCallback((sortBy: string) => {
-    trackInteraction('sort', 'sort-control', {
-      sortBy,
-    });
-  }, [trackInteraction]);
+  const trackFilter = useCallback(
+    (filterType: string, filterValue: any) => {
+      trackInteraction('filter', `filter-${filterType}`, {
+        filterType,
+        filterValue,
+      });
+    },
+    [trackInteraction]
+  );
+
+  const trackSort = useCallback(
+    (sortBy: string) => {
+      trackInteraction('sort', 'sort-control', {
+        sortBy,
+      });
+    },
+    [trackInteraction]
+  );
 
   return {
     trackInteraction,

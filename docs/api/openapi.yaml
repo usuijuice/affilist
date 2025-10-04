@@ -1,0 +1,863 @@
+openapi: 3.0.3
+info:
+  title: Affilist API
+  description: |
+    REST API for the Affiliate Link Aggregator application.
+    
+    This API provides endpoints for managing affiliate links, categories, analytics, and admin operations.
+    
+    ## Authentication
+    
+    Admin endpoints require JWT authentication. Include the token in the Authorization header:
+    ```
+    Authorization: Bearer <your-jwt-token>
+    ```
+    
+    ## Rate Limiting
+    
+    API requests are rate limited to prevent abuse:
+    - Public endpoints: 100 requests per minute per IP
+    - Admin endpoints: 1000 requests per minute per authenticated user
+    
+    ## Error Handling
+    
+    The API uses standard HTTP status codes and returns error details in JSON format:
+    ```json
+    {
+      "error": "Error message",
+      "code": "ERROR_CODE",
+      "details": {}
+    }
+    ```
+  version: 1.0.0
+  contact:
+    name: Affilist Support
+    email: support@affilist.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000/api
+    description: Development server
+  - url: https://api-staging.affilist.com/api
+    description: Staging server
+  - url: https://api.affilist.com/api
+    description: Production server
+
+paths:
+  /links:
+    get:
+      summary: Get affiliate links
+      description: Retrieve a paginated list of affiliate links with optional filtering and sorting
+      tags:
+        - Links
+      parameters:
+        - name: page
+          in: query
+          description: Page number (1-based)
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          description: Number of items per page
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: search
+          in: query
+          description: Search query for title, description, or tags
+          schema:
+            type: string
+        - name: category
+          in: query
+          description: Filter by category slug
+          schema:
+            type: string
+        - name: featured
+          in: query
+          description: Filter by featured status
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          description: Sort order
+          schema:
+            type: string
+            enum: [popularity, newest, commission, alphabetical]
+            default: popularity
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AffiliateLink'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /links/{id}:
+    get:
+      summary: Get affiliate link by ID
+      description: Retrieve a specific affiliate link by its ID
+      tags:
+        - Links
+      parameters:
+        - name: id
+          in: path
+          required: true
+          description: Affiliate link ID
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AffiliateLink'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /categories:
+    get:
+      summary: Get categories
+      description: Retrieve all available categories
+      tags:
+        - Categories
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  categories:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/Category'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /clicks:
+    post:
+      summary: Track affiliate link click
+      description: Record a click event for an affiliate link
+      tags:
+        - Analytics
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - linkId
+              properties:
+                linkId:
+                  type: string
+                  description: ID of the clicked affiliate link
+                referrer:
+                  type: string
+                  description: Referrer URL
+                userAgent:
+                  type: string
+                  description: User agent string
+      responses:
+        '201':
+          description: Click recorded successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+                  clickId:
+                    type: string
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /redirect/{linkId}:
+    get:
+      summary: Redirect to affiliate link
+      description: Track click and redirect to the affiliate URL
+      tags:
+        - Analytics
+      parameters:
+        - name: linkId
+          in: path
+          required: true
+          description: Affiliate link ID
+          schema:
+            type: string
+      responses:
+        '302':
+          description: Redirect to affiliate URL
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/login:
+    post:
+      summary: Admin login
+      description: Authenticate admin user and receive JWT token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - email
+                - password
+              properties:
+                email:
+                  type: string
+                  format: email
+                  description: Admin email address
+                password:
+                  type: string
+                  description: Admin password
+      responses:
+        '200':
+          description: Login successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: JWT access token
+                  refreshToken:
+                    type: string
+                    description: JWT refresh token
+                  user:
+                    $ref: '#/components/schemas/AdminUser'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/refresh:
+    post:
+      summary: Refresh JWT token
+      description: Get a new access token using refresh token
+      tags:
+        - Authentication
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - refreshToken
+              properties:
+                refreshToken:
+                  type: string
+                  description: JWT refresh token
+      responses:
+        '200':
+          description: Token refreshed successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+                    description: New JWT access token
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /auth/logout:
+    post:
+      summary: Admin logout
+      description: Invalidate JWT token and logout
+      tags:
+        - Authentication
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Logout successful
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  success:
+                    type: boolean
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /admin/links:
+    get:
+      summary: Get all affiliate links (Admin)
+      description: Retrieve all affiliate links with admin details
+      tags:
+        - Admin - Links
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            minimum: 1
+            maximum: 100
+            default: 20
+        - name: status
+          in: query
+          description: Filter by status
+          schema:
+            type: string
+            enum: [active, inactive, pending]
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  links:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/AdminAffiliateLink'
+                  pagination:
+                    $ref: '#/components/schemas/Pagination'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    post:
+      summary: Create affiliate link
+      description: Create a new affiliate link
+      tags:
+        - Admin - Links
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAffiliateLinkRequest'
+      responses:
+        '201':
+          description: Link created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAffiliateLink'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /admin/links/{id}:
+    put:
+      summary: Update affiliate link
+      description: Update an existing affiliate link
+      tags:
+        - Admin - Links
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateAffiliateLinkRequest'
+      responses:
+        '200':
+          description: Link updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AdminAffiliateLink'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+    delete:
+      summary: Delete affiliate link
+      description: Delete an affiliate link
+      tags:
+        - Admin - Links
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Link deleted successfully
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+  /admin/analytics:
+    get:
+      summary: Get analytics data
+      description: Retrieve analytics and performance metrics
+      tags:
+        - Admin - Analytics
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: startDate
+          in: query
+          description: Start date for analytics (ISO 8601)
+          schema:
+            type: string
+            format: date
+        - name: endDate
+          in: query
+          description: End date for analytics (ISO 8601)
+          schema:
+            type: string
+            format: date
+        - name: groupBy
+          in: query
+          description: Group analytics by time period
+          schema:
+            type: string
+            enum: [day, week, month]
+            default: day
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AnalyticsData'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalServerError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    AffiliateLink:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        title:
+          type: string
+          description: Link title
+        description:
+          type: string
+          description: Link description
+        url:
+          type: string
+          format: uri
+          description: Original URL
+        affiliateUrl:
+          type: string
+          format: uri
+          description: Affiliate tracking URL
+        category:
+          $ref: '#/components/schemas/Category'
+        tags:
+          type: array
+          items:
+            type: string
+          description: Associated tags
+        imageUrl:
+          type: string
+          format: uri
+          description: Preview image URL
+        commissionRate:
+          type: number
+          minimum: 0
+          maximum: 100
+          description: Commission rate percentage
+        featured:
+          type: boolean
+          description: Whether the link is featured
+        clickCount:
+          type: integer
+          minimum: 0
+          description: Total click count
+        createdAt:
+          type: string
+          format: date-time
+          description: Creation timestamp
+        updatedAt:
+          type: string
+          format: date-time
+          description: Last update timestamp
+
+    AdminAffiliateLink:
+      allOf:
+        - $ref: '#/components/schemas/AffiliateLink'
+        - type: object
+          properties:
+            status:
+              type: string
+              enum: [active, inactive, pending]
+              description: Link status
+            revenue:
+              type: number
+              minimum: 0
+              description: Total revenue generated
+            conversionRate:
+              type: number
+              minimum: 0
+              maximum: 100
+              description: Conversion rate percentage
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        name:
+          type: string
+          description: Category name
+        slug:
+          type: string
+          description: URL-friendly slug
+        description:
+          type: string
+          description: Category description
+        color:
+          type: string
+          pattern: '^#[0-9A-Fa-f]{6}$'
+          description: Hex color code
+        icon:
+          type: string
+          description: Icon identifier
+        linkCount:
+          type: integer
+          minimum: 0
+          description: Number of links in category
+
+    AdminUser:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Unique identifier
+        email:
+          type: string
+          format: email
+          description: Email address
+        name:
+          type: string
+          description: Full name
+        role:
+          type: string
+          enum: [admin, editor]
+          description: User role
+        lastLogin:
+          type: string
+          format: date-time
+          description: Last login timestamp
+
+    CreateAffiliateLinkRequest:
+      type: object
+      required:
+        - title
+        - description
+        - url
+        - affiliateUrl
+        - categoryId
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        url:
+          type: string
+          format: uri
+        affiliateUrl:
+          type: string
+          format: uri
+        categoryId:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          maxItems: 10
+        imageUrl:
+          type: string
+          format: uri
+        commissionRate:
+          type: number
+          minimum: 0
+          maximum: 100
+        featured:
+          type: boolean
+          default: false
+
+    UpdateAffiliateLinkRequest:
+      type: object
+      properties:
+        title:
+          type: string
+          minLength: 1
+          maxLength: 200
+        description:
+          type: string
+          minLength: 1
+          maxLength: 1000
+        url:
+          type: string
+          format: uri
+        affiliateUrl:
+          type: string
+          format: uri
+        categoryId:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+          maxItems: 10
+        imageUrl:
+          type: string
+          format: uri
+        commissionRate:
+          type: number
+          minimum: 0
+          maximum: 100
+        featured:
+          type: boolean
+        status:
+          type: string
+          enum: [active, inactive, pending]
+
+    AnalyticsData:
+      type: object
+      properties:
+        summary:
+          type: object
+          properties:
+            totalClicks:
+              type: integer
+              minimum: 0
+            totalRevenue:
+              type: number
+              minimum: 0
+            averageCommission:
+              type: number
+              minimum: 0
+            conversionRate:
+              type: number
+              minimum: 0
+              maximum: 100
+        topLinks:
+          type: array
+          items:
+            type: object
+            properties:
+              link:
+                $ref: '#/components/schemas/AffiliateLink'
+              clicks:
+                type: integer
+                minimum: 0
+              revenue:
+                type: number
+                minimum: 0
+              conversionRate:
+                type: number
+                minimum: 0
+                maximum: 100
+        clicksByDate:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+                format: date
+              clicks:
+                type: integer
+                minimum: 0
+              revenue:
+                type: number
+                minimum: 0
+        topCategories:
+          type: array
+          items:
+            type: object
+            properties:
+              category:
+                $ref: '#/components/schemas/Category'
+              clicks:
+                type: integer
+                minimum: 0
+              revenue:
+                type: number
+                minimum: 0
+
+    Pagination:
+      type: object
+      properties:
+        page:
+          type: integer
+          minimum: 1
+          description: Current page number
+        limit:
+          type: integer
+          minimum: 1
+          description: Items per page
+        total:
+          type: integer
+          minimum: 0
+          description: Total number of items
+        totalPages:
+          type: integer
+          minimum: 0
+          description: Total number of pages
+        hasNext:
+          type: boolean
+          description: Whether there are more pages
+        hasPrev:
+          type: boolean
+          description: Whether there are previous pages
+
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+          description: Error message
+        code:
+          type: string
+          description: Error code
+        details:
+          type: object
+          description: Additional error details
+
+  responses:
+    BadRequest:
+      description: Bad request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Validation failed"
+            code: "VALIDATION_ERROR"
+            details:
+              field: "email"
+              message: "Invalid email format"
+
+    Unauthorized:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Authentication required"
+            code: "UNAUTHORIZED"
+
+    NotFound:
+      description: Resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Resource not found"
+            code: "NOT_FOUND"
+
+    InternalServerError:
+      description: Internal server error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Error'
+          example:
+            error: "Internal server error"
+            code: "INTERNAL_ERROR"
+
+tags:
+  - name: Links
+    description: Public affiliate link operations
+  - name: Categories
+    description: Category management
+  - name: Analytics
+    description: Click tracking and analytics
+  - name: Authentication
+    description: Admin authentication
+  - name: Admin - Links
+    description: Admin affiliate link management
+  - name: Admin - Analytics
+    description: Admin analytics and reporting

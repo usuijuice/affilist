@@ -2,6 +2,7 @@ import { render, screen } from '@testing-library/react';
 import { BrowserRouter } from 'react-router-dom';
 import { Footer } from '../Footer';
 import { createMockCategories } from '../../test/factories';
+import { describe, expect, it } from 'vitest';
 
 // Wrapper component to provide router context
 const RouterWrapper = ({ children }: { children: React.ReactNode }) => (
@@ -20,7 +21,9 @@ describe('Footer', () => {
 
     expect(screen.getByText('AL')).toBeInTheDocument();
     expect(screen.getByText('Affiliate Links')).toBeInTheDocument();
-    expect(screen.getByText(/Discover the best affiliate opportunities/)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Discover the best affiliate opportunities/)
+    ).toBeInTheDocument();
   });
 
   it('renders categories section with category links', () => {
@@ -31,16 +34,16 @@ describe('Footer', () => {
     );
 
     expect(screen.getByText('Categories')).toBeInTheDocument();
-    
+
     // Should show first 6 categories
-    mockCategories.slice(0, 6).forEach(category => {
+    mockCategories.slice(0, 6).forEach((category) => {
       expect(screen.getByText(category.name)).toBeInTheDocument();
     });
-    
+
     // Check that link counts are displayed (using getAllByText for duplicates)
-    const linkCounts = mockCategories.slice(0, 6).map(cat => cat.linkCount);
+    const linkCounts = mockCategories.slice(0, 6).map((cat) => cat.linkCount);
     const uniqueCounts = [...new Set(linkCounts)];
-    uniqueCounts.forEach(count => {
+    uniqueCounts.forEach((count) => {
       const elements = screen.getAllByText(`(${count})`);
       expect(elements.length).toBeGreaterThan(0);
     });
@@ -58,7 +61,7 @@ describe('Footer', () => {
 
   it('does not show "View all categories" link when 6 or fewer categories', () => {
     const fewCategories = createMockCategories(4);
-    
+
     render(
       <RouterWrapper>
         <Footer categories={fewCategories} />
@@ -77,15 +80,21 @@ describe('Footer', () => {
 
     expect(screen.getByText('Quick Links')).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /featured links/i })).toBeInTheDocument();
-    
+    expect(
+      screen.getByRole('link', { name: /featured links/i })
+    ).toBeInTheDocument();
+
     // Use getAllByRole to handle multiple "All Categories" links
-    const allCategoriesLinks = screen.getAllByRole('link', { name: /all categories/i });
+    const allCategoriesLinks = screen.getAllByRole('link', {
+      name: /all categories/i,
+    });
     expect(allCategoriesLinks.length).toBeGreaterThan(0);
-    
+
     expect(screen.getByRole('link', { name: /about us/i })).toBeInTheDocument();
     expect(screen.getByRole('link', { name: /contact/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /privacy policy/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: /privacy policy/i })
+    ).toBeInTheDocument();
   });
 
   it('renders social media links with proper aria labels', () => {
@@ -107,7 +116,11 @@ describe('Footer', () => {
     );
 
     const currentYear = new Date().getFullYear();
-    expect(screen.getByText(`© ${currentYear} Affiliate Links. All rights reserved.`)).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        `© ${currentYear} Affiliate Links. All rights reserved.`
+      )
+    ).toBeInTheDocument();
   });
 
   it('renders bottom section with copyright and tagline', () => {
@@ -118,7 +131,9 @@ describe('Footer', () => {
     );
 
     expect(screen.getByText(/All rights reserved/)).toBeInTheDocument();
-    expect(screen.getByText('Built with ❤️ for affiliate marketers')).toBeInTheDocument();
+    expect(
+      screen.getByText('Built with ❤️ for affiliate marketers')
+    ).toBeInTheDocument();
   });
 
   it('handles empty categories array gracefully', () => {
