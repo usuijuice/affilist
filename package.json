@@ -28,7 +28,9 @@
     "test:performance": "k6 run tests/performance/load-testing.js",
     "test:performance:admin": "k6 run tests/performance/admin-load-testing.js",
     "coverage:report": "node scripts/generate-coverage-report.js",
-    "test:all": "npm run test:run && npm run test:e2e && npm run coverage:report"
+    "test:all": "npm run test:run && npm run test:e2e && npm run coverage:report",
+    "deploy:worker": "npx wrangler deploy",
+    "preview:worker": "npx wrangler dev --local"
   },
   "dependencies": {
     "react": "^19.1.1",
@@ -62,6 +64,7 @@
     "prettier": "^3.6.2",
     "rollup-plugin-visualizer": "^6.0.3",
     "tailwindcss": "^4.1.13",
+    "terser": "^5.44.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.43.0",
     "vite": "^7.1.6",
