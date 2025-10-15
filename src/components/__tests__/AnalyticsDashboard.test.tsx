@@ -114,19 +114,17 @@ describe('AnalyticsDashboard', () => {
   it('should render dashboard with analytics data', () => {
     render(<AnalyticsDashboard />);
 
-    expect(screen.getByText('Analytics Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('分析ダッシュボード')).toBeInTheDocument();
     expect(
-      screen.getByText(
-        'Track performance and insights for your affiliate links'
-      )
+      screen.getByText('アフィリエイトリンクの成果とインサイトを確認できます')
     ).toBeInTheDocument();
 
     // Check metric cards
-    expect(screen.getByText('Total Clicks')).toBeInTheDocument();
+    expect(screen.getByText('総クリック数')).toBeInTheDocument();
     expect(screen.getByText('1.5K')).toBeInTheDocument(); // Formatted number
 
-    expect(screen.getByText('Total Revenue')).toBeInTheDocument();
-    expect(screen.getByText(/\$2,50[01]/)).toBeInTheDocument(); // Formatted currency
+    expect(screen.getByText('総収益')).toBeInTheDocument();
+    expect(screen.getByText('US$2,500.50')).toBeInTheDocument();
   });
 
   it('should show loading state', () => {
@@ -145,7 +143,7 @@ describe('AnalyticsDashboard', () => {
 
     render(<AnalyticsDashboard />);
 
-    expect(screen.getByText('Loading...')).toBeInTheDocument();
+    expect(screen.getByText('読み込み中...')).toBeInTheDocument();
   });
 
   it('should show error state', () => {
@@ -158,7 +156,9 @@ describe('AnalyticsDashboard', () => {
 
     render(<AnalyticsDashboard />);
 
-    expect(screen.getByText('Error loading analytics')).toBeInTheDocument();
+    expect(
+      screen.getByText('分析データの読み込みに失敗しました')
+    ).toBeInTheDocument();
     expect(screen.getByText('Failed to load analytics')).toBeInTheDocument();
   });
 
@@ -186,7 +186,7 @@ describe('AnalyticsDashboard', () => {
 
     render(<AnalyticsDashboard />);
 
-    const refreshButton = screen.getByText('Refresh');
+    const refreshButton = screen.getByText('更新');
     fireEvent.click(refreshButton);
 
     expect(mockRefetch).toHaveBeenCalled();

@@ -31,12 +31,10 @@ export function HomePage() {
       <div className="px-4 py-6 sm:px-0">
         <div className="text-center mb-8">
           <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Discover the Best Affiliate Links
+            おすすめのアフィリエイト案件を見つけましょう
           </h1>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Find trusted services and opportunities across various categories.
-            Start earning commissions with our curated collection of affiliate
-            links.
+            信頼できるサービスや案件をカテゴリ別に紹介しています。厳選したアフィリエイトリンクで成果報酬を獲得しましょう。
           </p>
         </div>
 
@@ -47,7 +45,7 @@ export function HomePage() {
           onLinkClick={handleLinkClick}
           onLoadMore={handleLoadMore}
           hasMore={hasMore}
-          emptyMessage="No affiliate links available at the moment. Please check back later!"
+          emptyMessage="現在表示できるアフィリエイトリンクがありません。後ほど再度ご確認ください。"
         />
       </div>
     </div>

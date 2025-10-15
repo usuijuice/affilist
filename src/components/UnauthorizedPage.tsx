@@ -37,8 +37,8 @@ export function UnauthorizedPage({
   };
 
   const defaultMessage = requiredRole
-    ? `You need ${requiredRole} privileges to access this page.`
-    : "You don't have permission to access this page.";
+    ? `このページにアクセスするには ${requiredRole} 権限が必要です。`
+    : 'このページにアクセスする権限がありません。';
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
@@ -63,7 +63,7 @@ export function UnauthorizedPage({
         {/* Content */}
         <div>
           <h2 className="mt-6 text-3xl font-extrabold text-gray-900">
-            Access Denied
+            アクセスが拒否されました
           </h2>
           <p className="mt-2 text-sm text-gray-600">
             {message || defaultMessage}
@@ -72,16 +72,16 @@ export function UnauthorizedPage({
           {user && (
             <div className="mt-4 p-4 bg-gray-100 rounded-md">
               <p className="text-sm text-gray-700">
-                Currently logged in as:{' '}
+                現在ログイン中のユーザー:{' '}
                 <span className="font-medium">{user.name}</span>
               </p>
               <p className="text-sm text-gray-700">
-                Your role:{' '}
+                現在の権限:{' '}
                 <span className="font-medium capitalize">{user.role}</span>
               </p>
               {requiredRole && (
                 <p className="text-sm text-gray-700">
-                  Required role:{' '}
+                  必要な権限:{' '}
                   <span className="font-medium capitalize">{requiredRole}</span>
                 </p>
               )}
@@ -108,7 +108,7 @@ export function UnauthorizedPage({
                 d="M10 19l-7-7m0 0l7-7m-7 7h18"
               />
             </svg>
-            Go Back
+            戻る
           </button>
 
           {showLoginButton && (
@@ -129,7 +129,7 @@ export function UnauthorizedPage({
                   d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
                 />
               </svg>
-              Login as Different User
+              別のユーザーでログイン
             </button>
           )}
         </div>
@@ -137,7 +137,7 @@ export function UnauthorizedPage({
         {/* Help Text */}
         <div className="text-xs text-gray-500">
           <p>
-            If you believe this is an error, please contact your administrator.
+            誤ってこの画面が表示される場合は、管理者へお問い合わせください。
           </p>
         </div>
       </div>

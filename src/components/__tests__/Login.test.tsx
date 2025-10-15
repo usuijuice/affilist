@@ -43,21 +43,23 @@ describe('Login', () => {
   it('should render login form', () => {
     render(<Login />);
 
-    expect(screen.getByText('Admin Login')).toBeInTheDocument();
+    expect(screen.getByText('管理者ログイン')).toBeInTheDocument();
     expect(
-      screen.getByText('Sign in to access the admin dashboard')
+      screen.getByText('管理画面にアクセスするにはログインしてください')
     ).toBeInTheDocument();
-    expect(screen.getByLabelText('Email Address')).toBeInTheDocument();
-    expect(screen.getByLabelText('Password')).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: 'Sign in' })).toBeInTheDocument();
+    expect(screen.getByLabelText('メールアドレス')).toBeInTheDocument();
+    expect(screen.getByLabelText('パスワード')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'ログイン' })
+    ).toBeInTheDocument();
   });
 
   it('should handle input changes', async () => {
     const user = userEvent.setup();
     render(<Login />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const passwordInput = screen.getByLabelText('Password');
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const passwordInput = screen.getByLabelText('パスワード');
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'password123');
@@ -70,11 +72,15 @@ describe('Login', () => {
     const user = userEvent.setup();
     render(<Login />);
 
-    const submitButton = screen.getByRole('button', { name: 'Sign in' });
+    const submitButton = screen.getByRole('button', { name: 'ログイン' });
     await user.click(submitButton);
 
-    expect(screen.getByText('Email is required')).toBeInTheDocument();
-    expect(screen.getByText('Password is required')).toBeInTheDocument();
+    expect(
+      screen.getByText('メールアドレスを入力してください')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('パスワードを入力してください')
+    ).toBeInTheDocument();
     expect(mockLogin).not.toHaveBeenCalled();
   });
 
@@ -82,14 +88,14 @@ describe('Login', () => {
     const user = userEvent.setup();
     render(<Login />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const submitButton = screen.getByRole('button', { name: 'Sign in' });
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const submitButton = screen.getByRole('button', { name: 'ログイン' });
 
     await user.type(emailInput, 'invalid-email');
     await user.click(submitButton);
 
     expect(
-      screen.getByText('Please enter a valid email address')
+      screen.getByText('有効なメールアドレスを入力してください')
     ).toBeInTheDocument();
     expect(mockLogin).not.toHaveBeenCalled();
   });
@@ -98,16 +104,16 @@ describe('Login', () => {
     const user = userEvent.setup();
     render(<Login />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const passwordInput = screen.getByLabelText('Password');
-    const submitButton = screen.getByRole('button', { name: 'Sign in' });
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const passwordInput = screen.getByLabelText('パスワード');
+    const submitButton = screen.getByRole('button', { name: 'ログイン' });
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, '123');
     await user.click(submitButton);
 
     expect(
-      screen.getByText('Password must be at least 6 characters')
+      screen.getByText('パスワードは6文字以上で入力してください')
     ).toBeInTheDocument();
     expect(mockLogin).not.toHaveBeenCalled();
   });
@@ -118,9 +124,9 @@ describe('Login', () => {
 
     render(<Login />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const passwordInput = screen.getByLabelText('Password');
-    const submitButton = screen.getByRole('button', { name: 'Sign in' });
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const passwordInput = screen.getByLabelText('パスワード');
+    const submitButton = screen.getByRole('button', { name: 'ログイン' });
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'password123');
@@ -138,8 +144,8 @@ describe('Login', () => {
 
     render(<Login />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const passwordInput = screen.getByLabelText('Password');
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const passwordInput = screen.getByLabelText('パスワード');
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'password123');
@@ -161,13 +167,15 @@ describe('Login', () => {
 
     render(<Login />);
 
-    const submitButton = screen.getByRole('button', { name: 'Signing in...' });
+    const submitButton = screen.getByRole('button', {
+      name: 'ログインしています...',
+    });
     expect(submitButton).toBeDisabled();
-    expect(screen.getByText('Signing in...')).toBeInTheDocument();
+    expect(screen.getByText('ログインしています...')).toBeInTheDocument();
 
     // Check that inputs are disabled during loading
-    expect(screen.getByLabelText('Email Address')).toBeDisabled();
-    expect(screen.getByLabelText('Password')).toBeDisabled();
+    expect(screen.getByLabelText('メールアドレス')).toBeDisabled();
+    expect(screen.getByLabelText('パスワード')).toBeDisabled();
   });
 
   it('should display auth error', () => {
@@ -187,16 +195,20 @@ describe('Login', () => {
     const user = userEvent.setup();
     render(<Login />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const submitButton = screen.getByRole('button', { name: 'Sign in' });
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const submitButton = screen.getByRole('button', { name: 'ログイン' });
 
     // Trigger validation error
     await user.click(submitButton);
-    expect(screen.getByText('Email is required')).toBeInTheDocument();
+    expect(
+      screen.getByText('メールアドレスを入力してください')
+    ).toBeInTheDocument();
 
     // Start typing to clear error
     await user.type(emailInput, 'test');
-    expect(screen.queryByText('Email is required')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('メールアドレスを入力してください')
+    ).not.toBeInTheDocument();
   });
 
   it('should clear auth error when user makes changes', async () => {
@@ -212,7 +224,7 @@ describe('Login', () => {
 
     expect(screen.getByText('Invalid credentials')).toBeInTheDocument();
 
-    const emailInput = screen.getByLabelText('Email Address');
+    const emailInput = screen.getByLabelText('メールアドレス');
     await user.type(emailInput, 'test');
 
     expect(mockClearError).toHaveBeenCalled();
@@ -222,7 +234,7 @@ describe('Login', () => {
     const user = userEvent.setup();
     render(<Login />);
 
-    const passwordInput = screen.getByLabelText('Password');
+    const passwordInput = screen.getByLabelText('パスワード');
     const toggleButton = screen.getByRole('button', { name: '' }); // Eye icon button
 
     expect(passwordInput).toHaveAttribute('type', 'password');
@@ -241,9 +253,9 @@ describe('Login', () => {
 
     render(<Login onSuccess={onSuccess} />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const passwordInput = screen.getByLabelText('Password');
-    const submitButton = screen.getByRole('button', { name: 'Sign in' });
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const passwordInput = screen.getByLabelText('パスワード');
+    const submitButton = screen.getByRole('button', { name: 'ログイン' });
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'password123');
@@ -261,9 +273,9 @@ describe('Login', () => {
 
     render(<Login redirectTo={redirectTo} />);
 
-    const emailInput = screen.getByLabelText('Email Address');
-    const passwordInput = screen.getByLabelText('Password');
-    const submitButton = screen.getByRole('button', { name: 'Sign in' });
+    const emailInput = screen.getByLabelText('メールアドレス');
+    const passwordInput = screen.getByLabelText('パスワード');
+    const submitButton = screen.getByRole('button', { name: 'ログイン' });
 
     await user.type(emailInput, 'test@example.com');
     await user.type(passwordInput, 'password123');

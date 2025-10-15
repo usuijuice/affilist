@@ -18,18 +18,16 @@ export function Footer({ categories }: FooterProps) {
               <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
                 <span className="text-white font-bold text-sm">AL</span>
               </div>
-              <h3 className="text-xl font-bold">Affiliate Links</h3>
+              <h3 className="text-xl font-bold">アフィリスト</h3>
             </div>
             <p className="text-gray-300 mb-4 max-w-md">
-              Discover the best affiliate opportunities across various
-              categories. Find trusted services and earn commissions through our
-              curated collection of affiliate links.
+              カテゴリ別に厳選されたアフィリエイト案件を紹介しています。信頼できるサービスを見つけ、成果報酬アップにつなげましょう。
             </p>
             <div className="flex space-x-4">
               <a
                 href="#"
                 className="text-gray-400 hover:text-white transition-colors"
-                aria-label="Twitter"
+                aria-label="X（旧Twitter）"
               >
                 <svg
                   className="h-6 w-6"
@@ -61,7 +59,7 @@ export function Footer({ categories }: FooterProps) {
 
           {/* Categories Section */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Categories</h4>
+            <h4 className="text-lg font-semibold mb-4">カテゴリ</h4>
             <ul className="space-y-2">
               {categories.slice(0, 6).map((category) => (
                 <li key={category.id}>
@@ -82,7 +80,7 @@ export function Footer({ categories }: FooterProps) {
                     to="/categories"
                     className="text-blue-400 hover:text-blue-300 transition-colors text-sm font-medium"
                   >
-                    View all categories →
+                    すべてのカテゴリを見る →
                   </Link>
                 </li>
               )}
@@ -91,14 +89,14 @@ export function Footer({ categories }: FooterProps) {
 
           {/* Quick Links Section */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
+            <h4 className="text-lg font-semibold mb-4">クイックリンク</h4>
             <ul className="space-y-2">
               <li>
                 <Link
                   to="/"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  Home
+                  ホーム
                 </Link>
               </li>
               <li>
@@ -106,7 +104,7 @@ export function Footer({ categories }: FooterProps) {
                   to="/featured"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  Featured Links
+                  注目リンク
                 </Link>
               </li>
               <li>
@@ -114,7 +112,7 @@ export function Footer({ categories }: FooterProps) {
                   to="/categories"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  All Categories
+                  すべてのカテゴリ
                 </Link>
               </li>
               <li>
@@ -122,7 +120,7 @@ export function Footer({ categories }: FooterProps) {
                   href="#"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  About Us
+                  運営者情報
                 </a>
               </li>
               <li>
@@ -130,7 +128,7 @@ export function Footer({ categories }: FooterProps) {
                   href="#"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  Contact
+                  お問い合わせ
                 </a>
               </li>
               <li>
@@ -138,7 +136,7 @@ export function Footer({ categories }: FooterProps) {
                   href="#"
                   className="text-gray-300 hover:text-white transition-colors text-sm"
                 >
-                  Privacy Policy
+                  プライバシーポリシー
                 </a>
               </li>
             </ul>
@@ -149,10 +147,10 @@ export function Footer({ categories }: FooterProps) {
         <div className="mt-8 pt-8 border-t border-gray-800">
           <div className="flex flex-col md:flex-row justify-between items-center">
             <p className="text-gray-400 text-sm">
-              © {currentYear} Affiliate Links. All rights reserved.
+              © {currentYear} アフィリスト. 無断転載を禁じます。
             </p>
             <p className="text-gray-400 text-sm mt-2 md:mt-0">
-              Built with ❤️ for affiliate marketers
+              アフィリエイトを愛するすべての方のために作られました
             </p>
           </div>
         </div>

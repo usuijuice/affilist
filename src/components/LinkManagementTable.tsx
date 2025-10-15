@@ -167,6 +167,19 @@ export function LinkManagementTable({
     setShowBulkDeleteConfirm(false);
   };
 
+  const formatStatus = (status: AffiliateLink['status']) => {
+    switch (status) {
+      case 'active':
+        return '有効';
+      case 'inactive':
+        return '停止';
+      case 'pending':
+        return '保留';
+      default:
+        return status;
+    }
+  };
+
   const getSortIcon = (field: SortField) => {
     if (sortConfig.field !== field) {
       return (
@@ -218,7 +231,7 @@ export function LinkManagementTable({
   };
 
   const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
+    return new Intl.DateTimeFormat('ja-JP', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
@@ -269,7 +282,7 @@ export function LinkManagementTable({
               </div>
               <input
                 type="text"
-                placeholder="Search links..."
+                placeholder="リンクを検索..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
@@ -284,10 +297,10 @@ export function LinkManagementTable({
               onChange={(e) => setFilterStatus(e.target.value)}
               className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md"
             >
-              <option value="all">All Status</option>
-              <option value="active">Active</option>
-              <option value="inactive">Inactive</option>
-              <option value="pending">Pending</option>
+              <option value="all">すべてのステータス</option>
+              <option value="active">有効</option>
+              <option value="inactive">停止</option>
+              <option value="pending">保留</option>
             </select>
           </div>
 
@@ -298,7 +311,7 @@ export function LinkManagementTable({
               onChange={(e) => setFilterCategory(e.target.value)}
               className="block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-blue-500 focus:border-blue-500 rounded-md"
             >
-              <option value="all">All Categories</option>
+              <option value="all">すべてのカテゴリ</option>
               {categories.map((category) => (
                 <option key={category} value={category}>
                   {category}
@@ -312,14 +325,13 @@ export function LinkManagementTable({
         {selectedLinks.size > 0 && (
           <div className="mt-4 flex items-center justify-between bg-blue-50 px-4 py-2 rounded-md">
             <span className="text-sm text-blue-700">
-              {selectedLinks.size} link{selectedLinks.size !== 1 ? 's' : ''}{' '}
-              selected
+              {selectedLinks.size}件のリンクを選択中
             </span>
             <button
               onClick={() => setShowBulkDeleteConfirm(true)}
               className="text-sm text-red-600 hover:text-red-800 font-medium"
             >
-              Delete Selected
+              選択したリンクを削除
             </button>
           </div>
         )}
@@ -347,7 +359,7 @@ export function LinkManagementTable({
                 onClick={() => handleSort('title')}
               >
                 <div className="flex items-center space-x-1">
-                  <span>Title</span>
+                  <span>タイトル</span>
                   {getSortIcon('title')}
                 </div>
               </th>
@@ -357,7 +369,7 @@ export function LinkManagementTable({
                 onClick={() => handleSort('category')}
               >
                 <div className="flex items-center space-x-1">
-                  <span>Category</span>
+                  <span>カテゴリ</span>
                   {getSortIcon('category')}
                 </div>
               </th>
@@ -367,7 +379,7 @@ export function LinkManagementTable({
                 onClick={() => handleSort('status')}
               >
                 <div className="flex items-center space-x-1">
-                  <span>Status</span>
+                  <span>ステータス</span>
                   {getSortIcon('status')}
                 </div>
               </th>
@@ -377,7 +389,7 @@ export function LinkManagementTable({
                 onClick={() => handleSort('clickCount')}
               >
                 <div className="flex items-center space-x-1">
-                  <span>Clicks</span>
+                  <span>クリック数</span>
                   {getSortIcon('clickCount')}
                 </div>
               </th>
@@ -387,7 +399,7 @@ export function LinkManagementTable({
                 onClick={() => handleSort('featured')}
               >
                 <div className="flex items-center space-x-1">
-                  <span>Featured</span>
+                  <span>注目</span>
                   {getSortIcon('featured')}
                 </div>
               </th>
@@ -397,13 +409,13 @@ export function LinkManagementTable({
                 onClick={() => handleSort('updatedAt')}
               >
                 <div className="flex items-center space-x-1">
-                  <span>Updated</span>
+                  <span>更新日時</span>
                   {getSortIcon('updatedAt')}
                 </div>
               </th>
 
               <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
-                Actions
+                操作
               </th>
             </tr>
           </thead>
@@ -427,14 +439,14 @@ export function LinkManagementTable({
                       />
                     </svg>
                     <h3 className="mt-2 text-sm font-medium text-gray-900">
-                      No links found
+                      該当するリンクが見つかりません
                     </h3>
                     <p className="mt-1 text-sm text-gray-500">
                       {searchQuery ||
                       filterStatus !== 'all' ||
                       filterCategory !== 'all'
-                        ? 'Try adjusting your search or filters.'
-                        : 'Get started by creating a new affiliate link.'}
+                        ? '検索条件やフィルターを調整してください。'
+                        : 'まずは新しいアフィリエイトリンクを作成してみましょう。'}
                     </p>
                   </div>
                 </td>
@@ -485,7 +497,7 @@ export function LinkManagementTable({
                             ))}
                             {link.tags.length > 3 && (
                               <span className="text-xs text-gray-500">
-                                +{link.tags.length - 3} more
+                                +{link.tags.length - 3} 件
                               </span>
                             )}
                           </div>
@@ -516,12 +528,12 @@ export function LinkManagementTable({
                             : 'bg-yellow-100 text-yellow-800'
                       }`}
                     >
-                      {link.status}
+                      {formatStatus(link.status)}
                     </span>
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                    {link.clickCount.toLocaleString()}
+                    {link.clickCount.toLocaleString()} 件
                   </td>
 
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -548,13 +560,13 @@ export function LinkManagementTable({
                         onClick={() => onEdit(link)}
                         className="text-blue-600 hover:text-blue-900"
                       >
-                        Edit
+                        編集
                       </button>
                       <button
                         onClick={() => setShowDeleteConfirm(link.id)}
                         className="text-red-600 hover:text-red-900"
                       >
-                        Delete
+                        削除
                       </button>
                     </div>
                   </td>
@@ -586,12 +598,11 @@ export function LinkManagementTable({
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-gray-900 mt-2">
-                Delete Link
+                リンクを削除
               </h3>
               <div className="mt-2 px-7 py-3">
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delete this affiliate link? This
-                  action cannot be undone.
+                  このアフィリエイトリンクを削除しますか？この操作は元に戻せません。
                 </p>
               </div>
               <div className="items-center px-4 py-3">
@@ -599,13 +610,13 @@ export function LinkManagementTable({
                   onClick={() => handleDeleteLink(showDeleteConfirm)}
                   className="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
                 >
-                  Delete
+                  削除
                 </button>
                 <button
                   onClick={() => setShowDeleteConfirm(null)}
                   className="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-24 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
-                  Cancel
+                  キャンセル
                 </button>
               </div>
             </div>
@@ -634,13 +645,12 @@ export function LinkManagementTable({
                 </svg>
               </div>
               <h3 className="text-lg font-medium text-gray-900 mt-2">
-                Delete Multiple Links
+                複数のリンクを削除
               </h3>
               <div className="mt-2 px-7 py-3">
                 <p className="text-sm text-gray-500">
-                  Are you sure you want to delete {selectedLinks.size} selected
-                  link{selectedLinks.size !== 1 ? 's' : ''}? This action cannot
-                  be undone.
+                  選択した{selectedLinks.size}
+                  件のリンクを削除しますか？この操作は取り消せません。
                 </p>
               </div>
               <div className="items-center px-4 py-3">
@@ -648,13 +658,13 @@ export function LinkManagementTable({
                   onClick={handleBulkDelete}
                   className="px-4 py-2 bg-red-500 text-white text-base font-medium rounded-md w-24 mr-2 hover:bg-red-600 focus:outline-none focus:ring-2 focus:ring-red-300"
                 >
-                  Delete
+                  削除
                 </button>
                 <button
                   onClick={() => setShowBulkDeleteConfirm(false)}
                   className="px-4 py-2 bg-gray-500 text-white text-base font-medium rounded-md w-24 hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-gray-300"
                 >
-                  Cancel
+                  キャンセル
                 </button>
               </div>
             </div>

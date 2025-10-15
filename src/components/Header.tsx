@@ -27,7 +27,7 @@ export function Header({ onSearch, searchQuery }: HeaderProps) {
                 <span className="text-white font-bold text-sm">AL</span>
               </div>
               <h1 className="text-xl font-bold text-gray-900 hidden sm:block">
-                Affiliate Links
+                アフィリスト
               </h1>
             </Link>
           </div>
@@ -55,7 +55,7 @@ export function Header({ onSearch, searchQuery }: HeaderProps) {
                 type="text"
                 value={searchQuery}
                 onChange={handleSearchChange}
-                placeholder="Search affiliate links..."
+                placeholder="アフィリエイトリンクを検索..."
                 className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
               />
             </div>
@@ -67,19 +67,19 @@ export function Header({ onSearch, searchQuery }: HeaderProps) {
               to="/"
               className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
             >
-              Home
+              ホーム
             </Link>
             <Link
               to="/categories"
               className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
             >
-              Categories
+              カテゴリ
             </Link>
             <Link
               to="/featured"
               className="text-gray-700 hover:text-blue-600 px-3 py-2 text-sm font-medium transition-colors"
             >
-              Featured
+              注目
             </Link>
           </nav>
 
@@ -91,7 +91,7 @@ export function Header({ onSearch, searchQuery }: HeaderProps) {
               className="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-inset focus:ring-blue-500"
               aria-expanded="false"
             >
-              <span className="sr-only">Open main menu</span>
+              <span className="sr-only">メインメニューを開く</span>
               {!isMenuOpen ? (
                 <svg
                   className="block h-6 w-6"
@@ -147,7 +147,7 @@ export function Header({ onSearch, searchQuery }: HeaderProps) {
               type="text"
               value={searchQuery}
               onChange={handleSearchChange}
-              placeholder="Search affiliate links..."
+              placeholder="アフィリエイトリンクを検索..."
               className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500"
             />
           </div>
@@ -162,21 +162,21 @@ export function Header({ onSearch, searchQuery }: HeaderProps) {
                 className="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Home
+                ホーム
               </Link>
               <Link
                 to="/categories"
                 className="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Categories
+                カテゴリ
               </Link>
               <Link
                 to="/featured"
                 className="text-gray-700 hover:text-blue-600 block px-3 py-2 text-base font-medium transition-colors"
                 onClick={() => setIsMenuOpen(false)}
               >
-                Featured
+                注目
               </Link>
             </div>
           </div>

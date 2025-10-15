@@ -56,19 +56,18 @@ export class ErrorBoundary extends Component<Props, State> {
               </div>
               <div className="ml-3">
                 <h3 className="text-lg font-medium text-gray-900">
-                  Something went wrong
+                  エラーが発生しました
                 </h3>
               </div>
             </div>
             <div className="mb-4">
               <p className="text-sm text-gray-600">
-                We're sorry, but something unexpected happened. Please try
-                refreshing the page.
+                申し訳ありません。予期しないエラーが発生しました。ページを再読み込みしてください。
               </p>
               {process.env.NODE_ENV === 'development' && this.state.error && (
                 <details className="mt-4">
                   <summary className="text-sm font-medium text-gray-700 cursor-pointer">
-                    Error Details (Development)
+                    エラーの詳細（開発環境）
                   </summary>
                   <pre className="mt-2 text-xs text-red-600 bg-red-50 p-2 rounded overflow-auto">
                     {this.state.error.stack}
@@ -81,7 +80,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 onClick={() => window.location.reload()}
                 className="flex-1 bg-blue-600 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
               >
-                Refresh Page
+                ページを再読み込み
               </button>
               <button
                 onClick={() =>
@@ -89,7 +88,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 }
                 className="flex-1 bg-gray-200 text-gray-800 px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-500"
               >
-                Try Again
+                再試行
               </button>
             </div>
           </div>

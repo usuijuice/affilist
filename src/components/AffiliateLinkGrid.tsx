@@ -62,7 +62,7 @@ function EmptyState({ message }: { message: string }) {
     <div className="col-span-full flex flex-col items-center justify-center py-16 px-4">
       <div className="text-6xl mb-4 opacity-50">🔍</div>
       <h3 className="text-xl font-semibold text-gray-900 mb-2">
-        No affiliate links found
+        アフィリエイトリンクが見つかりませんでした
       </h3>
       <p className="text-gray-600 text-center max-w-md">{message}</p>
     </div>
@@ -92,10 +92,10 @@ function LoadMoreButton({
         {loading ? (
           <div className="flex items-center">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-            Loading...
+            読み込み中...
           </div>
         ) : (
-          'Load More'
+          'さらに読み込む'
         )}
       </button>
     </div>
@@ -108,7 +108,7 @@ export function AffiliateLinkGrid({
   onLinkClick,
   onLoadMore,
   hasMore = false,
-  emptyMessage = 'Try adjusting your search criteria or browse different categories.',
+  emptyMessage = '検索条件を変更するか、他のカテゴリを試してみてください。',
   className = '',
 }: AffiliateLinkGridProps) {
   // Show skeleton loading state
@@ -166,7 +166,7 @@ export function AffiliateLinkGrid({
         <div className="flex justify-center py-8">
           <div className="flex items-center text-gray-600">
             <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-gray-600 mr-2"></div>
-            Loading more links...
+            追加のリンクを読み込んでいます...
           </div>
         </div>
       )}

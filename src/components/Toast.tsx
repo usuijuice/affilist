@@ -231,7 +231,7 @@ function ToastItem({ toast }: ToastItemProps) {
               onClick={handleClose}
               className="bg-white rounded-md inline-flex text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             >
-              <span className="sr-only">Close</span>
+              <span className="sr-only">通知を閉じる</span>
               <svg className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                 <path
                   fillRule="evenodd"

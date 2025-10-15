@@ -34,7 +34,7 @@ describe('SearchResults', () => {
       />
     );
 
-    expect(screen.getByText('Searching...')).toBeInTheDocument();
+    expect(screen.getByText('検索中です...')).toBeInTheDocument();
     expect(document.querySelector('.animate-spin')).toBeInTheDocument(); // spinner
   });
 
@@ -75,10 +75,12 @@ describe('SearchResults', () => {
       />
     );
 
-    expect(screen.getByText('No results found')).toBeInTheDocument();
+    expect(
+      screen.getByText('該当する結果が見つかりませんでした')
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
-        /We couldn't find any affiliate links matching "nonexistent"/
+        '「nonexistent」に一致するアフィリエイトリンクは見つかりませんでした。'
       )
     ).toBeInTheDocument();
   });
@@ -92,15 +94,15 @@ describe('SearchResults', () => {
       />
     );
 
-    expect(screen.getByText('Try:')).toBeInTheDocument();
-    expect(screen.getByText('• Checking your spelling')).toBeInTheDocument();
-    expect(screen.getByText('• Using different keywords')).toBeInTheDocument();
+    expect(screen.getByText('次の方法をお試しください。')).toBeInTheDocument();
     expect(
-      screen.getByText('• Searching for more general terms')
+      screen.getByText('• キーワードのスペルを確認する')
     ).toBeInTheDocument();
+    expect(screen.getByText('• 別のキーワードを入力する')).toBeInTheDocument();
     expect(
-      screen.getByText('• Browsing categories instead')
+      screen.getByText('• より一般的な語句で検索する')
     ).toBeInTheDocument();
+    expect(screen.getByText('• カテゴリから探してみる')).toBeInTheDocument();
   });
 
   it('does not show empty state when no search query', () => {
@@ -108,7 +110,9 @@ describe('SearchResults', () => {
       <SearchResults links={[]} searchQuery="" onLinkClick={mockOnLinkClick} />
     );
 
-    expect(screen.queryByText('No results found')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('該当する結果が見つかりませんでした')
+    ).not.toBeInTheDocument();
   });
 
   it('does not show empty state when search query is only whitespace', () => {
@@ -120,7 +124,9 @@ describe('SearchResults', () => {
       />
     );
 
-    expect(screen.queryByText('No results found')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('該当する結果が見つかりませんでした')
+    ).not.toBeInTheDocument();
   });
 
   it('renders grid layout for results', () => {

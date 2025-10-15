@@ -10,7 +10,7 @@ interface AdminLayoutProps {
 
 export function AdminLayout({
   children,
-  title = 'Admin Dashboard',
+  title = '管理ダッシュボード',
   subtitle,
 }: AdminLayoutProps) {
   const { logout } = useAuth();
@@ -35,7 +35,7 @@ export function AdminLayout({
             {/* Logo/Title */}
             <div className="flex items-center">
               <h1 className="text-xl font-semibold text-gray-900">
-                Affiliate Link Admin
+                アフィリスト管理
               </h1>
             </div>
 
@@ -74,7 +74,7 @@ export function AdminLayout({
                     d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"
                   />
                 </svg>
-                Logout
+                ログアウト
               </button>
             </div>
           </div>

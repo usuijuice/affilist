@@ -38,9 +38,9 @@ vi.mock('../LinkManagementTable', () => ({
           {links.map((link: AffiliateLink) => (
             <div key={link.id}>
               <span>{link.title}</span>
-              <button onClick={() => onEdit(link)}>Edit {link.title}</button>
+              <button onClick={() => onEdit(link)}>編集 {link.title}</button>
               <button onClick={() => onDelete(link.id)}>
-                Delete {link.title}
+                削除 {link.title}
               </button>
             </div>
           ))}
@@ -53,7 +53,7 @@ vi.mock('../LinkManagementTable', () => ({
 vi.mock('../LinkForm', () => ({
   LinkForm: ({ link, onSubmit, onCancel, isLoading }: any) => (
     <div data-testid="link-form">
-      <h2>{link ? 'Edit Link' : 'Create Link'}</h2>
+      <h2>{link ? 'リンクを編集' : 'リンクを作成'}</h2>
       {isLoading && <div>Form Loading...</div>}
       <button
         onClick={() =>
@@ -70,7 +70,7 @@ vi.mock('../LinkForm', () => ({
       >
         Submit
       </button>
-      <button onClick={onCancel}>Cancel</button>
+      <button onClick={onCancel}>キャンセル</button>
     </div>
   ),
 }));
@@ -157,14 +157,14 @@ describe('AdminDashboard', () => {
     render(<AdminDashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Admin Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('管理ダッシュボード')).toBeInTheDocument();
     });
 
     // Check stats cards
-    expect(screen.getByText('Total Links')).toBeInTheDocument();
-    expect(screen.getByText('Active Links')).toBeInTheDocument();
-    expect(screen.getByText('Total Clicks')).toBeInTheDocument();
-    expect(screen.getByText('Featured Links')).toBeInTheDocument();
+    expect(screen.getByText('登録済みリンク数')).toBeInTheDocument();
+    expect(screen.getByText('有効なリンク')).toBeInTheDocument();
+    expect(screen.getByText('総クリック数')).toBeInTheDocument();
+    expect(screen.getByText('注目リンク')).toBeInTheDocument();
 
     // Check stats values
     expect(screen.getByText('2')).toBeInTheDocument(); // Total links
@@ -185,21 +185,21 @@ describe('AdminDashboard', () => {
     render(<AdminDashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Dashboard')).toBeInTheDocument();
+      expect(screen.getByText('ダッシュボード')).toBeInTheDocument();
     });
 
     // Navigate to links view
-    const manageLinksButton = screen.getByText('Manage Links');
+    const manageLinksButton = screen.getByText('リンク管理');
     await user.click(manageLinksButton);
 
     expect(screen.getByTestId('link-management-table')).toBeInTheDocument();
     expect(screen.getByText('Links: 2')).toBeInTheDocument();
 
     // Navigate back to dashboard
-    const dashboardButton = screen.getByText('Dashboard');
+    const dashboardButton = screen.getByText('ダッシュボード');
     await user.click(dashboardButton);
 
-    expect(screen.getByText('Quick Actions')).toBeInTheDocument();
+    expect(screen.getByText('クイックアクション')).toBeInTheDocument();
   });
 
   it('navigates to create link form', async () => {
@@ -207,14 +207,14 @@ describe('AdminDashboard', () => {
     render(<AdminDashboard />);
 
     await waitFor(() => {
-      expect(screen.getByText('Add New Link')).toBeInTheDocument();
+      expect(screen.getByText('新しいリンクを追加')).toBeInTheDocument();
     });
 
-    const addNewLinkButton = screen.getByText('Add New Link');
+    const addNewLinkButton = screen.getByText('新しいリンクを追加');
     await user.click(addNewLinkButton);
 
     expect(screen.getByTestId('link-form')).toBeInTheDocument();
-    expect(screen.getByText('Create Link')).toBeInTheDocument();
+    expect(screen.getByText('リンクを作成')).toBeInTheDocument();
   });
 
   it('handles link creation', async () => {
@@ -229,10 +229,10 @@ describe('AdminDashboard', () => {
 
     // Navigate to create form
     await waitFor(() => {
-      expect(screen.getByText('Add New Link')).toBeInTheDocument();
+      expect(screen.getByText('新しいリンクを追加')).toBeInTheDocument();
     });
 
-    const addNewLinkButton = screen.getByText('Add New Link');
+    const addNewLinkButton = screen.getByText('新しいリンクを追加');
     await user.click(addNewLinkButton);
 
     // Submit form
@@ -267,18 +267,18 @@ describe('AdminDashboard', () => {
 
     // Navigate to links view
     await waitFor(() => {
-      expect(screen.getByText('Manage Links')).toBeInTheDocument();
+      expect(screen.getByText('リンク管理')).toBeInTheDocument();
     });
 
-    const manageLinksButton = screen.getByText('Manage Links');
+    const manageLinksButton = screen.getByText('リンク管理');
     await user.click(manageLinksButton);
 
     // Click edit button
-    const editButton = screen.getByText('Edit Test Link 1');
+    const editButton = screen.getByText('編集 Test Link 1');
     await user.click(editButton);
 
     expect(screen.getByTestId('link-form')).toBeInTheDocument();
-    expect(screen.getByText('Edit Link')).toBeInTheDocument();
+    expect(screen.getByText('リンクを編集')).toBeInTheDocument();
 
     // Submit form
     const submitButton = screen.getByText('Submit');
@@ -309,14 +309,14 @@ describe('AdminDashboard', () => {
 
     // Navigate to links view
     await waitFor(() => {
-      expect(screen.getByText('Manage Links')).toBeInTheDocument();
+      expect(screen.getByText('リンク管理')).toBeInTheDocument();
     });
 
-    const manageLinksButton = screen.getByText('Manage Links');
+    const manageLinksButton = screen.getByText('リンク管理');
     await user.click(manageLinksButton);
 
     // Click delete button
-    const deleteButton = screen.getByText('Delete Test Link 1');
+    const deleteButton = screen.getByText('削除 Test Link 1');
     await user.click(deleteButton);
 
     await waitFor(() => {
@@ -330,16 +330,16 @@ describe('AdminDashboard', () => {
 
     // Navigate to create form
     await waitFor(() => {
-      expect(screen.getByText('Add New Link')).toBeInTheDocument();
+      expect(screen.getByText('新しいリンクを追加')).toBeInTheDocument();
     });
 
-    const addNewLinkButton = screen.getByText('Add New Link');
+    const addNewLinkButton = screen.getByText('新しいリンクを追加');
     await user.click(addNewLinkButton);
 
     expect(screen.getByTestId('link-form')).toBeInTheDocument();
 
     // Cancel form
-    const cancelButton = screen.getByText('Cancel');
+    const cancelButton = screen.getByText('キャンセル');
     await user.click(cancelButton);
 
     // Should navigate back to links view
@@ -357,7 +357,7 @@ describe('AdminDashboard', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('An error occurred while loading data')
+        screen.getByText('データの読み込み中にエラーが発生しました')
       ).toBeInTheDocument();
     });
 
@@ -378,7 +378,7 @@ describe('AdminDashboard', () => {
     render(<AdminDashboard />);
 
     // Should show loading initially
-    expect(screen.getByText('Admin Dashboard')).toBeInTheDocument();
+    expect(screen.getByText('管理ダッシュボード')).toBeInTheDocument();
 
     await waitFor(() => {
       expect(screen.getByText('Total Links')).toBeInTheDocument();
@@ -398,7 +398,9 @@ describe('AdminDashboard', () => {
     expect(
       screen.getByText('Web Development • 100 clicks')
     ).toBeInTheDocument();
-    expect(screen.getByText('Design Tools • 50 clicks')).toBeInTheDocument();
+    expect(
+      screen.getByText('Design Tools • 50件のクリック')
+    ).toBeInTheDocument();
   });
 
   it('handles API errors during link operations', async () => {
@@ -414,10 +416,10 @@ describe('AdminDashboard', () => {
 
     // Navigate to create form
     await waitFor(() => {
-      expect(screen.getByText('Add New Link')).toBeInTheDocument();
+      expect(screen.getByText('新しいリンクを追加')).toBeInTheDocument();
     });
 
-    const addNewLinkButton = screen.getByText('Add New Link');
+    const addNewLinkButton = screen.getByText('新しいリンクを追加');
     await user.click(addNewLinkButton);
 
     // Submit form
@@ -426,7 +428,7 @@ describe('AdminDashboard', () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText('An error occurred while creating the link')
+        screen.getByText('リンクの作成中にエラーが発生しました')
       ).toBeInTheDocument();
     });
 

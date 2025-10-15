@@ -85,7 +85,7 @@ export function AnalyticsDashboard({
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('ja-JP', {
       style: 'currency',
       currency: 'USD',
     }).format(amount);
@@ -97,10 +97,10 @@ export function AnalyticsDashboard({
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h1 className="text-2xl font-bold text-gray-900">
-            Analytics Dashboard
+            分析ダッシュボード
           </h1>
           <p className="mt-1 text-sm text-gray-600">
-            Track performance and insights for your affiliate links
+            アフィリエイトリンクの成果とインサイトを確認できます
           </p>
         </div>
 
@@ -118,7 +118,7 @@ export function AnalyticsDashboard({
               }
               className="px-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
-            <span className="text-gray-500">to</span>
+            <span className="text-gray-500">〜</span>
             <input
               type="date"
               value={dateRange.endDate}
@@ -138,10 +138,10 @@ export function AnalyticsDashboard({
             {isLoading ? (
               <div className="flex items-center">
                 <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                Loading...
+                読み込み中...
               </div>
             ) : (
-              'Refresh'
+              '更新'
             )}
           </button>
         </div>
@@ -166,7 +166,7 @@ export function AnalyticsDashboard({
             </div>
             <div className="ml-3">
               <h3 className="text-sm font-medium text-red-800">
-                Error loading analytics
+                分析データの読み込みに失敗しました
               </h3>
               <p className="mt-1 text-sm text-red-700">{analyticsError}</p>
             </div>
@@ -177,7 +177,7 @@ export function AnalyticsDashboard({
       {/* Key Metrics Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <MetricCard
-          title="Total Clicks"
+          title="総クリック数"
           value={formatNumber(analytics?.totalClicks || 0)}
           change={
             clickAnalytics ? calculateGrowth(clickAnalytics.clicksByDate) : null
@@ -186,7 +186,7 @@ export function AnalyticsDashboard({
           loading={isLoading}
         />
         <MetricCard
-          title="Total Revenue"
+          title="総収益"
           value={formatCurrency(analytics?.totalRevenue || 0)}
           change={
             revenueAnalytics
@@ -197,13 +197,13 @@ export function AnalyticsDashboard({
           loading={isLoading}
         />
         <MetricCard
-          title="Top Links"
+          title="人気リンク数"
           value={analytics?.topLinks?.length?.toString() || '0'}
           icon="🔗"
           loading={isLoading}
         />
         <MetricCard
-          title="Unique Clicks"
+          title="ユニーククリック数"
           value={formatNumber(clickAnalytics?.uniqueClicks || 0)}
           change={
             clickAnalytics
@@ -219,7 +219,7 @@ export function AnalyticsDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Clicks Over Time Chart */}
         <ChartCard
-          title="Clicks Over Time"
+          title="期間別クリック数"
           loading={clickLoading}
           data={clickAnalytics?.clicksByDate}
           type="line"
@@ -227,7 +227,7 @@ export function AnalyticsDashboard({
 
         {/* Revenue Over Time Chart */}
         <ChartCard
-          title="Revenue Over Time"
+          title="期間別収益"
           loading={revenueLoading}
           data={revenueAnalytics?.revenueByDate}
           type="area"
@@ -238,7 +238,7 @@ export function AnalyticsDashboard({
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Top Performing Links */}
         <PerformanceTable
-          title="Top Performing Links"
+          title="パフォーマンス上位リンク"
           data={linkPerformance}
           loading={linksLoading}
           type="links"
@@ -246,7 +246,7 @@ export function AnalyticsDashboard({
 
         {/* Top Categories */}
         <PerformanceTable
-          title="Top Categories"
+          title="上位カテゴリ"
           data={clickAnalytics?.clicksByCategory}
           loading={clickLoading}
           type="categories"
@@ -338,9 +338,9 @@ function ChartCard({ title, loading, data }: ChartCardProps) {
       <div className="h-64 flex items-center justify-center bg-gray-50 rounded">
         <div className="text-center">
           <div className="text-4xl mb-2">📊</div>
-          <p className="text-gray-500">Chart visualization would go here</p>
+          <p className="text-gray-500">グラフはここに表示されます</p>
           <p className="text-sm text-gray-400 mt-1">
-            {data?.length || 0} data points
+            データポイント数: {data?.length || 0}
           </p>
         </div>
       </div>
@@ -391,7 +391,7 @@ function PerformanceTable({
               <div className="flex-1 min-w-0">
                 <p className="text-sm font-medium text-gray-900 truncate">
                   {type === 'links'
-                    ? item.title || `Link ${item.linkId}`
+                    ? item.title || `リンク ${item.linkId}`
                     : item.categoryName}
                 </p>
                 {type === 'links' && (
@@ -403,7 +403,7 @@ function PerformanceTable({
               </div>
               <div className="text-right">
                 <p className="text-sm font-semibold text-gray-900">
-                  {item.clicks} clicks
+                  {item.clicks}件のクリック
                 </p>
                 {type === 'links' && item.revenue && (
                   <p className="text-xs text-green-600">
@@ -416,7 +416,7 @@ function PerformanceTable({
         ) : (
           <div className="text-center py-8">
             <div className="text-4xl mb-2">📈</div>
-            <p className="text-gray-500">No data available</p>
+            <p className="text-gray-500">データがありません</p>
           </div>
         )}
       </div>
@@ -480,7 +480,7 @@ function calculateUniqueGrowth(
 }
 
 function formatCurrency(amount: number): string {
-  return new Intl.NumberFormat('en-US', {
+  return new Intl.NumberFormat('ja-JP', {
     style: 'currency',
     currency: 'USD',
   }).format(amount);

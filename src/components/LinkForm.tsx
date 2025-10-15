@@ -115,46 +115,46 @@ export function LinkForm({
 
     // Required fields
     if (!formData.title.trim()) {
-      newErrors.title = 'Title is required';
+      newErrors.title = 'タイトルを入力してください';
     } else if (formData.title.length < 3) {
-      newErrors.title = 'Title must be at least 3 characters';
+      newErrors.title = 'タイトルは3文字以上で入力してください';
     } else if (formData.title.length > 100) {
-      newErrors.title = 'Title must be less than 100 characters';
+      newErrors.title = 'タイトルは100文字以内で入力してください';
     }
 
     if (!formData.description.trim()) {
-      newErrors.description = 'Description is required';
+      newErrors.description = '説明を入力してください';
     } else if (formData.description.length < 10) {
-      newErrors.description = 'Description must be at least 10 characters';
+      newErrors.description = '説明は10文字以上で入力してください';
     } else if (formData.description.length > 500) {
-      newErrors.description = 'Description must be less than 500 characters';
+      newErrors.description = '説明は500文字以内で入力してください';
     }
 
     if (!formData.url.trim()) {
-      newErrors.url = 'URL is required';
+      newErrors.url = 'URLを入力してください';
     } else if (!isValidUrl(formData.url)) {
-      newErrors.url = 'Please enter a valid URL';
+      newErrors.url = '有効なURLを入力してください';
     }
 
     if (!formData.affiliateUrl.trim()) {
-      newErrors.affiliateUrl = 'Affiliate URL is required';
+      newErrors.affiliateUrl = 'アフィリエイトURLを入力してください';
     } else if (!isValidUrl(formData.affiliateUrl)) {
-      newErrors.affiliateUrl = 'Please enter a valid affiliate URL';
+      newErrors.affiliateUrl = '有効なアフィリエイトURLを入力してください';
     }
 
     if (!formData.categoryId) {
-      newErrors.categoryId = 'Category is required';
+      newErrors.categoryId = 'カテゴリを選択してください';
     }
 
     // Optional fields validation
     if (formData.imageUrl && !isValidUrl(formData.imageUrl)) {
-      newErrors.imageUrl = 'Please enter a valid image URL';
+      newErrors.imageUrl = '有効な画像URLを入力してください';
     }
 
     if (formData.commissionRate) {
       const rate = parseFloat(formData.commissionRate);
       if (isNaN(rate) || rate < 0 || rate > 100) {
-        newErrors.commissionRate = 'Commission rate must be between 0 and 100';
+        newErrors.commissionRate = '報酬率は0〜100の範囲で入力してください';
       }
     }
 
@@ -281,7 +281,7 @@ export function LinkForm({
                   />
                 </svg>
                 <span className="text-sm text-yellow-800">
-                  Draft saved automatically
+                  下書きは自動的に保存されています
                 </span>
               </div>
               <button
@@ -289,7 +289,7 @@ export function LinkForm({
                 onClick={clearDraft}
                 className="text-sm text-yellow-600 hover:text-yellow-800 underline"
               >
-                Clear draft
+                下書きを削除
               </button>
             </div>
           </div>
@@ -297,9 +297,7 @@ export function LinkForm({
 
         {/* Basic Information */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            Basic Information
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">基本情報</h3>
 
           <div className="grid grid-cols-1 gap-6">
             {/* Title */}
@@ -308,7 +306,7 @@ export function LinkForm({
                 htmlFor="title"
                 className="block text-sm font-medium text-gray-700"
               >
-                Title *
+                タイトル *
               </label>
               <input
                 type="text"
@@ -318,14 +316,14 @@ export function LinkForm({
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                   errors.title ? 'border-red-300' : ''
                 }`}
-                placeholder="Enter affiliate link title"
+                placeholder="アフィリエイトリンクのタイトルを入力"
                 maxLength={100}
               />
               {errors.title && (
                 <p className="mt-1 text-sm text-red-600">{errors.title}</p>
               )}
               <p className="mt-1 text-sm text-gray-500">
-                {formData.title.length}/100 characters
+                {formData.title.length}/100 文字
               </p>
             </div>
 
@@ -335,7 +333,7 @@ export function LinkForm({
                 htmlFor="description"
                 className="block text-sm font-medium text-gray-700"
               >
-                Description *
+                説明 *
               </label>
               <textarea
                 id="description"
@@ -347,7 +345,7 @@ export function LinkForm({
                 className={`mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 ${
                   errors.description ? 'border-red-300' : ''
                 }`}
-                placeholder="Describe the affiliate link and what it offers"
+                placeholder="リンクの内容や訴求ポイントを入力"
                 maxLength={500}
               />
               {errors.description && (
@@ -356,7 +354,7 @@ export function LinkForm({
                 </p>
               )}
               <p className="mt-1 text-sm text-gray-500">
-                {formData.description.length}/500 characters
+                {formData.description.length}/500 文字
               </p>
             </div>
 
@@ -367,7 +365,7 @@ export function LinkForm({
                   htmlFor="url"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Original URL *
+                  紹介元URL *
                 </label>
                 <input
                   type="url"
@@ -389,7 +387,7 @@ export function LinkForm({
                   htmlFor="affiliateUrl"
                   className="block text-sm font-medium text-gray-700"
                 >
-                  Affiliate URL *
+                  アフィリエイトURL *
                 </label>
                 <input
                   type="url"
@@ -415,9 +413,7 @@ export function LinkForm({
 
         {/* Categorization */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            Categorization
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">分類設定</h3>
 
           <div className="grid grid-cols-1 gap-6">
             {/* Category */}
@@ -426,7 +422,7 @@ export function LinkForm({
                 htmlFor="categoryId"
                 className="block text-sm font-medium text-gray-700"
               >
-                Category *
+                カテゴリ *
               </label>
               <select
                 id="categoryId"
@@ -438,7 +434,7 @@ export function LinkForm({
                   errors.categoryId ? 'border-red-300' : ''
                 }`}
               >
-                <option value="">Select a category</option>
+                <option value="">カテゴリを選択してください</option>
                 {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name}
@@ -456,7 +452,7 @@ export function LinkForm({
                 htmlFor="tags"
                 className="block text-sm font-medium text-gray-700"
               >
-                Tags
+                タグ
               </label>
               <div className="mt-1">
                 <div className="flex flex-wrap gap-2 mb-2">
@@ -489,20 +485,19 @@ export function LinkForm({
                     onChange={(e) => setTagInput(e.target.value)}
                     onKeyPress={handleTagInputKeyPress}
                     className="flex-1 rounded-l-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500"
-                    placeholder="Add a tag"
+                    placeholder="タグを追加"
                   />
                   <button
                     type="button"
                     onClick={handleTagAdd}
                     className="px-4 py-2 border border-l-0 border-gray-300 rounded-r-md bg-gray-50 text-gray-700 hover:bg-gray-100"
                   >
-                    Add
+                    追加
                   </button>
                 </div>
               </div>
               <p className="mt-1 text-sm text-gray-500">
-                Press Enter or click Add to add tags. Tags help users find your
-                link.
+                Enterキーまたは「追加」を押すとタグを登録できます。タグを設定するとユーザーがリンクを見つけやすくなります。
               </p>
             </div>
           </div>
@@ -510,9 +505,7 @@ export function LinkForm({
 
         {/* Additional Settings */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">
-            Additional Settings
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">追加設定</h3>
 
           <div className="grid grid-cols-1 gap-6">
             {/* Image URL */}
@@ -521,7 +514,7 @@ export function LinkForm({
                 htmlFor="imageUrl"
                 className="block text-sm font-medium text-gray-700"
               >
-                Image URL
+                画像URL
               </label>
               <input
                 type="url"
@@ -537,7 +530,7 @@ export function LinkForm({
                 <p className="mt-1 text-sm text-red-600">{errors.imageUrl}</p>
               )}
               <p className="mt-1 text-sm text-gray-500">
-                Optional logo or preview image for the affiliate link
+                （任意）リンク用のロゴやプレビュー画像
               </p>
             </div>
 
@@ -547,7 +540,7 @@ export function LinkForm({
                 htmlFor="commissionRate"
                 className="block text-sm font-medium text-gray-700"
               >
-                Commission Rate (%)
+                報酬率（%）
               </label>
               <input
                 type="number"
@@ -570,7 +563,7 @@ export function LinkForm({
                 </p>
               )}
               <p className="mt-1 text-sm text-gray-500">
-                Optional commission rate percentage
+                （任意）報酬率をパーセンテージで入力
               </p>
             </div>
 
@@ -589,10 +582,10 @@ export function LinkForm({
                 htmlFor="featured"
                 className="ml-2 block text-sm text-gray-900"
               >
-                Featured link
+                注目リンクにする
               </label>
               <p className="ml-2 text-sm text-gray-500">
-                Featured links appear prominently on the homepage
+                注目リンクはホームページで目立つ位置に表示されます
               </p>
             </div>
           </div>
@@ -606,7 +599,7 @@ export function LinkForm({
             className="px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500"
             disabled={isLoading}
           >
-            Cancel
+            キャンセル
           </button>
           <button
             type="submit"
@@ -634,12 +627,12 @@ export function LinkForm({
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                {link ? 'Updating...' : 'Creating...'}
+                {link ? '更新しています...' : '作成しています...'}
               </div>
             ) : link ? (
-              'Update Link'
+              'リンクを更新'
             ) : (
-              'Create Link'
+              'リンクを作成'
             )}
           </button>
         </div>

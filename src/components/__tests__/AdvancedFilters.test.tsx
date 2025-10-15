@@ -26,9 +26,9 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    expect(screen.getByText('Advanced Filters')).toBeInTheDocument();
-    expect(screen.getByText('Commission Rate (%)')).toBeInTheDocument();
-    expect(screen.getByText('Featured Links Only')).toBeInTheDocument();
+    expect(screen.getByText('詳細フィルター')).toBeInTheDocument();
+    expect(screen.getByText('報酬率（%）')).toBeInTheDocument();
+    expect(screen.getByText('注目リンクのみ表示')).toBeInTheDocument();
   });
 
   it('shows commission rate inputs with labels', () => {
@@ -39,8 +39,8 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    expect(screen.getByLabelText('Minimum')).toBeInTheDocument();
-    expect(screen.getByLabelText('Maximum')).toBeInTheDocument();
+    expect(screen.getByLabelText('最小値')).toBeInTheDocument();
+    expect(screen.getByLabelText('最大値')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('0')).toBeInTheDocument();
     expect(screen.getByPlaceholderText('100')).toBeInTheDocument();
   });
@@ -73,7 +73,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    const minInput = screen.getByLabelText('Minimum');
+    const minInput = screen.getByLabelText('最小値');
     fireEvent.change(minInput, { target: { value: '10' } });
 
     expect(mockOnFiltersChange).toHaveBeenCalledWith({ commissionRateMin: 10 });
@@ -87,7 +87,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    const maxInput = screen.getByLabelText('Maximum');
+    const maxInput = screen.getByLabelText('最大値');
     fireEvent.change(maxInput, { target: { value: '50' } });
 
     expect(mockOnFiltersChange).toHaveBeenCalledWith({ commissionRateMax: 50 });
@@ -107,7 +107,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    const minInput = screen.getByLabelText('Minimum');
+    const minInput = screen.getByLabelText('最小値');
     fireEvent.change(minInput, { target: { value: '' } });
 
     expect(mockOnFiltersChange).toHaveBeenCalledWith({
@@ -123,7 +123,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    const minInput = screen.getByLabelText('Minimum');
+    const minInput = screen.getByLabelText('最小値');
     fireEvent.change(minInput, { target: { value: 'invalid' } });
 
     // Should not call onFiltersChange for invalid input
@@ -138,7 +138,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('Featured Links Only'));
+    fireEvent.click(screen.getByText('注目リンクのみ表示'));
 
     expect(mockOnFiltersChange).toHaveBeenCalledWith({ featuredOnly: true });
   });
@@ -158,10 +158,10 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    expect(screen.getByText('Active filters:')).toBeInTheDocument();
-    expect(screen.getByText('Min: 5%')).toBeInTheDocument();
-    expect(screen.getByText('Max: 25%')).toBeInTheDocument();
-    expect(screen.getByText('Featured Only')).toBeInTheDocument();
+    expect(screen.getByText('適用中のフィルター:')).toBeInTheDocument();
+    expect(screen.getByText('最小: 5%')).toBeInTheDocument();
+    expect(screen.getByText('最大: 25%')).toBeInTheDocument();
+    expect(screen.getByText('注目のみ')).toBeInTheDocument();
   });
 
   it('shows commission range summary when both min and max are set', () => {
@@ -178,9 +178,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    expect(
-      screen.getByText('Showing 10% - 30% commission')
-    ).toBeInTheDocument();
+    expect(screen.getByText('10% 〜 30% の報酬率を表示中')).toBeInTheDocument();
   });
 
   it('shows clear button when filters are active', () => {
@@ -197,7 +195,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    expect(screen.getByText('Clear')).toBeInTheDocument();
+    expect(screen.getByText('すべてクリア')).toBeInTheDocument();
   });
 
   it('clears all advanced filters when clear button is clicked', () => {
@@ -215,7 +213,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    fireEvent.click(screen.getByText('Clear'));
+    fireEvent.click(screen.getByText('すべてクリア'));
 
     expect(mockOnFiltersChange).toHaveBeenCalledWith({
       commissionRateMin: undefined,
@@ -232,7 +230,7 @@ describe('AdvancedFilters', () => {
       />
     );
 
-    expect(screen.queryByText('Clear')).not.toBeInTheDocument();
+    expect(screen.queryByText('すべてクリア')).not.toBeInTheDocument();
   });
 
   it('applies custom className', () => {

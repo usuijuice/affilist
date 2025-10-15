@@ -90,13 +90,13 @@ describe('LinkManagementTable', () => {
     );
 
     // Check table headers
-    expect(screen.getByText('Title')).toBeInTheDocument();
-    expect(screen.getByText('Category')).toBeInTheDocument();
-    expect(screen.getByText('Status')).toBeInTheDocument();
-    expect(screen.getByText('Clicks')).toBeInTheDocument();
-    expect(screen.getByText('Featured')).toBeInTheDocument();
-    expect(screen.getByText('Updated')).toBeInTheDocument();
-    expect(screen.getByText('Actions')).toBeInTheDocument();
+    expect(screen.getByText('タイトル')).toBeInTheDocument();
+    expect(screen.getByText('カテゴリ')).toBeInTheDocument();
+    expect(screen.getByText('ステータス')).toBeInTheDocument();
+    expect(screen.getByText('クリック数')).toBeInTheDocument();
+    expect(screen.getByText('注目')).toBeInTheDocument();
+    expect(screen.getByText('更新日時')).toBeInTheDocument();
+    expect(screen.getByText('操作')).toBeInTheDocument();
 
     // Check link data
     expect(screen.getByText('Test Link 1')).toBeInTheDocument();
@@ -127,9 +127,11 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    expect(screen.getByText('No links found')).toBeInTheDocument();
     expect(
-      screen.getByText('Get started by creating a new affiliate link.')
+      screen.getByText('該当するリンクが見つかりません')
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('まずは新しいアフィリエイトリンクを作成してみましょう。')
     ).toBeInTheDocument();
   });
 
@@ -144,7 +146,7 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    const searchInput = screen.getByPlaceholderText('Search links...');
+    const searchInput = screen.getByPlaceholderText('リンクを検索...');
     await user.type(searchInput, 'Test Link 1');
 
     // Should only show the first link
@@ -164,7 +166,7 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    const statusFilter = screen.getByDisplayValue('All Status');
+    const statusFilter = screen.getByDisplayValue('すべてのステータス');
     await user.selectOptions(statusFilter, 'active');
 
     // Should only show active links
@@ -184,7 +186,7 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    const categoryFilter = screen.getByDisplayValue('All Categories');
+    const categoryFilter = screen.getByDisplayValue('すべてのカテゴリ');
     await user.selectOptions(categoryFilter, 'Design Tools');
 
     // Should only show design tools links
@@ -205,14 +207,14 @@ describe('LinkManagementTable', () => {
     );
 
     // Sort by title
-    const titleHeader = screen.getByText('Title');
+    const titleHeader = screen.getByText('タイトル');
     await user.click(titleHeader);
 
     // Check if sorting icons appear
     expect(titleHeader.closest('th')).toContainHTML('svg');
 
     // Sort by clicks
-    const clicksHeader = screen.getByText('Clicks');
+    const clicksHeader = screen.getByText('クリック数');
     await user.click(clicksHeader);
 
     expect(clicksHeader.closest('th')).toContainHTML('svg');
@@ -236,8 +238,8 @@ describe('LinkManagementTable', () => {
     await user.click(firstLinkCheckbox);
 
     // Should show bulk actions
-    expect(screen.getByText('1 link selected')).toBeInTheDocument();
-    expect(screen.getByText('Delete Selected')).toBeInTheDocument();
+    expect(screen.getByText('1件のリンクを選択中')).toBeInTheDocument();
+    expect(screen.getByText('選択したリンクを削除')).toBeInTheDocument();
   });
 
   it('handles select all functionality', async () => {
@@ -256,7 +258,7 @@ describe('LinkManagementTable', () => {
     await user.click(selectAllCheckbox);
 
     // Should show bulk actions for all links
-    expect(screen.getByText('3 links selected')).toBeInTheDocument();
+    expect(screen.getByText('3件のリンクを選択中')).toBeInTheDocument();
   });
 
   it('calls onEdit when edit button is clicked', async () => {
@@ -270,7 +272,7 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    const editButtons = screen.getAllByText('Edit');
+    const editButtons = screen.getAllByText('編集');
     await user.click(editButtons[0]);
 
     expect(mockOnEdit).toHaveBeenCalledWith(mockLinks[0]);
@@ -287,14 +289,14 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    const deleteButtons = screen.getAllByText('Delete');
+    const deleteButtons = screen.getAllByText('削除');
     await user.click(deleteButtons[0]);
 
     // Should show confirmation modal
-    expect(screen.getByText('Delete Link')).toBeInTheDocument();
+    expect(screen.getByText('リンクを削除')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Are you sure you want to delete this affiliate link? This action cannot be undone.'
+        'このアフィリエイトリンクを削除しますか？この操作は元に戻せません。'
       )
     ).toBeInTheDocument();
   });
@@ -310,11 +312,11 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    const deleteButtons = screen.getAllByText('Delete');
+    const deleteButtons = screen.getAllByText('削除');
     await user.click(deleteButtons[0]);
 
     // Confirm deletion
-    const confirmButton = screen.getByRole('button', { name: 'Delete' });
+    const confirmButton = screen.getByRole('button', { name: '削除' });
     await user.click(confirmButton);
 
     expect(mockOnDelete).toHaveBeenCalledWith('1');
@@ -331,15 +333,15 @@ describe('LinkManagementTable', () => {
       />
     );
 
-    const deleteButtons = screen.getAllByText('Delete');
+    const deleteButtons = screen.getAllByText('削除');
     await user.click(deleteButtons[0]);
 
     // Cancel deletion
-    const cancelButton = screen.getByRole('button', { name: 'Cancel' });
+    const cancelButton = screen.getByRole('button', { name: 'キャンセル' });
     await user.click(cancelButton);
 
     expect(mockOnDelete).not.toHaveBeenCalled();
-    expect(screen.queryByText('Delete Link')).not.toBeInTheDocument();
+    expect(screen.queryByText('リンクを削除')).not.toBeInTheDocument();
   });
 
   it('handles bulk delete', async () => {
@@ -359,19 +361,19 @@ describe('LinkManagementTable', () => {
     await user.click(checkboxes[2]); // Second link
 
     // Click bulk delete
-    const bulkDeleteButton = screen.getByText('Delete Selected');
+    const bulkDeleteButton = screen.getByText('選択したリンクを削除');
     await user.click(bulkDeleteButton);
 
     // Should show bulk delete confirmation
-    expect(screen.getByText('Delete Multiple Links')).toBeInTheDocument();
+    expect(screen.getByText('複数のリンクを削除')).toBeInTheDocument();
     expect(
       screen.getByText(
-        'Are you sure you want to delete 2 selected links? This action cannot be undone.'
+        '選択した2件のリンクを削除しますか？この操作は取り消せません。'
       )
     ).toBeInTheDocument();
 
     // Confirm bulk delete
-    const confirmButton = screen.getByRole('button', { name: 'Delete' });
+    const confirmButton = screen.getByRole('button', { name: '削除' });
     await user.click(confirmButton);
 
     expect(mockOnDelete).toHaveBeenCalledTimes(2);
@@ -392,8 +394,8 @@ describe('LinkManagementTable', () => {
     expect(screen.getByText('Test Link 1')).toBeInTheDocument();
     expect(screen.getByText('Test description 1')).toBeInTheDocument();
     expect(screen.getByText('Web Development')).toBeInTheDocument();
-    expect(screen.getByText('active')).toBeInTheDocument();
-    expect(screen.getByText('100')).toBeInTheDocument();
+    expect(screen.getByText('有効')).toBeInTheDocument();
+    expect(screen.getByText('100 件')).toBeInTheDocument();
 
     // Check tags (should show first 3 + more indicator)
     expect(screen.getByText('web')).toBeInTheDocument();
@@ -401,8 +403,8 @@ describe('LinkManagementTable', () => {
     expect(screen.getByText('javascript')).toBeInTheDocument();
 
     // Check featured status (should show star icon)
-    const starIcons = screen.getAllByRole('img', { hidden: true });
-    expect(starIcons.length).toBeGreaterThan(0);
+    const starIcon = document.querySelector('.text-yellow-400');
+    expect(starIcon).not.toBeNull();
   });
 
   it('handles image loading errors', () => {
@@ -438,7 +440,7 @@ describe('LinkManagementTable', () => {
     );
 
     // Apply a filter that returns no results
-    const searchInput = screen.getByPlaceholderText('Search links...');
+    const searchInput = screen.getByPlaceholderText('リンクを検索...');
     await user.type(searchInput, 'nonexistent');
 
     expect(screen.getByText('No links found')).toBeInTheDocument();

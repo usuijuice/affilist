@@ -20,9 +20,9 @@ describe('Footer', () => {
     );
 
     expect(screen.getByText('AL')).toBeInTheDocument();
-    expect(screen.getByText('Affiliate Links')).toBeInTheDocument();
+    expect(screen.getByText('アフィリスト')).toBeInTheDocument();
     expect(
-      screen.getByText(/Discover the best affiliate opportunities/)
+      screen.getByText(/カテゴリ別に厳選されたアフィリエイト案件/)
     ).toBeInTheDocument();
   });
 
@@ -33,7 +33,7 @@ describe('Footer', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByText('Categories')).toBeInTheDocument();
+    expect(screen.getByText('カテゴリ')).toBeInTheDocument();
 
     // Should show first 6 categories
     mockCategories.slice(0, 6).forEach((category) => {
@@ -56,7 +56,7 @@ describe('Footer', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByText('View all categories →')).toBeInTheDocument();
+    expect(screen.getByText('すべてのカテゴリを見る →')).toBeInTheDocument();
   });
 
   it('does not show "View all categories" link when 6 or fewer categories', () => {
@@ -68,7 +68,9 @@ describe('Footer', () => {
       </RouterWrapper>
     );
 
-    expect(screen.queryByText('View all categories →')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('すべてのカテゴリを見る →')
+    ).not.toBeInTheDocument();
   });
 
   it('renders quick links section', () => {
@@ -78,22 +80,26 @@ describe('Footer', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByText('Quick Links')).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
+    expect(screen.getByText('クイックリンク')).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'ホーム' })).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: /featured links/i })
+      screen.getByRole('link', { name: '注目リンク' })
     ).toBeInTheDocument();
 
     // Use getAllByRole to handle multiple "All Categories" links
     const allCategoriesLinks = screen.getAllByRole('link', {
-      name: /all categories/i,
+      name: 'すべてのカテゴリ',
     });
     expect(allCategoriesLinks.length).toBeGreaterThan(0);
 
-    expect(screen.getByRole('link', { name: /about us/i })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /contact/i })).toBeInTheDocument();
     expect(
-      screen.getByRole('link', { name: /privacy policy/i })
+      screen.getByRole('link', { name: '運営者情報' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'お問い合わせ' })
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: 'プライバシーポリシー' })
     ).toBeInTheDocument();
   });
 
@@ -104,7 +110,7 @@ describe('Footer', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByLabelText('Twitter')).toBeInTheDocument();
+    expect(screen.getByLabelText('X（旧Twitter）')).toBeInTheDocument();
     expect(screen.getByLabelText('GitHub')).toBeInTheDocument();
   });
 
@@ -117,9 +123,7 @@ describe('Footer', () => {
 
     const currentYear = new Date().getFullYear();
     expect(
-      screen.getByText(
-        `© ${currentYear} Affiliate Links. All rights reserved.`
-      )
+      screen.getByText(`© ${currentYear} アフィリスト. 無断転載を禁じます。`)
     ).toBeInTheDocument();
   });
 
@@ -130,9 +134,9 @@ describe('Footer', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByText(/All rights reserved/)).toBeInTheDocument();
+    expect(screen.getByText(/無断転載を禁じます/)).toBeInTheDocument();
     expect(
-      screen.getByText('Built with ❤️ for affiliate marketers')
+      screen.getByText('アフィリエイトを愛するすべての方のために作られました')
     ).toBeInTheDocument();
   });
 
@@ -143,7 +147,9 @@ describe('Footer', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByText('Categories')).toBeInTheDocument();
-    expect(screen.queryByText('View all categories →')).not.toBeInTheDocument();
+    expect(screen.getByText('カテゴリ')).toBeInTheDocument();
+    expect(
+      screen.queryByText('すべてのカテゴリを見る →')
+    ).not.toBeInTheDocument();
   });
 });

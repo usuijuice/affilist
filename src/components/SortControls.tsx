@@ -13,23 +13,23 @@ const sortOptions: Array<{
 }> = [
   {
     value: 'popularity',
-    label: 'Most Popular',
-    description: 'Sort by click count',
+    label: '人気順',
+    description: 'クリック数で並べ替えます',
   },
   {
     value: 'newest',
-    label: 'Newest',
-    description: 'Recently added',
+    label: '新着順',
+    description: '最近追加されたリンクから表示します',
   },
   {
     value: 'commission',
-    label: 'Highest Commission',
-    description: 'Best earning potential',
+    label: '報酬率が高い順',
+    description: '収益性の高い案件を優先します',
   },
   {
     value: 'alphabetical',
-    label: 'A-Z',
-    description: 'Alphabetical order',
+    label: '名前順',
+    description: 'アルファベット順に並べ替えます',
   },
 ];
 
@@ -41,7 +41,7 @@ export function SortControls({
   return (
     <div className={`bg-white rounded-lg border border-gray-200 ${className}`}>
       <div className="p-4">
-        <h3 className="text-lg font-medium text-gray-900 mb-3">Sort By</h3>
+        <h3 className="text-lg font-medium text-gray-900 mb-3">並べ替え</h3>
 
         <div className="space-y-2">
           {sortOptions.map((option) => (

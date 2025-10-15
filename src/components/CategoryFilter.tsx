@@ -46,13 +46,11 @@ export function CategoryFilter({
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">Categories</h3>
+          <h3 className="text-lg font-medium text-gray-900">カテゴリ</h3>
           <button
             onClick={() => setIsExpanded(!isExpanded)}
             className="md:hidden p-1 text-gray-500 hover:text-gray-700"
-            aria-label={
-              isExpanded ? 'Collapse categories' : 'Expand categories'
-            }
+            aria-label={isExpanded ? 'カテゴリを閉じる' : 'カテゴリを開く'}
           >
             <svg
               className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -74,13 +72,13 @@ export function CategoryFilter({
         {someSelected && (
           <div className="mt-2 flex items-center justify-between text-sm">
             <span className="text-gray-600">
-              {selectedCategories.length} of {categories.length} selected
+              {categories.length}件中 {selectedCategories.length}件を選択
             </span>
             <button
               onClick={handleClearAll}
               className="text-blue-600 hover:text-blue-800 font-medium"
             >
-              Clear all
+              すべて解除
             </button>
           </div>
         )}
@@ -126,7 +124,7 @@ export function CategoryFilter({
               </div>
             </div>
             <span className="text-sm font-medium text-gray-900">
-              All Categories
+              すべてのカテゴリ
             </span>
           </label>
 

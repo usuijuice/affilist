@@ -116,11 +116,11 @@ export function SessionWarning({
             {/* Content */}
             <div className="mt-3 text-center sm:mt-5">
               <h3 className="text-lg leading-6 font-medium text-gray-900">
-                Session Expiring Soon
+                セッションの有効期限が間もなく切れます
               </h3>
               <div className="mt-2">
                 <p className="text-sm text-gray-500">
-                  Your session will expire in{' '}
+                  セッションの有効期限まで残り{' '}
                   <span
                     className={`font-mono font-bold ${
                       isUrgent ? 'text-red-600' : 'text-yellow-600'
@@ -130,7 +130,7 @@ export function SessionWarning({
                   </span>
                 </p>
                 <p className="text-sm text-gray-500 mt-1">
-                  Would you like to extend your session or logout?
+                  続けて利用する場合は延長してください。終了する場合はログアウトを選択できます。
                 </p>
               </div>
             </div>
@@ -166,10 +166,10 @@ export function SessionWarning({
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Extending...
+                  延長しています...
                 </>
               ) : (
-                'Stay Logged In'
+                'ログインを延長'
               )}
             </button>
 
@@ -178,7 +178,7 @@ export function SessionWarning({
               onClick={onLogout}
               className="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:col-start-1 sm:text-sm"
             >
-              Logout Now
+              今すぐログアウト
             </button>
           </div>
 
@@ -190,7 +190,7 @@ export function SessionWarning({
                 onClick={onDismiss}
                 className="w-full inline-flex justify-center rounded-md border border-gray-300 shadow-sm px-4 py-2 bg-white text-base font-medium text-gray-500 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:text-sm"
               >
-                Dismiss
+                閉じる
               </button>
             </div>
           )}

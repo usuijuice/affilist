@@ -13,7 +13,7 @@ interface SearchInputProps {
 
 export function SearchInput({
   onSearch,
-  placeholder = 'Search...',
+  placeholder = '検索...',
   debounceDelay = 300,
   className = '',
   showResultCount = false,
@@ -66,7 +66,7 @@ export function SearchInput({
           onChange={handleInputChange}
           placeholder={placeholder}
           className="block w-full pl-10 pr-10 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          aria-label="Search"
+          aria-label="検索"
         />
 
         {/* Clear Button */}
@@ -76,7 +76,7 @@ export function SearchInput({
               type="button"
               onClick={handleClearSearch}
               className="text-gray-400 hover:text-gray-600 focus:outline-none focus:text-gray-600"
-              aria-label="Clear search"
+              aria-label="検索条件をクリア"
             >
               <svg
                 className="h-5 w-5"
@@ -100,11 +100,9 @@ export function SearchInput({
       {showResultCount && hasSearchQuery && (
         <div className="mt-2 text-sm text-gray-600">
           {resultCount === 0 ? (
-            <span className="text-gray-500">No results found</span>
+            <span className="text-gray-500">該当する結果がありません</span>
           ) : (
-            <span>
-              {resultCount} result{resultCount !== 1 ? 's' : ''} found
-            </span>
+            <span>{resultCount}件の結果が見つかりました</span>
           )}
         </div>
       )}

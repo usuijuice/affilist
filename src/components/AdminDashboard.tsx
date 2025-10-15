@@ -63,10 +63,10 @@ export function AdminDashboard({
           featuredLinks,
         });
       } else {
-        setError('Failed to load dashboard data');
+        setError('ダッシュボードの読み込みに失敗しました');
       }
     } catch (err) {
-      setError('An error occurred while loading data');
+      setError('データの読み込み中にエラーが発生しました');
       console.error('Dashboard data loading error:', err);
     } finally {
       setIsLoading(false);
@@ -83,10 +83,10 @@ export function AdminDashboard({
         await loadDashboardData(); // Refresh data
         setCurrentView('links');
       } else {
-        setError('Failed to create link');
+        setError('リンクの作成に失敗しました');
       }
     } catch (err) {
-      setError('An error occurred while creating the link');
+      setError('リンクの作成中にエラーが発生しました');
       console.error('Link creation error:', err);
     } finally {
       setIsLoading(false);
@@ -109,10 +109,10 @@ export function AdminDashboard({
         setEditingLink(null);
         setCurrentView('links');
       } else {
-        setError('Failed to update link');
+        setError('リンクの更新に失敗しました');
       }
     } catch (err) {
-      setError('An error occurred while updating the link');
+      setError('リンクの更新中にエラーが発生しました');
       console.error('Link update error:', err);
     } finally {
       setIsLoading(false);
@@ -128,10 +128,10 @@ export function AdminDashboard({
       if (response.success) {
         await loadDashboardData(); // Refresh data
       } else {
-        setError('Failed to delete link');
+        setError('リンクの削除に失敗しました');
       }
     } catch (err) {
-      setError('An error occurred while deleting the link');
+      setError('リンクの削除中にエラーが発生しました');
       console.error('Link deletion error:', err);
     } finally {
       setIsLoading(false);
@@ -146,6 +146,19 @@ export function AdminDashboard({
   const handleCancelForm = () => {
     setEditingLink(null);
     setCurrentView('links');
+  };
+
+  const formatStatus = (status: AffiliateLink['status']) => {
+    switch (status) {
+      case 'active':
+        return '有効';
+      case 'inactive':
+        return '停止';
+      case 'pending':
+        return '保留';
+      default:
+        return status;
+    }
   };
 
   const renderNavigation = () => (
@@ -173,7 +186,7 @@ export function AdminDashboard({
                 d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
               />
             </svg>
-            Dashboard
+            ダッシュボード
           </div>
         </button>
 
@@ -199,7 +212,7 @@ export function AdminDashboard({
                 d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"
               />
             </svg>
-            Manage Links
+            リンク管理
           </div>
         </button>
       </div>
@@ -231,7 +244,7 @@ export function AdminDashboard({
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Links
+                    登録済みリンク数
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
                     {stats.totalLinks}
@@ -263,7 +276,7 @@ export function AdminDashboard({
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">
-                    Active Links
+                    有効なリンク
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
                     {stats.activeLinks}
@@ -295,7 +308,7 @@ export function AdminDashboard({
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">
-                    Total Clicks
+                    総クリック数
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
                     {stats.totalClicks.toLocaleString()}
@@ -327,7 +340,7 @@ export function AdminDashboard({
               <div className="ml-5 w-0 flex-1">
                 <dl>
                   <dt className="text-sm font-medium text-gray-500 truncate">
-                    Featured Links
+                    注目リンク
                   </dt>
                   <dd className="text-lg font-medium text-gray-900">
                     {stats.featuredLinks}
@@ -343,7 +356,7 @@ export function AdminDashboard({
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-            Quick Actions
+            クイックアクション
           </h3>
           <div className="flex flex-col sm:flex-row gap-4">
             <button
@@ -363,7 +376,7 @@ export function AdminDashboard({
                   d="M12 4v16m8-8H4"
                 />
               </svg>
-              Add New Link
+              新しいリンクを追加
             </button>
 
             <button
@@ -389,7 +402,7 @@ export function AdminDashboard({
                   d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
                 />
               </svg>
-              Manage Links
+              リンクを管理
             </button>
           </div>
         </div>
@@ -399,7 +412,7 @@ export function AdminDashboard({
       <div className="bg-white shadow rounded-lg">
         <div className="px-4 py-5 sm:p-6">
           <h3 className="text-lg leading-6 font-medium text-gray-900 mb-4">
-            Recent Links
+            最近追加されたリンク
           </h3>
           {links.length > 0 ? (
             <div className="space-y-3">
@@ -422,7 +435,7 @@ export function AdminDashboard({
                         </p>
                         {link.featured && (
                           <span className="ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
-                            Featured
+                            注目
                           </span>
                         )}
                         <span
@@ -434,11 +447,11 @@ export function AdminDashboard({
                                 : 'bg-yellow-100 text-yellow-800'
                           }`}
                         >
-                          {link.status}
+                          {formatStatus(link.status)}
                         </span>
                       </div>
                       <p className="text-sm text-gray-500">
-                        {link.category.name} • {link.clickCount} clicks
+                        {link.category.name} • {link.clickCount}件のクリック
                       </p>
                     </div>
                     <div className="flex items-center space-x-2">
@@ -446,14 +459,16 @@ export function AdminDashboard({
                         onClick={() => handleEditLink(link)}
                         className="text-blue-600 hover:text-blue-800 text-sm font-medium"
                       >
-                        Edit
+                        編集
                       </button>
                     </div>
                   </div>
                 ))}
             </div>
           ) : (
-            <p className="text-gray-500 text-sm">No links created yet.</p>
+            <p className="text-gray-500 text-sm">
+              まだリンクが登録されていません。
+            </p>
           )}
         </div>
       </div>
@@ -479,7 +494,7 @@ export function AdminDashboard({
               </svg>
             </div>
             <div className="ml-3">
-              <h3 className="text-sm font-medium text-red-800">Error</h3>
+              <h3 className="text-sm font-medium text-red-800">エラー</h3>
               <div className="mt-2 text-sm text-red-700">
                 <p>{error}</p>
               </div>
@@ -488,7 +503,7 @@ export function AdminDashboard({
                   onClick={loadDashboardData}
                   className="bg-red-100 px-2 py-1 rounded-md text-sm font-medium text-red-800 hover:bg-red-200"
                 >
-                  Try Again
+                  再試行
                 </button>
               </div>
             </div>
@@ -506,7 +521,7 @@ export function AdminDashboard({
           <div>
             <div className="flex justify-between items-center mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
-                Manage Links
+                リンク管理
               </h2>
               <button
                 onClick={() => setCurrentView('create')}
@@ -525,7 +540,7 @@ export function AdminDashboard({
                     d="M12 4v16m8-8H4"
                   />
                 </svg>
-                Add New Link
+                新しいリンクを追加
               </button>
             </div>
             <LinkManagementTable
@@ -542,10 +557,10 @@ export function AdminDashboard({
           <div>
             <div className="mb-6">
               <h2 className="text-xl font-semibold text-gray-900">
-                Create New Link
+                新規リンクを作成
               </h2>
               <p className="text-sm text-gray-600">
-                Add a new affiliate link to your collection
+                コレクションに新しいアフィリエイトリンクを追加します
               </p>
             </div>
             <LinkForm
@@ -560,9 +575,11 @@ export function AdminDashboard({
         return (
           <div>
             <div className="mb-6">
-              <h2 className="text-xl font-semibold text-gray-900">Edit Link</h2>
+              <h2 className="text-xl font-semibold text-gray-900">
+                リンクを編集
+              </h2>
               <p className="text-sm text-gray-600">
-                Update the affiliate link information
+                アフィリエイトリンクの情報を更新します
               </p>
             </div>
             <LinkForm
@@ -583,24 +600,24 @@ export function AdminDashboard({
     <AdminLayout
       title={
         currentView === 'dashboard'
-          ? 'Admin Dashboard'
+          ? '管理ダッシュボード'
           : currentView === 'links'
-            ? 'Manage Links'
+            ? 'リンク管理'
             : currentView === 'create'
-              ? 'Create New Link'
+              ? '新規リンクを作成'
               : currentView === 'edit'
-                ? 'Edit Link'
-                : 'Admin Dashboard'
+                ? 'リンクを編集'
+                : '管理ダッシュボード'
       }
       subtitle={
         currentView === 'dashboard'
-          ? `Welcome back, ${user?.name}`
+          ? `${user?.name}さん、お帰りなさい`
           : currentView === 'links'
-            ? 'Manage your affiliate links'
+            ? '登録済みのアフィリエイトリンクを管理します'
             : currentView === 'create'
-              ? 'Add a new affiliate link'
+              ? '新しいアフィリエイトリンクを追加します'
               : currentView === 'edit'
-                ? 'Update affiliate link information'
+                ? '既存のリンク情報を更新します'
                 : undefined
       }
     >

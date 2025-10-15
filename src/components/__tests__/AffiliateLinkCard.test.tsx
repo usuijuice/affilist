@@ -53,8 +53,8 @@ describe('AffiliateLinkCard', () => {
       screen.getByText('This is a test description for the affiliate link')
     ).toBeInTheDocument();
     expect(screen.getAllByText('Web Development')).toHaveLength(2); // Badge and placeholder
-    expect(screen.getByText('15.5% commission')).toBeInTheDocument();
-    expect(screen.getByText('42 clicks')).toBeInTheDocument();
+    expect(screen.getByText('報酬率 15.5%')).toBeInTheDocument();
+    expect(screen.getByText('42件のクリック')).toBeInTheDocument();
   });
 
   it('displays category badge with correct color', () => {
@@ -84,7 +84,7 @@ describe('AffiliateLinkCard', () => {
     expect(screen.getByText('tag1')).toBeInTheDocument();
     expect(screen.getByText('tag2')).toBeInTheDocument();
     expect(screen.getByText('tag3')).toBeInTheDocument();
-    expect(screen.getByText('+2 more')).toBeInTheDocument();
+    expect(screen.getByText('+2 件')).toBeInTheDocument();
     expect(screen.queryByText('tag4')).not.toBeInTheDocument();
   });
 
@@ -181,7 +181,7 @@ describe('AffiliateLinkCard', () => {
       />
     );
 
-    expect(screen.getByText('Featured')).toBeInTheDocument();
+    expect(screen.getByText('注目')).toBeInTheDocument();
   });
 
   it('displays featured badge when link.featured is true', () => {
@@ -190,7 +190,7 @@ describe('AffiliateLinkCard', () => {
       <AffiliateLinkCard link={featuredLink} onLinkClick={mockOnLinkClick} />
     );
 
-    expect(screen.getByText('Featured')).toBeInTheDocument();
+    expect(screen.getByText('注目')).toBeInTheDocument();
   });
 
   it('does not display featured badge when not featured', () => {
@@ -199,7 +199,7 @@ describe('AffiliateLinkCard', () => {
       <AffiliateLinkCard link={regularLink} onLinkClick={mockOnLinkClick} />
     );
 
-    expect(screen.queryByText('Featured')).not.toBeInTheDocument();
+    expect(screen.queryByText('注目')).not.toBeInTheDocument();
   });
 
   it('renders image when imageUrl is provided', () => {

@@ -78,7 +78,9 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      expect(screen.getByText('Loading more links...')).toBeInTheDocument();
+      expect(
+        screen.getByText('追加のリンクを読み込んでいます...')
+      ).toBeInTheDocument();
     });
   });
 
@@ -92,10 +94,12 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      expect(screen.getByText('No affiliate links found')).toBeInTheDocument();
+      expect(
+        screen.getByText('アフィリエイトリンクが見つかりませんでした')
+      ).toBeInTheDocument();
       expect(
         screen.getByText(
-          'Try adjusting your search criteria or browse different categories.'
+          '検索条件を変更するか、他のカテゴリを試してみてください。'
         )
       ).toBeInTheDocument();
       expect(screen.getByText('🔍')).toBeInTheDocument();
@@ -187,7 +191,7 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      expect(screen.getByText('Load More')).toBeInTheDocument();
+      expect(screen.getByText('さらに読み込む')).toBeInTheDocument();
     });
 
     it('does not render load more button when hasMore is false', () => {
@@ -203,7 +207,7 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      expect(screen.queryByText('Load More')).not.toBeInTheDocument();
+      expect(screen.queryByText('さらに読み込む')).not.toBeInTheDocument();
     });
 
     it('does not render load more button when onLoadMore is not provided', () => {
@@ -218,7 +222,7 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      expect(screen.queryByText('Load More')).not.toBeInTheDocument();
+      expect(screen.queryByText('さらに読み込む')).not.toBeInTheDocument();
     });
 
     it('handles load more button click', () => {
@@ -234,7 +238,7 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      fireEvent.click(screen.getByText('Load More'));
+      fireEvent.click(screen.getByText('さらに読み込む'));
       expect(mockOnLoadMore).toHaveBeenCalled();
     });
 
@@ -320,7 +324,9 @@ describe('AffiliateLinkGrid', () => {
         />
       );
 
-      const loadMoreButton = screen.getByRole('button', { name: 'Load More' });
+      const loadMoreButton = screen.getByRole('button', {
+        name: 'さらに読み込む',
+      });
       expect(loadMoreButton).toBeInTheDocument();
       expect(loadMoreButton).toHaveClass('focus:outline-none', 'focus:ring-2');
     });
@@ -339,7 +345,7 @@ describe('AffiliateLinkGrid', () => {
       );
 
       // Click load more to test the loading button state
-      fireEvent.click(screen.getByText('Load More'));
+      fireEvent.click(screen.getByText('さらに読み込む'));
 
       // Re-render with loading state
       render(
@@ -423,7 +429,7 @@ describe('AffiliateLinkGrid', () => {
       );
 
       // Initial state
-      expect(screen.getByText('Load More')).toBeInTheDocument();
+      expect(screen.getByText('さらに読み込む')).toBeInTheDocument();
 
       // Start loading
       rerender(

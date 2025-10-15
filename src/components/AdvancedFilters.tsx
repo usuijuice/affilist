@@ -60,22 +60,22 @@ export function AdvancedFilters({
       {/* Header */}
       <div className="p-4 border-b border-gray-200">
         <div className="flex items-center justify-between">
-          <h3 className="text-lg font-medium text-gray-900">
-            Advanced Filters
-          </h3>
+          <h3 className="text-lg font-medium text-gray-900">詳細フィルター</h3>
           <div className="flex items-center space-x-2">
             {hasActiveFilters && (
               <button
                 onClick={handleClearFilters}
                 className="text-sm text-blue-600 hover:text-blue-800 font-medium"
               >
-                Clear
+                すべてクリア
               </button>
             )}
             <button
               onClick={() => setIsExpanded(!isExpanded)}
               className="md:hidden p-1 text-gray-500 hover:text-gray-700"
-              aria-label={isExpanded ? 'Collapse filters' : 'Expand filters'}
+              aria-label={
+                isExpanded ? 'フィルターを閉じる' : 'フィルターを開く'
+              }
             >
               <svg
                 className={`w-5 h-5 transform transition-transform ${isExpanded ? 'rotate-180' : ''}`}
@@ -101,7 +101,7 @@ export function AdvancedFilters({
           {/* Commission Rate Range */}
           <div>
             <label className="block text-sm font-medium text-gray-900 mb-3">
-              Commission Rate (%)
+              報酬率（%）
             </label>
             <div className="grid grid-cols-2 gap-3">
               <div>
@@ -109,7 +109,7 @@ export function AdvancedFilters({
                   htmlFor="min-commission"
                   className="block text-xs text-gray-500 mb-1"
                 >
-                  Minimum
+                  最小値
                 </label>
                 <input
                   id="min-commission"
@@ -128,7 +128,7 @@ export function AdvancedFilters({
                   htmlFor="max-commission"
                   className="block text-xs text-gray-500 mb-1"
                 >
-                  Maximum
+                  最大値
                 </label>
                 <input
                   id="max-commission"
@@ -146,8 +146,8 @@ export function AdvancedFilters({
             {filters.commissionRateMin !== undefined &&
               filters.commissionRateMax !== undefined && (
                 <div className="mt-2 text-xs text-gray-600">
-                  Showing {filters.commissionRateMin}% -{' '}
-                  {filters.commissionRateMax}% commission
+                  {filters.commissionRateMin}% 〜 {filters.commissionRateMax}%
+                  の報酬率を表示中
                 </div>
               )}
           </div>
@@ -187,10 +187,10 @@ export function AdvancedFilters({
 
               <div className="flex-1">
                 <div className="text-sm font-medium text-gray-900">
-                  Featured Links Only
+                  注目リンクのみ表示
                 </div>
                 <div className="text-xs text-gray-500">
-                  Show only highlighted affiliate links
+                  注目設定されているアフィリエイトリンクだけを表示します
                 </div>
               </div>
             </label>
@@ -199,21 +199,23 @@ export function AdvancedFilters({
           {/* Active filters summary */}
           {hasActiveFilters && (
             <div className="pt-3 border-t border-gray-200">
-              <div className="text-xs text-gray-500 mb-2">Active filters:</div>
+              <div className="text-xs text-gray-500 mb-2">
+                適用中のフィルター:
+              </div>
               <div className="flex flex-wrap gap-2">
                 {filters.commissionRateMin !== undefined && (
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                    Min: {filters.commissionRateMin}%
+                    最小: {filters.commissionRateMin}%
                   </span>
                 )}
                 {filters.commissionRateMax !== undefined && (
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                    Max: {filters.commissionRateMax}%
+                    最大: {filters.commissionRateMax}%
                   </span>
                 )}
                 {filters.featuredOnly && (
                   <span className="inline-flex items-center px-2 py-1 rounded-full text-xs bg-blue-100 text-blue-800">
-                    Featured Only
+                    注目のみ
                   </span>
                 )}
               </div>

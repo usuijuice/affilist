@@ -27,7 +27,7 @@ describe('Header', () => {
     );
 
     expect(screen.getByText('AL')).toBeInTheDocument();
-    expect(screen.getByText('Affiliate Links')).toBeInTheDocument();
+    expect(screen.getByText('アフィリスト')).toBeInTheDocument();
   });
 
   it('renders navigation links', () => {
@@ -37,11 +37,9 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    expect(screen.getByRole('link', { name: /home/i })).toBeInTheDocument();
-    expect(
-      screen.getByRole('link', { name: /categories/i })
-    ).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: /featured/i })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'ホーム' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'カテゴリ' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: '注目' })).toBeInTheDocument();
   });
 
   it('renders search input with placeholder', () => {
@@ -51,9 +49,8 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    const searchInputs = screen.getAllByPlaceholderText(
-      'Search affiliate links...'
-    );
+    const searchInputs =
+      screen.getAllByPlaceholderText('アフィリエイトリンクを検索...');
     expect(searchInputs).toHaveLength(2); // Desktop and mobile versions
   });
 
@@ -64,9 +61,8 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    const searchInput = screen.getAllByPlaceholderText(
-      'Search affiliate links...'
-    )[0];
+    const searchInput =
+      screen.getAllByPlaceholderText('アフィリエイトリンクを検索...')[0];
     fireEvent.change(searchInput, { target: { value: 'test query' } });
 
     expect(mockOnSearch).toHaveBeenCalledWith('test query');
@@ -90,16 +86,18 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    const menuButton = screen.getByRole('button', { name: /open main menu/i });
+    const menuButton = screen.getByRole('button', {
+      name: 'メインメニューを開く',
+    });
 
     // Initially should only have desktop navigation (1 Home link)
-    expect(screen.getAllByText('Home')).toHaveLength(1);
+    expect(screen.getAllByText('ホーム')).toHaveLength(1);
 
     // Click to open menu
     fireEvent.click(menuButton);
 
     // Mobile menu links should now be visible (desktop + mobile = 2 Home links)
-    const mobileHomeLinks = screen.getAllByText('Home');
+    const mobileHomeLinks = screen.getAllByText('ホーム');
     expect(mobileHomeLinks.length).toBe(2); // Desktop + mobile versions
   });
 
@@ -110,19 +108,21 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    const menuButton = screen.getByRole('button', { name: /open main menu/i });
+    const menuButton = screen.getByRole('button', {
+      name: 'メインメニューを開く',
+    });
 
     // Open mobile menu
     fireEvent.click(menuButton);
 
     // Click on a mobile navigation link
-    const mobileLinks = screen.getAllByText('Home');
+    const mobileLinks = screen.getAllByText('ホーム');
     const mobileHomeLink = mobileLinks[mobileLinks.length - 1]; // Get the mobile version
     fireEvent.click(mobileHomeLink);
 
     // Menu should close (button text should change back)
     expect(
-      screen.getByRole('button', { name: /open main menu/i })
+      screen.getByRole('button', { name: 'メインメニューを開く' })
     ).toBeInTheDocument();
   });
 
@@ -133,7 +133,9 @@ describe('Header', () => {
       </RouterWrapper>
     );
 
-    const menuButton = screen.getByRole('button', { name: /open main menu/i });
+    const menuButton = screen.getByRole('button', {
+      name: 'メインメニューを開く',
+    });
     expect(menuButton).toHaveAttribute('aria-expanded', 'false');
   });
 });

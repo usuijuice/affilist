@@ -12,19 +12,19 @@ describe('SearchInput', () => {
   it('renders with default placeholder', () => {
     render(<SearchInput onSearch={mockOnSearch} />);
 
-    expect(screen.getByPlaceholderText('Search...')).toBeInTheDocument();
+    expect(screen.getByPlaceholderText('検索...')).toBeInTheDocument();
   });
 
   it('renders with custom placeholder', () => {
     render(
       <SearchInput
         onSearch={mockOnSearch}
-        placeholder="Search affiliate links..."
+        placeholder="アフィリエイトリンクを検索..."
       />
     );
 
     expect(
-      screen.getByPlaceholderText('Search affiliate links...')
+      screen.getByPlaceholderText('アフィリエイトリンクを検索...')
     ).toBeInTheDocument();
   });
 
@@ -85,13 +85,13 @@ describe('SearchInput', () => {
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'test' } });
 
-    expect(screen.getByLabelText('Clear search')).toBeInTheDocument();
+    expect(screen.getByLabelText('検索条件をクリア')).toBeInTheDocument();
   });
 
   it('hides clear button when input is empty', () => {
     render(<SearchInput onSearch={mockOnSearch} />);
 
-    expect(screen.queryByLabelText('Clear search')).not.toBeInTheDocument();
+    expect(screen.queryByLabelText('検索条件をクリア')).not.toBeInTheDocument();
   });
 
   it('clears input when clear button is clicked', async () => {
@@ -100,7 +100,7 @@ describe('SearchInput', () => {
     const input = screen.getByRole('textbox');
     fireEvent.change(input, { target: { value: 'test' } });
 
-    const clearButton = screen.getByLabelText('Clear search');
+    const clearButton = screen.getByLabelText('検索条件をクリア');
     fireEvent.click(clearButton);
 
     expect(input).toHaveValue('');
@@ -124,7 +124,7 @@ describe('SearchInput', () => {
       />
     );
 
-    expect(screen.getByText('5 results found')).toBeInTheDocument();
+    expect(screen.getByText('5件の結果が見つかりました')).toBeInTheDocument();
   });
 
   it('shows singular result text for one result', () => {
@@ -137,7 +137,7 @@ describe('SearchInput', () => {
       />
     );
 
-    expect(screen.getByText('1 result found')).toBeInTheDocument();
+    expect(screen.getByText('1件の結果が見つかりました')).toBeInTheDocument();
   });
 
   it('shows no results message when count is zero', () => {
@@ -150,7 +150,7 @@ describe('SearchInput', () => {
       />
     );
 
-    expect(screen.getByText('No results found')).toBeInTheDocument();
+    expect(screen.getByText('該当する結果がありません')).toBeInTheDocument();
   });
 
   it('does not show result count when input is empty', () => {
@@ -162,7 +162,9 @@ describe('SearchInput', () => {
       />
     );
 
-    expect(screen.queryByText('5 results found')).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('5件の結果が見つかりました')
+    ).not.toBeInTheDocument();
   });
 
   it('applies custom className', () => {
@@ -176,7 +178,7 @@ describe('SearchInput', () => {
     render(<SearchInput onSearch={mockOnSearch} />);
 
     const input = screen.getByRole('textbox');
-    expect(input).toHaveAttribute('aria-label', 'Search');
+    expect(input).toHaveAttribute('aria-label', '検索');
 
     const searchIcon = screen
       .getByRole('textbox')

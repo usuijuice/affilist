@@ -42,16 +42,16 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
 
     // Email validation
     if (!credentials.email.trim()) {
-      newErrors.email = 'Email is required';
+      newErrors.email = 'メールアドレスを入力してください';
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(credentials.email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = '有効なメールアドレスを入力してください';
     }
 
     // Password validation
     if (!credentials.password) {
-      newErrors.password = 'Password is required';
+      newErrors.password = 'パスワードを入力してください';
     } else if (credentials.password.length < 6) {
-      newErrors.password = 'Password must be at least 6 characters';
+      newErrors.password = 'パスワードは6文字以上で入力してください';
     }
 
     setErrors(newErrors);
@@ -112,10 +112,10 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
       <div className="max-w-md w-full space-y-8">
         <div>
           <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Admin Login
+            管理者ログイン
           </h2>
           <p className="mt-2 text-center text-sm text-gray-600">
-            Sign in to access the admin dashboard
+            管理画面にアクセスするにはログインしてください
           </p>
         </div>
 
@@ -127,7 +127,7 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
                 htmlFor="email"
                 className="block text-sm font-medium text-gray-700"
               >
-                Email Address
+                メールアドレス
               </label>
               <input
                 id="email"
@@ -141,7 +141,7 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
                 className={`mt-1 appearance-none relative block w-full px-3 py-2 border ${
                   errors.email ? 'border-red-300' : 'border-gray-300'
                 } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                placeholder="Enter your email"
+                placeholder="メールアドレスを入力"
                 disabled={state.isLoading}
               />
               {errors.email && (
@@ -155,7 +155,7 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
                 htmlFor="password"
                 className="block text-sm font-medium text-gray-700"
               >
-                Password
+                パスワード
               </label>
               <div className="mt-1 relative">
                 <input
@@ -170,7 +170,7 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
                   className={`appearance-none relative block w-full px-3 py-2 pr-10 border ${
                     errors.password ? 'border-red-300' : 'border-gray-300'
                   } placeholder-gray-500 text-gray-900 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm`}
-                  placeholder="Enter your password"
+                  placeholder="パスワードを入力"
                   disabled={state.isLoading}
                 />
                 <button
@@ -275,10 +275,10 @@ export function Login({ onSuccess, redirectTo }: LoginProps) {
                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                     ></path>
                   </svg>
-                  Signing in...
+                  ログインしています...
                 </>
               ) : (
-                'Sign in'
+                'ログイン'
               )}
             </button>
           </div>

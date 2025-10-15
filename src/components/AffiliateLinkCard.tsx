@@ -43,14 +43,14 @@ export function AffiliateLinkCard({
 
   const formatCommissionRate = (rate?: number) => {
     if (!rate) return null;
-    return `${rate}% commission`;
+    return `報酬率 ${rate}%`;
   };
 
   const formatClickCount = (count: number) => {
     if (count >= 1000) {
-      return `${(count / 1000).toFixed(1)}k clicks`;
+      return `約${(count / 1000).toFixed(1)}千件のクリック`;
     }
-    return `${count} clicks`;
+    return `${count}件のクリック`;
   };
 
   return (
@@ -69,13 +69,13 @@ export function AffiliateLinkCard({
           handleClick(e as any);
         }
       }}
-      aria-label={`Visit ${link.title}`}
+      aria-label={`${link.title}を開く`}
     >
       {/* Featured Badge */}
       {(featured || link.featured) && (
         <div className="absolute top-2 right-2 z-10">
           <span className="bg-blue-500 text-white text-xs font-semibold px-2 py-1 rounded-full">
-            Featured
+            注目
           </span>
         </div>
       )}
@@ -159,7 +159,7 @@ export function AffiliateLinkCard({
               ))}
               {link.tags.length > 3 && (
                 <span className="inline-block px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded">
-                  +{link.tags.length - 3} more
+                  +{link.tags.length - 3} 件
                 </span>
               )}
             </div>
@@ -179,7 +179,7 @@ export function AffiliateLinkCard({
 
           {/* External link indicator */}
           <div className="flex items-center text-blue-500">
-            <span className="text-xs mr-1">Visit</span>
+            <span className="text-xs mr-1">詳細を見る</span>
             <svg
               className="w-3 h-3"
               fill="none"
